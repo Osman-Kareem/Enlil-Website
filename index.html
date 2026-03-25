@@ -11,19 +11,24 @@
         body { font-family: 'Inter', system-ui, sans-serif; }
         .hero-bg { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat; }
     </style>
+    <style>
+    @media (max-width: 640px) {
+        .hero-bg h2 { font-size: 2.25rem; line-height: 1.15; }
+    }
+</style>
 </head>
 <body class="bg-gray-50">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-leaf text-3xl text-emerald-600"></i>
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-leaf text-3xl text-emerald-600"></i>
                 <h1 class="text-2xl font-semibold tracking-tight">Enlil Center | Environment & Sustainable Development</h1>
             </div>
             
             <!-- Desktop Menu -->
-            <div class="flex gap-8 text-sm font-medium">
+            <div class="hidden md:flex gap-8 text-sm font-medium">
                 <a href="#about" class="hover:text-emerald-600">About</a>
                 <a href="#articles" class="hover:text-emerald-600">Articles</a>
                 <a href="#research" class="hover:text-emerald-600">Research</a>
@@ -32,22 +37,22 @@
             </div>
             
        <!-- Mobile Hamburger -->
-            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl">
-                <i class="fa-solid fa-bars" id="hamburger"></i>
-            </button>
-        </div>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-slate-700">
+            <i class="fa-solid fa-bars" id="hamburger-icon"></i>
+        </button>
+    </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-6 py-4">
-            <div class="flex flex-col gap-4 text-sm font-medium">
-                <a href="#about" onclick="toggleMobileMenu()" class="hover:text-emerald-600">About</a>
-                <a href="#articles" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Articles</a>
-                <a href="#research" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Research</a>
-                <a href="#projects" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Projects</a>
-                <a href="#partners" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Partners</a>
-            </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-5 py-4">
+        <div class="flex flex-col gap-4 text-base">
+            <a href="#about" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">About</a>
+            <a href="#articles" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Articles</a>
+            <a href="#research" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Research</a>
+            <a href="#projects" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Projects</a>
+            <a href="#partners" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Partners</a>
         </div>
-    </nav>
+    </div>
+</nav>
     <!-- Hero -->
     <section class="hero-bg h-screen flex items-center text-white">
         <div class="max-w-4xl mx-auto px-6 text-center">
@@ -87,7 +92,7 @@
     <section id="articles" class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-semibold mb-12 text-center">Latest Articles & News</h2>
-            <div id="articlesContainer" class="grid md:grid-cols-3 gap-8"></div>
+            <div id="articlesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
@@ -95,7 +100,7 @@
     <section id="research" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-semibold mb-12 text-center">Research & Reports</h2>
-            <div id="researchContainer" class="grid md:grid-cols-3 gap-8"></div>
+            <div id="researchContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
     
@@ -103,7 +108,7 @@
     <section id="projects" class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-semibold mb-12 text-center">Our Projects</h2>
-            <div id="projectsContainer" class="grid md:grid-cols-3 gap-8"></div>
+            <div id="projectsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
@@ -111,7 +116,7 @@
     <section id="partners" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-semibold mb-12 text-center">Our Strategic Partners</h2>
-            <div id="partnersContainer" class="grid md:grid-cols-3 gap-8"></div>
+            <div id="partnersContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
     
@@ -169,6 +174,16 @@
             loadResearch();
         };
     </script>
+
+    <script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        const icon = document.getElementById('hamburger-icon');
+        menu.classList.toggle('hidden');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+    }
+</script>
 </body>
 </html>
 
