@@ -3,365 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enlil Center | Admin Dashboard</title>
+    <title>Enlil Center - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
-        :root { --enlil-emerald: #065f46; }
-        .tab-active { border-bottom: 3px solid var(--enlil-emerald); color: var(--enlil-emerald); font-weight: 600; }
-        .ql-container { height: 250px; background: white; }
-        .social-row, .contributor-row { animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .ql-editor { min-height: 420px; font-size: 1.1rem; line-height: 1.7; }
+        .tab-active { border-bottom: 3px solid #10b981; color: #10b981; font-weight: 600; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans text-slate-900">
-    <nav class="bg-emerald-900 text-white p-4 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-tight">ENLIL CENTER <span class="font-light text-emerald-300">| CMS</span></h1>
-            <div class="flex items-center space-x-4">
-                <button onclick="exportData()" class="text-xs border border-emerald-400 px-3 py-1 rounded hover:bg-emerald-800">Backup Data</button>
-                <a href="index.html" target="_blank" class="text-sm bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded transition">View Public Site</a>
-            </div>
+<body class="bg-gray-50">
+
+<div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div class="w-72 bg-white shadow-2xl p-6 flex flex-col">
+        <div class="flex items-center gap-3 mb-12">
+            <i class="fa-solid fa-leaf text-4xl text-emerald-600"></i>
+            <h1 class="text-3xl font-semibold">Enlil Center</h1>
         </div>
-    </nav>
+        <nav class="flex-1 space-y-1">
+            <button onclick="switchTab(0)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg tab-active">👤 Authors</button>
+            <button onclick="switchTab(1)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">📰 Articles & News</button>
+            <button onclick="switchTab(2)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">📚 Research & Reports</button>
+            <button onclick="switchTab(3)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">📋 Projects</button>
+            <button onclick="switchTab(4)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">🤝 Partners & Sponsors</button>
+        </nav>
+    </div>
 
-    <main class="container mx-auto py-8 px-4">
-        <div class="flex border-b border-gray-200 mb-8 overflow-x-auto bg-white rounded-t-lg shadow-sm">
-            <button onclick="switchTab('authors')" id="tab-authors" class="tab-btn px-8 py-4 tab-active transition">Expert Authors</button>
-            <button onclick="switchTab('team')" id="tab-team" class="tab-btn px-8 py-4 transition">Org Team</button>
-            <button onclick="switchTab('articles')" id="tab-articles" class="tab-btn px-8 py-4 transition">Articles & News</button>
-            <button onclick="switchTab('reports')" id="tab-reports" class="tab-btn px-8 py-4 transition">Research & Reports</button>
-            <button onclick="switchTab('projects')" id="tab-projects" class="tab-btn px-8 py-4 transition">Projects</button>
-            <button onclick="switchTab('partners')" id="tab-partners" class="tab-btn px-8 py-4 transition">Partners</button>
+    <!-- Main Content -->
+    <div class="flex-1 p-10 overflow-auto">
+
+        <!-- Authors -->
+        <div id="tab0" class="tab-content">
+            <h2 class="text-3xl font-semibold mb-8">Authors</h2>
+            <form id="authorForm" class="bg-white p-8 rounded-3xl shadow mb-10">
+                <div class="grid grid-cols-2 gap-6">
+                    <div><label class="block text-sm font-medium mb-2">Full Name</label><input type="text" id="authorName" class="w-full px-5 py-4 border border-gray-300 rounded-2xl" required></div>
+                    <div><label class="block text-sm font-medium mb-2">Photo</label><input type="file" id="authorPhoto" accept="image/*" class="w-full"></div>
+                </div>
+                <div class="mt-6"><label class="block text-sm font-medium mb-2">Bio</label><textarea id="authorBio" rows="4" class="w-full px-5 py-4 border border-gray-300 rounded-2xl"></textarea></div>
+                <div class="grid grid-cols-3 gap-6 mt-6">
+                    <div><label class="block text-sm font-medium mb-2">Email</label><input type="email" id="authorEmail" class="w-full px-5 py-4 border border-gray-300 rounded-2xl"></div>
+                    <div><label class="block text-sm font-medium mb-2">LinkedIn</label><input type="url" id="authorLinkedIn" class="w-full px-5 py-4 border border-gray-300 rounded-2xl"></div>
+                    <div><label class="block text-sm font-medium mb-2">X (Twitter)</label><input type="url" id="authorX" class="w-full px-5 py-4 border border-gray-300 rounded-2xl"></div>
+                </div>
+                <div class="mt-6"><label class="block text-sm font-medium mb-2">Website</label><input type="url" id="authorWebsite" class="w-full px-5 py-4 border border-gray-300 rounded-2xl"></div>
+                <button type="submit" class="mt-10 w-full bg-emerald-600 text-white py-5 rounded-3xl font-medium">Save Author</button>
+            </form>
+            <div id="authorsList"></div>
         </div>
 
-        <section id="sec-authors" class="tab-content">
-            <div class="grid lg:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                    <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Add New Expert Author</h2>
-                    <form id="authorForm" class="space-y-4">
-                        <input type="text" id="authName" placeholder="Full Name (e.g. Dr. Ahmed Al-Iraqi)" class="w-full border p-2 rounded focus:ring-2 focus:ring-emerald-500 outline-none" required>
-                        <div class="flex flex-col space-y-2">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Profile Photo</label>
-                            <input type="file" id="authPhoto" accept="image/*" class="text-xs">
-                        </div>
-                        <div id="authBioEditor"></div>
-                        <input type="email" id="authEmail" placeholder="Public Contact Email" class="w-full border p-2 rounded text-sm">
-                        <div id="socialLinksContainer" class="space-y-2 pt-2 border-t">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Social & Academic Profiles</label>
-                        </div>
-                        <button type="button" onclick="addSocialRow('socialLinksContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Another Link</button>
-                        <button type="submit" class="w-full bg-emerald-800 text-white py-3 rounded-md font-bold hover:bg-emerald-900 shadow-md transition mt-4">Save Author Profile</button>
-                    </form>
-                </div>
-                <div class="lg:col-span-2">
-                    <div id="authorList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
-            </div>
-        </section>
+        <!-- Articles & News -->
+        <div id="tab1" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold mb-8">Articles & News</h2>
+            <form id="articleForm" class="bg-white p-8 rounded-3xl shadow mb-10">
+                <input type="text" id="articleTitle" placeholder="Title" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6" required>
+                <select id="articleAuthor" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6"></select>
+                <input type="file" id="articleCover" accept="image/*" class="mb-6">
+                <div id="articleCoverPreview" class="mt-4 hidden"><img id="articlePreviewImg" class="max-h-64 rounded-2xl"></div>
+                <div id="articleEditor" class="border border-gray-300 rounded-3xl"></div>
+                <button type="submit" class="mt-10 w-full bg-emerald-600 text-white py-5 rounded-3xl font-medium">Save Article</button>
+            </form>
+            <div id="articlesList"></div>
+        </div>
 
-        <section id="sec-team" class="tab-content hidden">
-            <div class="grid lg:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                    <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Add Core Team Member</h2>
-                    <form id="teamForm" class="space-y-4">
-                        <input type="text" id="teamName" placeholder="Full Name" class="w-full border p-2 rounded focus:ring-2 focus:ring-emerald-500 outline-none" required>
-                        <select id="teamRole" class="w-full border p-2 rounded bg-gray-50">
-                            <option value="Founder">Founder</option>
-                            <option value="Co-Founder">Co-Founder</option>
-                            <option value="Executive Director">Executive Director</option>
-                            <option value="Program Manager">Program Manager</option>
-                            <option value="Technical Lead">Technical Lead</option>
-                            <option value="Researcher">Researcher</option>
-                        </select>
-                        <input type="file" id="teamPhoto" accept="image/*" class="text-xs">
-                        <div id="teamBioEditor"></div>
-                        <input type="email" id="teamEmail" placeholder="Work Email" class="w-full border p-2 rounded text-sm">
-                        <div id="teamSocialContainer" class="space-y-2 pt-2 border-t">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Accounts & Socials</label>
-                        </div>
-                        <button type="button" onclick="addSocialRow('teamSocialContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Another Link</button>
-                        <button type="submit" class="w-full bg-emerald-900 text-white py-3 rounded-md font-bold shadow-md transition mt-4">Save Team Member</button>
-                    </form>
-                </div>
-                <div class="lg:col-span-2">
-                    <div id="teamList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
-            </div>
-        </section>
+        <!-- Research & Reports -->
+        <div id="tab2" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold mb-8">Research & Reports</h2>
+            <form id="researchForm" class="bg-white p-8 rounded-3xl shadow mb-10">
+                <input type="text" id="researchTitle" placeholder="Title" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6" required>
+                <select id="researchAuthor" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6"></select>
+                <input type="file" id="researchCover" accept="image/*" class="mb-6">
+                <div id="researchCoverPreview" class="mt-4 hidden"><img id="researchPreviewImg" class="max-h-64 rounded-2xl"></div>
+                <input type="file" id="researchPDF" accept="application/pdf" class="mb-6">
+                <div id="researchPDFPreview" class="mt-4 hidden"><img id="researchPDFThumb" class="max-h-48 rounded-2xl"></div>
+                <div id="researchEditor" class="border border-gray-300 rounded-3xl"></div>
+                <button type="submit" class="mt-10 w-full bg-emerald-600 text-white py-5 rounded-3xl font-medium">Save Research</button>
+            </form>
+            <div id="researchList"></div>
+        </div>
 
-        <section id="sec-articles" class="tab-content hidden">
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
-                <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Create Article</h2>
-                <form id="articleForm" class="space-y-4">
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase text-gray-500">Title</label>
-                            <input type="text" id="artTitle" class="w-full border p-2 rounded" required>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase text-gray-500">Lead Author</label>
-                            <select id="artAuthor" class="w-full border p-2 rounded bg-gray-50 font-medium"></select>
-                        </div>
-                    </div>
+        <!-- Projects -->
+        <div id="tab3" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold mb-8">Projects</h2>
+            <form id="projectForm" class="bg-white p-8 rounded-3xl shadow">
+                <input type="text" id="projectTitle" placeholder="Project Title" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6" required>
+                <input type="text" id="projectSponsor" placeholder="Funded by / Sponsor" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6">
+                <div id="projectEditor" class="border border-gray-300 rounded-3xl"></div>
+                <button type="submit" class="mt-10 w-full bg-emerald-600 text-white py-5 rounded-3xl font-medium">Save Project</button>
+            </form>
+            <div id="projectsList"></div>
+        </div>
 
-                    <div class="bg-slate-50 p-4 rounded border">
-                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Supporting Research Team</label>
-                        <div id="artSupportContainer" class="space-y-2 mb-2"></div>
-                        <button type="button" onclick="addContributorRow('artSupportContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Contributor</button>
-                    </div>
+        <!-- Partners & Sponsors -->
+        <div id="tab4" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold mb-8">Partners & Sponsors</h2>
+            <form id="partnerForm" class="bg-white p-8 rounded-3xl shadow">
+                <input type="text" id="partnerName" placeholder="Organization Name" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6" required>
+                <input type="url" id="partnerUrl" placeholder="Website URL" class="w-full px-5 py-4 border border-gray-300 rounded-2xl mb-6">
+                <input type="file" id="partnerLogo" accept="image/*" class="mb-6">
+                <button type="submit" class="mt-8 w-full bg-emerald-600 text-white py-5 rounded-3xl font-medium">Save Partner</button>
+            </form>
+            <div id="partnersList"></div>
+        </div>
+    </div>
+</div>
 
-                    <input type="text" id="artKeywords" placeholder="SEO Keywords" class="w-full border p-2 rounded">
-                    <input type="file" id="artCover" accept="image/*" class="text-sm">
-                    <div id="artEditor"></div>
-                    <button type="submit" class="bg-emerald-800 text-white px-10 py-3 rounded font-bold hover:bg-emerald-900">Publish Article</button>
-                </form>
-            </div>
-            <div id="articleList" class="space-y-3"></div>
-        </section>
+<script>
+    let quillArticle, quillResearch, quillProject;
+    let articles = [], research = [], projects = [], partners = [], authors = [];
 
-        <section id="sec-reports" class="tab-content hidden">
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Upload Research Report</h2>
-                <form id="reportForm" class="space-y-4">
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase text-gray-500">Report Title</label>
-                            <input type="text" id="repTitle" class="w-full border p-2 rounded" required>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase text-gray-500">Lead Author</label>
-                            <select id="repAuthor" class="w-full border p-2 rounded bg-gray-50 font-medium"></select>
-                        </div>
-                    </div>
+    function switchTab(n) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById('tab' + n).classList.remove('hidden');
+    }
 
-                    <div class="bg-slate-50 p-4 rounded border">
-                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Collaborating Analysts & Editors</label>
-                        <div id="repSupportContainer" class="space-y-2 mb-2"></div>
-                        <button type="button" onclick="addContributorRow('repSupportContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Contributor</button>
-                    </div>
+    function initEditors() {
+        quillArticle = new Quill('#articleEditor', { theme: 'snow', modules: { toolbar: [['bold','italic','underline','link'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['image'], ['clean']] } });
+        quillResearch = new Quill('#researchEditor', { theme: 'snow', modules: { toolbar: [['bold','italic','underline','link'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['image'], ['clean']] } });
+        quillProject = new Quill('#projectEditor', { theme: 'snow', modules: { toolbar: [['bold','italic','underline','link'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['image'], ['clean']] } });
+    }
 
-                    <input type="text" id="repKeywords" placeholder="SEO Keywords" class="w-full border p-2 rounded">
-                    <div class="flex items-start space-x-6">
-                        <div class="flex-1 space-y-2">
-                            <label class="text-xs font-bold uppercase text-gray-500">PDF Document</label>
-                            <input type="file" id="repFile" accept="application/pdf" class="w-full border p-2 rounded" required>
-                        </div>
-                        <canvas id="pdfThumbnail" class="hidden border w-32 bg-white shadow"></canvas>
-                    </div>
-                    <div id="repEditor"></div>
-                    <button type="submit" class="bg-emerald-800 text-white px-10 py-3 rounded font-bold hover:bg-emerald-900">Save Research Report</button>
-                </form>
-            </div>
-            <div id="reportList" class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
-        </section>
-
-        <section id="sec-projects" class="tab-content hidden">
-            <div class="bg-white p-6 rounded-lg shadow-sm max-w-2xl border border-gray-100">
-                <h2 class="text-lg font-bold mb-4">Add Project</h2>
-                <form id="projForm" class="space-y-4">
-                    <input type="text" id="projTitle" placeholder="Project Name" class="w-full border p-2 rounded" required>
-                    <input type="text" id="projSponsor" placeholder="Sponsor / Funded By" class="w-full border p-2 rounded">
-                    <div id="projEditor"></div>
-                    <button type="submit" class="bg-emerald-800 text-white px-6 py-2 rounded">Add Project</button>
-                </form>
-            </div>
-            <div id="projectList" class="mt-6 space-y-4"></div>
-        </section>
-
-        <section id="sec-partners" class="tab-content hidden">
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 max-w-md">
-                <h2 class="text-lg font-bold mb-4">Add Partner</h2>
-                <form id="partnerForm" class="space-y-4">
-                    <input type="text" id="partName" placeholder="Organization Name" class="w-full border p-2 rounded" required>
-                    <input type="url" id="partUrl" placeholder="Website URL" class="w-full border p-2 rounded">
-                    <input type="file" id="partLogo" accept="image/*">
-                    <button type="submit" class="bg-emerald-800 text-white px-6 py-2 rounded">Save Partner</button>
-                </form>
-            </div>
-            <div id="partnerList" class="mt-6 flex flex-wrap gap-4"></div>
-        </section>
-    </main>
-
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script>
-        const socialPlatforms = ["X (Twitter)", "LinkedIn", "Facebook", "ResearchGate", "Google Scholar", "ORCID", "Academia.edu", "Website"];
-        const contributorRoles = ["Co-Author", "Editor", "Lead Researcher", "Data Analyst", "GIS Specialist", "Peer Reviewer", "Translator"];
-
-        const db = {
-            authors: JSON.parse(localStorage.getItem('enlil_authors') || '[]'),
-            team: JSON.parse(localStorage.getItem('enlil_team') || '[]'),
-            articles: JSON.parse(localStorage.getItem('enlil_articles') || '[]'),
-            reports: JSON.parse(localStorage.getItem('enlil_reports') || '[]'),
-            projects: JSON.parse(localStorage.getItem('enlil_projects') || '[]'),
-            partners: JSON.parse(localStorage.getItem('enlil_partners') || '[]')
-        };
-
-        const save = () => {
-            Object.keys(db).forEach(key => localStorage.setItem('enlil_'+key, JSON.stringify(db[key])));
-            renderAll();
-        };
-
-        const quillConfig = { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'link'], [{ 'header': [2, 3, false] }], ['list', 'image']] } };
-        const authEditor = new Quill('#authBioEditor', quillConfig);
-        const teamEditor = new Quill('#teamBioEditor', quillConfig);
-        const artEditor = new Quill('#artEditor', quillConfig);
-        const repEditor = new Quill('#repEditor', quillConfig);
-        const projEditor = new Quill('#projEditor', quillConfig);
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
-            document.getElementById('sec-' + tabId).classList.remove('hidden');
-            document.getElementById('tab-' + tabId).classList.add('tab-active');
-        }
-
-        const toBase64 = file => new Promise((res, rej) => {
-            if (!file) res(null);
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => res(reader.result);
-            reader.onerror = rej;
-        });
-
-        function addSocialRow(containerId) {
-            const container = document.getElementById(containerId);
-            const row = document.createElement('div');
-            row.className = "flex space-x-2 social-row";
-            row.innerHTML = `
-                <select class="social-platform border p-1 rounded text-xs bg-gray-50">
-                    ${socialPlatforms.map(p => `<option value="${p}">${p}</option>`).join('')}
-                </select>
-                <input type="url" class="social-url border p-1 rounded text-xs flex-1" placeholder="https://...">
-                <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold">×</button>
-            `;
-            container.appendChild(row);
-        }
-
-        function addContributorRow(containerId) {
-            const container = document.getElementById(containerId);
-            const allPersonnel = [...db.team, ...db.authors];
-            const row = document.createElement('div');
-            row.className = "flex space-x-2 contributor-row items-center bg-white p-1 rounded border mb-1";
-            row.innerHTML = `
-                <select class="contributor-id border p-1 rounded text-xs flex-1">
-                    ${allPersonnel.map(p => `<option value="${p.id}">${p.name} ${db.team.some(t => t.id === p.id) ? '(Team)' : '(Expert)'}</option>`).join('')}
-                </select>
-                <select class="contributor-role border p-1 rounded text-xs">
-                    ${contributorRoles.map(r => `<option value="${r}">${r}</option>`).join('')}
-                </select>
-                <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">×</button>
-            `;
-            container.appendChild(row);
-        }
-
-        // PDF Preview
-        document.getElementById('repFile').addEventListener('change', async (e) => {
+    // Preview cover images
+    function setupPreview(inputId, previewId, imgId) {
+        document.getElementById(inputId).addEventListener('change', e => {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = async function() {
-                    const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
-                    const page = await pdf.getPage(1);
-                    const canvas = document.getElementById('pdfThumbnail');
-                    const context = canvas.getContext('2d');
-                    const viewport = page.getViewport({scale: 0.4});
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    await page.render({canvasContext: context, viewport: viewport}).promise;
-                    canvas.classList.remove('hidden');
+                reader.onload = ev => {
+                    document.getElementById(imgId).src = ev.target.result;
+                    document.getElementById(previewId).classList.remove('hidden');
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsDataURL(file);
             }
         });
+    }
 
-        // Submit Handlers
-        document.getElementById('authorForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const socials = [];
-            e.target.querySelectorAll('.social-row').forEach(row => socials.push({platform: row.querySelector('.social-platform').value, url: row.querySelector('.social-url').value}));
-            db.authors.push({
-                id: 'exp_' + Date.now(),
-                name: document.getElementById('authName').value,
-                bio: authEditor.root.innerHTML,
-                email: document.getElementById('authEmail').value,
-                socials: socials,
-                photo: await toBase64(document.getElementById('authPhoto').files[0]) || 'https://via.placeholder.com/150'
-            });
-            save(); e.target.reset(); authEditor.setContents([]);
+    // PDF thumbnail for research
+    document.getElementById('researchPDF').addEventListener('change', async e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({scale: 1.5});
+        const canvas = document.createElement('canvas');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
+        document.getElementById('researchPDFThumb').src = canvas.toDataURL('image/jpeg', 0.8);
+        document.getElementById('researchPDFPreview').classList.remove('hidden');
+        window.currentResearchPDF = await fileToBase64(file);
+    });
+
+    function fileToBase64(file) {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Save functions
+    document.getElementById('articleForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const newArticle = {
+            title: document.getElementById('articleTitle').value,
+            author: document.getElementById('articleAuthor').value,
+            cover: document.getElementById('articleCoverPreview').classList.contains('hidden') ? null : document.getElementById('articlePreviewImg').src,
+            content: quillArticle.root.innerHTML,
+            date: new Date().toISOString().slice(0,10)
         };
+        articles.unshift(newArticle);
+        await saveToJSON('data/articles.json', articles);
+        alert('Article saved!');
+        e.target.reset();
+        document.getElementById('articleCoverPreview').classList.add('hidden');
+        quillArticle.root.innerHTML = '';
+        renderArticles();
+    });
 
-        document.getElementById('teamForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const socials = [];
-            e.target.querySelectorAll('.social-row').forEach(row => socials.push({platform: row.querySelector('.social-platform').value, url: row.querySelector('.social-url').value}));
-            db.team.push({
-                id: 'stf_' + Date.now(),
-                name: document.getElementById('teamName').value,
-                role: document.getElementById('teamRole').value,
-                bio: teamEditor.root.innerHTML,
-                email: document.getElementById('teamEmail').value,
-                socials: socials,
-                photo: await toBase64(document.getElementById('teamPhoto').files[0]) || 'https://via.placeholder.com/150'
-            });
-            save(); e.target.reset(); teamEditor.setContents([]);
+    document.getElementById('researchForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const newResearch = {
+            title: document.getElementById('researchTitle').value,
+            author: document.getElementById('researchAuthor').value,
+            cover: document.getElementById('researchCoverPreview').classList.contains('hidden') ? null : document.getElementById('researchPreviewImg').src,
+            abstract: quillResearch.root.innerHTML,
+            pdfBase64: window.currentResearchPDF || null,
+            pdfThumb: document.getElementById('researchPDFThumb').src,
+            date: new Date().toISOString().slice(0,10)
         };
+        research.unshift(newResearch);
+        await saveToJSON('data/research.json', research);
+        alert('Research saved!');
+        e.target.reset();
+        document.getElementById('researchCoverPreview').classList.add('hidden');
+        document.getElementById('researchPDFPreview').classList.add('hidden');
+        quillResearch.root.innerHTML = '';
+        renderResearch();
+    });
 
-        document.getElementById('articleForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const support = [];
-            document.querySelectorAll('#artSupportContainer .contributor-row').forEach(row => support.push({ id: row.querySelector('.contributor-id').value, role: row.querySelector('.contributor-role').value }));
-            db.articles.push({
-                id: Date.now(),
-                title: document.getElementById('artTitle').value,
-                authorId: document.getElementById('artAuthor').value,
-                supportTeam: support,
-                keywords: document.getElementById('artKeywords').value,
-                content: artEditor.root.innerHTML,
-                cover: await toBase64(document.getElementById('artCover').files[0]),
-                date: new Date().toLocaleDateString()
-            });
-            save(); e.target.reset(); artEditor.setContents([]);
-        };
+    async function saveToJSON(filename, data) {
+        await fetch(filename, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+    }
 
-        document.getElementById('reportForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const support = [];
-            document.querySelectorAll('#repSupportContainer .contributor-row').forEach(row => support.push({ id: row.querySelector('.contributor-id').value, role: row.querySelector('.contributor-role').value }));
-            const canvas = document.getElementById('pdfThumbnail');
-            db.reports.push({
-                id: Date.now(),
-                title: document.getElementById('repTitle').value,
-                authorId: document.getElementById('repAuthor').value,
-                supportTeam: support,
-                keywords: document.getElementById('repKeywords').value,
-                abstract: repEditor.root.innerHTML,
-                pdfData: await toBase64(document.getElementById('repFile').files[0]),
-                thumbnail: canvas.toDataURL(),
-                date: new Date().toLocaleDateString()
-            });
-            save(); e.target.reset(); repEditor.setContents([]);
-        };
+    function renderArticles() { console.log('Articles rendered'); }
+    function renderResearch() { console.log('Research rendered'); }
 
-        function renderAll() {
-            // Personnel Dropdowns Logic
-            const allPersonnel = [...db.team, ...db.authors];
-            const personnelOptions = allPersonnel.map(p => `<option value="${p.id}">${p.name} ${db.team.some(t => t.id === p.id) ? '(Team)' : '(Expert)'}</option>`).join('');
-            document.getElementById('artAuthor').innerHTML = personnelOptions || '<option disabled>Add personnel first</option>';
-            document.getElementById('repAuthor').innerHTML = personnelOptions || '<option disabled>Add personnel first</option>';
-
-            // Lists
-            document.getElementById('authorList').innerHTML = db.authors.map(a => `<div class="bg-white p-3 border rounded flex justify-between"><span>${a.name}</span> <button onclick="deleteItem('authors', '${a.id}')" class="text-red-500">×</button></div>`).join('');
-            document.getElementById('teamList').innerHTML = db.team.map(t => `<div class="bg-white p-3 border rounded flex justify-between"><span><b>${t.name}</b> (${t.role})</span> <button onclick="deleteItem('team', '${t.id}')" class="text-red-500">×</button></div>`).join('');
-            
-            document.getElementById('articleList').innerHTML = db.articles.map(a => `<div class="bg-white p-2 border rounded flex justify-between"><span>${a.title}</span> <button onclick="deleteItem('articles', ${a.id})">Remove</button></div>`).join('');
-            document.getElementById('reportList').innerHTML = db.reports.map(r => `<div class="bg-white p-2 border rounded flex justify-between"><span>${r.title}</span> <button onclick="deleteItem('reports', ${r.id})">Remove</button></div>`).join('');
-        }
-
-        const deleteItem = (col, id) => { if(confirm("Delete?")) { db[col] = db[col].filter(x => x.id != id); save(); } };
-        function exportData() { window.open("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db))); }
-        renderAll();
-    </script>
+    window.onload = () => {
+        initEditors();
+        setupPreview('articleCover', 'articleCoverPreview', 'articlePreviewImg');
+        setupPreview('researchCover', 'researchCoverPreview', 'researchPreviewImg');
+    };
+</script>
 </body>
 </html>

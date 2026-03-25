@@ -3,138 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enlil Center | Environment & Sustainable Development Iraq</title>
+    <title>Enlil Center | Environment & Sustainable Development</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;600;700&display=swap');
-        :root { --enlil-emerald: #065f46; --enlil-slate: #0f172a; }
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        .bg-enlil { background-color: var(--enlil-emerald); }
-        .text-enlil { color: var(--enlil-emerald); }
-        .modal { transition: opacity 0.25s ease; }
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .hero-bg { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat; }
     </style>
 </head>
-<body class="bg-white text-slate-900">
+<body class="bg-gray-50">
 
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-emerald-900 rounded-full flex items-center justify-center text-white font-bold text-xl">e</div>
-                <div>
-                    <h1 class="text-xl font-black text-slate-900 leading-none uppercase tracking-tighter">Enlil Center</h1>
-                    <p class="text-[10px] text-emerald-700 font-bold uppercase tracking-widest mt-1">Sustainable Development</p>
-                </div>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-leaf text-3xl text-emerald-600"></i>
+                <h1 class="text-2xl font-semibold tracking-tight">Enlil Center</h1>
             </div>
-            <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-slate-600">
-                <a href="#about" class="hover:text-emerald-700 transition">About</a>
-                <a href="#articles" class="hover:text-emerald-700 transition">Insights</a>
-                <a href="#research" class="hover:text-emerald-700 transition">Research</a>
-                <a href="#projects" class="hover:text-emerald-700 transition">Projects</a>
-                <a href="#partners" class="hover:text-emerald-700 transition">Our Partners</a>
-                <a href="#team" class="hover:text-emerald-700 transition">Our Team</a>
+            <div class="flex gap-8 text-sm font-medium">
+                <a href="#about" class="hover:text-emerald-600">About</a>
+                <a href="#articles" class="hover:text-emerald-600">Articles</a>
+                <a href="#research" class="hover:text-emerald-600">Research</a>
+                <a href="#projects" class="hover:text-emerald-600">Projects</a>
+                <a href="#partners" class="hover:text-emerald-600">Partners</a>
+                <a href="admin" target="_blank" class="text-emerald-600 font-semibold">Admin</a>
             </div>
         </div>
     </nav>
 
-    <header class="relative bg-slate-900 py-24 px-6 overflow-hidden">
-        <div class="absolute inset-0 opacity-20">
-            <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920" class="w-full h-full object-cover">
-        </div>
-        <div class="container mx-auto relative z-10 text-center max-w-4xl">
-            <h2 class="text-4xl md:text-6xl font-serif text-white mb-6 leading-tight">Bridging the gap between climate research and policy in Iraq.</h2>
-            <p class="text-xl text-emerald-100 font-light leading-relaxed mb-10">
-                Established in 2024 to fill a crucial gap in climate-focused initiatives, Enlil Center acts as a bridge between governmental bodies, international organizations, and local communities.
+    <!-- Hero -->
+    <section class="hero-bg h-screen flex items-center text-white">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-5xl md:text-6xl font-semibold leading-tight mb-6">
+                Addressing Iraq's Environmental Challenges<br>Through Independent Research
+            </h2>
+            <p class="text-xl md:text-2xl max-w-2xl mx-auto mb-10 opacity-90">
+                Enlil Center is an independent think tank dedicated to evidence-based analysis and sustainable solutions for Iraq's climate, water, and environmental issues.
             </p>
-            <div class="flex justify-center space-x-4">
-                <a href="#research" class="bg-emerald-600 text-white px-8 py-3 rounded font-bold hover:bg-emerald-500 transition">Latest Research</a>
-                <a href="#about" class="border border-white text-white px-8 py-3 rounded font-bold hover:bg-white hover:text-slate-900 transition">Our Mission</a>
-            </div>
+            <a href="#articles" class="inline-block bg-white text-emerald-700 font-medium px-8 py-4 rounded-lg text-lg hover:bg-emerald-50 transition">
+                View Latest Research & News
+            </a>
         </div>
-    </header>
+    </section>
 
-    <section id="about" class="py-24 container mx-auto px-6">
-        <div class="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-                <h3 class="text-xs font-bold text-emerald-700 uppercase tracking-[0.3em] mb-4">Vision & Impact</h3>
-                <h2 class="text-3xl font-serif font-bold mb-6 text-slate-900">Fostering collaboration and building resilience against climate impacts.</h2>
-                <div class="space-y-6 text-slate-600 leading-relaxed text-sm">
-                    <p>Our mission is to support Iraq in adapting to and mitigating the effects of climate change, ensuring a future resilient to environmental threats.</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-                        <div>
-                            <h4 class="font-bold text-slate-900 mb-2 border-l-2 border-emerald-600 pl-3">Research & Data</h4>
-                            <p>Generating robust data on climate trends, water scarcity, and air quality.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 mb-2 border-l-2 border-emerald-600 pl-3">Policy Advocacy</h4>
-                            <p>Collaborating with governments to align regulations with global environmental standards.</p>
-                        </div>
-                    </div>
+    <!-- About -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl font-semibold mb-6">Who We Are</h2>
+                    <p class="text-lg leading-relaxed text-gray-600">
+                        The Enlil Center for Environment and Sustainable Development is a non-profit think tank based in Iraq. 
+                        We conduct independent research, provide policy analysis, and promote evidence-based approaches to environmental challenges.
+                    </p>
+                </div>
+                <div class="bg-gray-100 p-8 rounded-2xl">
+                    <p class="italic text-gray-600">
+                        "Our mission is to bridge rigorous scientific research with practical, locally relevant solutions for a more sustainable Iraq."
+                    </p>
                 </div>
             </div>
-            <div class="bg-emerald-900 p-12 rounded-2xl shadow-2xl text-white relative">
-                <i class="fas fa-quote-left text-emerald-700 text-6xl absolute top-6 left-6 opacity-30"></i>
-                <p class="text-xl font-serif italic relative z-10 leading-relaxed">
-                    "Enlil Center focuses on areas most impacted by climate-related challenges, especially in sectors like water resources, agriculture, and energy."
-                </p>
-            </div>
-        </div>
-    </section>
-    <section id="articles" class="bg-slate-900 text-white py-24 px-6"><div class="container mx-auto"><h2 class="text-xs font-bold text-emerald-400 uppercase tracking-[0.3em] mb-12 border-b border-slate-800 pb-4">Articles & News</h2><div id="repContainer" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div><div id="repEmpty" class="hidden py-10 text-center text-slate-600 italic">Insights coming soon...</div></div></section>
-    <section id="projects" class="py-24 container mx-auto px-6"><h2 class="text-xs font-bold text-emerald-700 uppercase tracking-[0.3em] mb-12 border-b pb-4">Active Projects</h2><div id="projContainer" class="grid grid-cols-1 md:grid-cols-2 gap-12"></div><div id="projEmpty" class="hidden py-10 text-center text-slate-400 italic">Projects coming soon...</div></section>
-    <section id="research" class="bg-slate-900 text-white py-24 px-6"><div class="container mx-auto"><h2 class="text-xs font-bold text-emerald-400 uppercase tracking-[0.3em] mb-12 border-b border-slate-800 pb-4">Research Reports</h2><div id="repContainer" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div><div id="repEmpty" class="hidden py-10 text-center text-slate-600 italic">Reports coming soon...</div></div></section>
-    <section id="partners" class="py-24 container mx-auto px-6"><h2 class="text-xs font-bold text-emerald-700 uppercase tracking-[0.3em] mb-12 border-b pb-4">Our Partners</h2>
-        <div class="container mx-auto px-6 text-center">
-            <div id="partContainer" class="flex flex-wrap justify-center items-center gap-16 grayscale opacity-40 hover:opacity-100 transition duration-500"></div>
-        </div>
-    </section>
-    <section id="team" class="bg-emerald-50 py-24 px-6">
-        <div class="container mx-auto text-center">
-            <h2 class="text-xs font-bold text-emerald-800 uppercase tracking-[0.3em] mb-4">Leadership & Expert Network</h2>
-            <h3 class="text-3xl font-serif font-bold mb-16">The minds shaping Iraq's environmental future.</h3>
-            <div id="teamContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-20"></div>
-            <div id="authContainer" class="flex flex-wrap justify-center gap-4 border-t border-emerald-200 pt-10"></div>
         </div>
     </section>
 
+    <!-- Articles & News -->
+    <section id="articles" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-semibold mb-12 text-center">Latest Articles & News</h2>
+            <div id="articlesContainer" class="grid md:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
 
+    <!-- Research -->
+    <section id="research" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-semibold mb-12 text-center">Research & Reports</h2>
+            <div id="researchContainer" class="grid md:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
 
-    <footer class="bg-slate-900 text-slate-400 py-16 px-6 border-t border-slate-800">
-        <div class="container mx-auto grid md:grid-cols-3 gap-12 text-sm">
-            <div><h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">Enlil Center</h4><p>AlQadisiya - Baghdad, Iraq.</p></div>
-            <div><h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">Contact</h4><p>info@enlilcenter.org</p><p>+964 772 421 9464</p></div>
-            <div class="md:text-right"><p class="text-[10px] uppercase tracking-[0.3em]">&copy; 2026 Enlil Center for Environment and Sustainable Development</p></div>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm">
+            <p>&copy; 2026 Enlil Center for Environment and Sustainable Development</p>
         </div>
     </footer>
 
-    <div id="contentModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="relative bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl p-8 md:p-12"><button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 text-2xl">×</button><div id="modalBody"></div></div>
-    </div>
-
     <script>
-        const db = {
-            authors: JSON.parse(localStorage.getItem('enlil_authors') || '[]'),
-            team: JSON.parse(localStorage.getItem('enlil_team') || '[]'),
-            articles: JSON.parse(localStorage.getItem('enlil_articles') || '[]'),
-            reports: JSON.parse(localStorage.getItem('enlil_reports') || '[]'),
-            projects: JSON.parse(localStorage.getItem('enlil_projects') || '[]'),
-            partners: JSON.parse(localStorage.getItem('enlil_partners') || '[]')
+        async function loadArticles() {
+            try {
+                const res = await fetch('data/articles.json');
+                const data = await res.json();
+                const container = document.getElementById('articlesContainer');
+                container.innerHTML = data.map(item => `
+                    <div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+                        ${item.cover ? `<img src="${item.cover}" class="w-full h-52 object-cover">` : ''}
+                        <div class="p-6">
+                            <h3 class="font-semibold text-xl">${item.title}</h3>
+                            <p class="text-sm text-gray-500 mt-2">By ${item.author || 'Enlil Center'}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {}
+        }
+
+        async function loadResearch() {
+            try {
+                const res = await fetch('data/research.json');
+                const data = await res.json();
+                const container = document.getElementById('researchContainer');
+                container.innerHTML = data.map(item => `
+                    <div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+                        ${item.cover ? `<img src="${item.cover}" class="w-full h-52 object-cover">` : ''}
+                        <div class="p-6">
+                            <h3 class="font-semibold text-xl">${item.title}</h3>
+                            <p class="text-sm text-gray-500 mt-2">By ${item.author || 'Enlil Center'}</p>
+                            ${item.pdfBase64 ? `<a href="${item.pdfBase64}" download="${item.title}.pdf" class="mt-4 inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700">📄 Download Full Report</a>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {}
+        }
+
+        window.onload = () => {
+            loadArticles();
+            loadResearch();
         };
-        const getPerson = (id) => [...db.authors, ...db.team].find(p => p.id === id) || { name: 'Enlil Staff', photo: 'https://via.placeholder.com/150' };
-
-        // Simple render logic (Same as previous provided block)
-        if(db.articles.length === 0) document.getElementById('artEmpty').classList.remove('hidden');
-        document.getElementById('artContainer').innerHTML = db.articles.map(a => `<div class="cursor-pointer group" onclick='openArticle(${JSON.stringify(a)})'><img src="${a.cover || 'https://via.placeholder.com/600x400'}" class="w-full h-48 object-cover rounded-lg mb-4"><h3 class="font-serif font-bold text-xl group-hover:text-emerald-700 transition">${a.title}</h3></div>`).join('');
-        
-        document.getElementById('repContainer').innerHTML = db.reports.map(r => `<div class="p-6 border border-slate-800 rounded-lg bg-slate-800/30"> <h3 class="text-xl font-bold mb-2">${r.title}</h3> <a href="${r.pdfData}" download class="text-emerald-400 text-xs font-bold uppercase tracking-widest">Download PDF</a></div>`).join('');
-
-        document.getElementById('teamContainer').innerHTML = db.team.map(t => `<div class="text-center"><img src="${t.photo}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-emerald-100"><h4 class="font-bold">${t.name}</h4><p class="text-[10px] uppercase text-emerald-600 font-bold">${t.role}</p></div>`).join('');
-        
-        document.getElementById('partContainer').innerHTML = db.partners.map(p => `<a href="${p.url}" target="_blank"><img src="${p.logo}" class="h-10"></a>`).join('');
-
-        function closeModal() { document.getElementById('contentModal').classList.add('hidden'); }
     </script>
 </body>
 </html>
+
