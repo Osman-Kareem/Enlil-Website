@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enlil Center | Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        :root { --enlil-emerald: #065f46; }
+        .tab-active { border-bottom: 3px solid var(--enlil-emerald); color: var(--enlil-emerald); font-weight: 600; }
+        .ql-container { height: 250px; background: white; }
+        .social-row, .contributor-row { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-slate-900">
+    <nav class="bg-emerald-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-tight">ENLIL CENTER <span class="font-light text-emerald-300">| CMS</span></h1>
+            <div class="flex items-center space-x-4">
+                <button onclick="exportData()" class="text-xs border border-emerald-400 px-3 py-1 rounded hover:bg-emerald-800">Backup Data</button>
+                <a href="index.html" target="_blank" class="text-sm bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded transition">View Public Site</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto py-8 px-4">
+        <div class="flex border-b border-gray-200 mb-8 overflow-x-auto bg-white rounded-t-lg shadow-sm">
+            <button onclick="switchTab('authors')" id="tab-authors" class="tab-btn px-8 py-4 tab-active transition">Expert Authors</button>
+            <button onclick="switchTab('team')" id="tab-team" class="tab-btn px-8 py-4 transition">Org Team</button>
+            <button onclick="switchTab('articles')" id="tab-articles" class="tab-btn px-8 py-4 transition">Articles & News</button>
+            <button onclick="switchTab('reports')" id="tab-reports" class="tab-btn px-8 py-4 transition">Research & Reports</button>
+            <button onclick="switchTab('projects')" id="tab-projects" class="tab-btn px-8 py-4 transition">Projects</button>
+            <button onclick="switchTab('partners')" id="tab-partners" class="tab-btn px-8 py-4 transition">Partners</button>
+        </div>
+
+        <section id="sec-authors" class="tab-content">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Add New Expert Author</h2>
+                    <form id="authorForm" class="space-y-4">
+                        <input type="text" id="authName" placeholder="Full Name (e.g. Dr. Ahmed Al-Iraqi)" class="w-full border p-2 rounded focus:ring-2 focus:ring-emerald-500 outline-none" required>
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Profile Photo</label>
+                            <input type="file" id="authPhoto" accept="image/*" class="text-xs">
+                        </div>
+                        <div id="authBioEditor"></div>
+                        <input type="email" id="authEmail" placeholder="Public Contact Email" class="w-full border p-2 rounded text-sm">
+                        <div id="socialLinksContainer" class="space-y-2 pt-2 border-t">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Social & Academic Profiles</label>
+                        </div>
+                        <button type="button" onclick="addSocialRow('socialLinksContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Another Link</button>
+                        <button type="submit" class="w-full bg-emerald-800 text-white py-3 rounded-md font-bold hover:bg-emerald-900 shadow-md transition mt-4">Save Author Profile</button>
+                    </form>
+                </div>
+                <div class="lg:col-span-2">
+                    <div id="authorList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-team" class="tab-content hidden">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Add Core Team Member</h2>
+                    <form id="teamForm" class="space-y-4">
+                        <input type="text" id="teamName" placeholder="Full Name" class="w-full border p-2 rounded focus:ring-2 focus:ring-emerald-500 outline-none" required>
+                        <select id="teamRole" class="w-full border p-2 rounded bg-gray-50">
+                            <option value="Founder">Founder</option>
+                            <option value="Co-Founder">Co-Founder</option>
+                            <option value="Executive Director">Executive Director</option>
+                            <option value="Program Manager">Program Manager</option>
+                            <option value="Technical Lead">Technical Lead</option>
+                            <option value="Researcher">Researcher</option>
+                        </select>
+                        <input type="file" id="teamPhoto" accept="image/*" class="text-xs">
+                        <div id="teamBioEditor"></div>
+                        <input type="email" id="teamEmail" placeholder="Work Email" class="w-full border p-2 rounded text-sm">
+                        <div id="teamSocialContainer" class="space-y-2 pt-2 border-t">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Accounts & Socials</label>
+                        </div>
+                        <button type="button" onclick="addSocialRow('teamSocialContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Another Link</button>
+                        <button type="submit" class="w-full bg-emerald-900 text-white py-3 rounded-md font-bold shadow-md transition mt-4">Save Team Member</button>
+                    </form>
+                </div>
+                <div class="lg:col-span-2">
+                    <div id="teamList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-articles" class="tab-content hidden">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
+                <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Create Article</h2>
+                <form id="articleForm" class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-gray-500">Title</label>
+                            <input type="text" id="artTitle" class="w-full border p-2 rounded" required>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-gray-500">Lead Author</label>
+                            <select id="artAuthor" class="w-full border p-2 rounded bg-gray-50 font-medium"></select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded border">
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Supporting Research Team</label>
+                        <div id="artSupportContainer" class="space-y-2 mb-2"></div>
+                        <button type="button" onclick="addContributorRow('artSupportContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Contributor</button>
+                    </div>
+
+                    <input type="text" id="artKeywords" placeholder="SEO Keywords" class="w-full border p-2 rounded">
+                    <input type="file" id="artCover" accept="image/*" class="text-sm">
+                    <div id="artEditor"></div>
+                    <button type="submit" class="bg-emerald-800 text-white px-10 py-3 rounded font-bold hover:bg-emerald-900">Publish Article</button>
+                </form>
+            </div>
+            <div id="articleList" class="space-y-3"></div>
+        </section>
+
+        <section id="sec-reports" class="tab-content hidden">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <h2 class="text-lg font-bold mb-4 text-emerald-800 border-b pb-2">Upload Research Report</h2>
+                <form id="reportForm" class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-gray-500">Report Title</label>
+                            <input type="text" id="repTitle" class="w-full border p-2 rounded" required>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-gray-500">Lead Author</label>
+                            <select id="repAuthor" class="w-full border p-2 rounded bg-gray-50 font-medium"></select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded border">
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Collaborating Analysts & Editors</label>
+                        <div id="repSupportContainer" class="space-y-2 mb-2"></div>
+                        <button type="button" onclick="addContributorRow('repSupportContainer')" class="text-xs text-emerald-700 font-bold hover:underline">+ Add Contributor</button>
+                    </div>
+
+                    <input type="text" id="repKeywords" placeholder="SEO Keywords" class="w-full border p-2 rounded">
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-1 space-y-2">
+                            <label class="text-xs font-bold uppercase text-gray-500">PDF Document</label>
+                            <input type="file" id="repFile" accept="application/pdf" class="w-full border p-2 rounded" required>
+                        </div>
+                        <canvas id="pdfThumbnail" class="hidden border w-32 bg-white shadow"></canvas>
+                    </div>
+                    <div id="repEditor"></div>
+                    <button type="submit" class="bg-emerald-800 text-white px-10 py-3 rounded font-bold hover:bg-emerald-900">Save Research Report</button>
+                </form>
+            </div>
+            <div id="reportList" class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        </section>
+
+        <section id="sec-projects" class="tab-content hidden">
+            <div class="bg-white p-6 rounded-lg shadow-sm max-w-2xl border border-gray-100">
+                <h2 class="text-lg font-bold mb-4">Add Project</h2>
+                <form id="projForm" class="space-y-4">
+                    <input type="text" id="projTitle" placeholder="Project Name" class="w-full border p-2 rounded" required>
+                    <input type="text" id="projSponsor" placeholder="Sponsor / Funded By" class="w-full border p-2 rounded">
+                    <div id="projEditor"></div>
+                    <button type="submit" class="bg-emerald-800 text-white px-6 py-2 rounded">Add Project</button>
+                </form>
+            </div>
+            <div id="projectList" class="mt-6 space-y-4"></div>
+        </section>
+
+        <section id="sec-partners" class="tab-content hidden">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 max-w-md">
+                <h2 class="text-lg font-bold mb-4">Add Partner</h2>
+                <form id="partnerForm" class="space-y-4">
+                    <input type="text" id="partName" placeholder="Organization Name" class="w-full border p-2 rounded" required>
+                    <input type="url" id="partUrl" placeholder="Website URL" class="w-full border p-2 rounded">
+                    <input type="file" id="partLogo" accept="image/*">
+                    <button type="submit" class="bg-emerald-800 text-white px-6 py-2 rounded">Save Partner</button>
+                </form>
+            </div>
+            <div id="partnerList" class="mt-6 flex flex-wrap gap-4"></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        const socialPlatforms = ["X (Twitter)", "LinkedIn", "Facebook", "ResearchGate", "Google Scholar", "ORCID", "Academia.edu", "Website"];
+        const contributorRoles = ["Co-Author", "Editor", "Lead Researcher", "Data Analyst", "GIS Specialist", "Peer Reviewer", "Translator"];
+
+        const db = {
+            authors: JSON.parse(localStorage.getItem('enlil_authors') || '[]'),
+            team: JSON.parse(localStorage.getItem('enlil_team') || '[]'),
+            articles: JSON.parse(localStorage.getItem('enlil_articles') || '[]'),
+            reports: JSON.parse(localStorage.getItem('enlil_reports') || '[]'),
+            projects: JSON.parse(localStorage.getItem('enlil_projects') || '[]'),
+            partners: JSON.parse(localStorage.getItem('enlil_partners') || '[]')
+        };
+
+        const save = () => {
+            Object.keys(db).forEach(key => localStorage.setItem('enlil_'+key, JSON.stringify(db[key])));
+            renderAll();
+        };
+
+        const quillConfig = { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'link'], [{ 'header': [2, 3, false] }], ['list', 'image']] } };
+        const authEditor = new Quill('#authBioEditor', quillConfig);
+        const teamEditor = new Quill('#teamBioEditor', quillConfig);
+        const artEditor = new Quill('#artEditor', quillConfig);
+        const repEditor = new Quill('#repEditor', quillConfig);
+        const projEditor = new Quill('#projEditor', quillConfig);
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
+            document.getElementById('sec-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('tab-active');
+        }
+
+        const toBase64 = file => new Promise((res, rej) => {
+            if (!file) res(null);
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => res(reader.result);
+            reader.onerror = rej;
+        });
+
+        function addSocialRow(containerId) {
+            const container = document.getElementById(containerId);
+            const row = document.createElement('div');
+            row.className = "flex space-x-2 social-row";
+            row.innerHTML = `
+                <select class="social-platform border p-1 rounded text-xs bg-gray-50">
+                    ${socialPlatforms.map(p => `<option value="${p}">${p}</option>`).join('')}
+                </select>
+                <input type="url" class="social-url border p-1 rounded text-xs flex-1" placeholder="https://...">
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold">×</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function addContributorRow(containerId) {
+            const container = document.getElementById(containerId);
+            const allPersonnel = [...db.team, ...db.authors];
+            const row = document.createElement('div');
+            row.className = "flex space-x-2 contributor-row items-center bg-white p-1 rounded border mb-1";
+            row.innerHTML = `
+                <select class="contributor-id border p-1 rounded text-xs flex-1">
+                    ${allPersonnel.map(p => `<option value="${p.id}">${p.name} ${db.team.some(t => t.id === p.id) ? '(Team)' : '(Expert)'}</option>`).join('')}
+                </select>
+                <select class="contributor-role border p-1 rounded text-xs">
+                    ${contributorRoles.map(r => `<option value="${r}">${r}</option>`).join('')}
+                </select>
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">×</button>
+            `;
+            container.appendChild(row);
+        }
+
+        // PDF Preview
+        document.getElementById('repFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async function() {
+                    const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+                    const page = await pdf.getPage(1);
+                    const canvas = document.getElementById('pdfThumbnail');
+                    const context = canvas.getContext('2d');
+                    const viewport = page.getViewport({scale: 0.4});
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    await page.render({canvasContext: context, viewport: viewport}).promise;
+                    canvas.classList.remove('hidden');
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        // Submit Handlers
+        document.getElementById('authorForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const socials = [];
+            e.target.querySelectorAll('.social-row').forEach(row => socials.push({platform: row.querySelector('.social-platform').value, url: row.querySelector('.social-url').value}));
+            db.authors.push({
+                id: 'exp_' + Date.now(),
+                name: document.getElementById('authName').value,
+                bio: authEditor.root.innerHTML,
+                email: document.getElementById('authEmail').value,
+                socials: socials,
+                photo: await toBase64(document.getElementById('authPhoto').files[0]) || 'https://via.placeholder.com/150'
+            });
+            save(); e.target.reset(); authEditor.setContents([]);
+        };
+
+        document.getElementById('teamForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const socials = [];
+            e.target.querySelectorAll('.social-row').forEach(row => socials.push({platform: row.querySelector('.social-platform').value, url: row.querySelector('.social-url').value}));
+            db.team.push({
+                id: 'stf_' + Date.now(),
+                name: document.getElementById('teamName').value,
+                role: document.getElementById('teamRole').value,
+                bio: teamEditor.root.innerHTML,
+                email: document.getElementById('teamEmail').value,
+                socials: socials,
+                photo: await toBase64(document.getElementById('teamPhoto').files[0]) || 'https://via.placeholder.com/150'
+            });
+            save(); e.target.reset(); teamEditor.setContents([]);
+        };
+
+        document.getElementById('articleForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const support = [];
+            document.querySelectorAll('#artSupportContainer .contributor-row').forEach(row => support.push({ id: row.querySelector('.contributor-id').value, role: row.querySelector('.contributor-role').value }));
+            db.articles.push({
+                id: Date.now(),
+                title: document.getElementById('artTitle').value,
+                authorId: document.getElementById('artAuthor').value,
+                supportTeam: support,
+                keywords: document.getElementById('artKeywords').value,
+                content: artEditor.root.innerHTML,
+                cover: await toBase64(document.getElementById('artCover').files[0]),
+                date: new Date().toLocaleDateString()
+            });
+            save(); e.target.reset(); artEditor.setContents([]);
+        };
+
+        document.getElementById('reportForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const support = [];
+            document.querySelectorAll('#repSupportContainer .contributor-row').forEach(row => support.push({ id: row.querySelector('.contributor-id').value, role: row.querySelector('.contributor-role').value }));
+            const canvas = document.getElementById('pdfThumbnail');
+            db.reports.push({
+                id: Date.now(),
+                title: document.getElementById('repTitle').value,
+                authorId: document.getElementById('repAuthor').value,
+                supportTeam: support,
+                keywords: document.getElementById('repKeywords').value,
+                abstract: repEditor.root.innerHTML,
+                pdfData: await toBase64(document.getElementById('repFile').files[0]),
+                thumbnail: canvas.toDataURL(),
+                date: new Date().toLocaleDateString()
+            });
+            save(); e.target.reset(); repEditor.setContents([]);
+        };
+
+        function renderAll() {
+            // Personnel Dropdowns Logic
+            const allPersonnel = [...db.team, ...db.authors];
+            const personnelOptions = allPersonnel.map(p => `<option value="${p.id}">${p.name} ${db.team.some(t => t.id === p.id) ? '(Team)' : '(Expert)'}</option>`).join('');
+            document.getElementById('artAuthor').innerHTML = personnelOptions || '<option disabled>Add personnel first</option>';
+            document.getElementById('repAuthor').innerHTML = personnelOptions || '<option disabled>Add personnel first</option>';
+
+            // Lists
+            document.getElementById('authorList').innerHTML = db.authors.map(a => `<div class="bg-white p-3 border rounded flex justify-between"><span>${a.name}</span> <button onclick="deleteItem('authors', '${a.id}')" class="text-red-500">×</button></div>`).join('');
+            document.getElementById('teamList').innerHTML = db.team.map(t => `<div class="bg-white p-3 border rounded flex justify-between"><span><b>${t.name}</b> (${t.role})</span> <button onclick="deleteItem('team', '${t.id}')" class="text-red-500">×</button></div>`).join('');
+            
+            document.getElementById('articleList').innerHTML = db.articles.map(a => `<div class="bg-white p-2 border rounded flex justify-between"><span>${a.title}</span> <button onclick="deleteItem('articles', ${a.id})">Remove</button></div>`).join('');
+            document.getElementById('reportList').innerHTML = db.reports.map(r => `<div class="bg-white p-2 border rounded flex justify-between"><span>${r.title}</span> <button onclick="deleteItem('reports', ${r.id})">Remove</button></div>`).join('');
+        }
+
+        const deleteItem = (col, id) => { if(confirm("Delete?")) { db[col] = db[col].filter(x => x.id != id); save(); } };
+        function exportData() { window.open("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db))); }
+        renderAll();
+    </script>
+</body>
+</html>
