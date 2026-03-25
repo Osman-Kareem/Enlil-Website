@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Enlil Center for Environment and Sustainable Development - Independent research on Iraq's climate and environmental challenges">
     <title>Enlil Center | Environment & Sustainable Development</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -20,6 +21,8 @@
                 <i class="fa-solid fa-leaf text-3xl text-emerald-600"></i>
                 <h1 class="text-2xl font-semibold tracking-tight">Enlil Center | Environment & Sustainable Development</h1>
             </div>
+            
+            <!-- Desktop Menu -->
             <div class="flex gap-8 text-sm font-medium">
                 <a href="#about" class="hover:text-emerald-600">About</a>
                 <a href="#articles" class="hover:text-emerald-600">Articles</a>
@@ -27,9 +30,24 @@
                 <a href="#projects" class="hover:text-emerald-600">Projects</a>
                 <a href="#partners" class="hover:text-emerald-600">Partners</a>
             </div>
+            
+       <!-- Mobile Hamburger -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl">
+                <i class="fa-solid fa-bars" id="hamburger"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-6 py-4">
+            <div class="flex flex-col gap-4 text-sm font-medium">
+                <a href="#about" onclick="toggleMobileMenu()" class="hover:text-emerald-600">About</a>
+                <a href="#articles" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Articles</a>
+                <a href="#research" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Research</a>
+                <a href="#projects" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Projects</a>
+                <a href="#partners" onclick="toggleMobileMenu()" class="hover:text-emerald-600">Partners</a>
+            </div>
         </div>
     </nav>
-
     <!-- Hero -->
     <section class="hero-bg h-screen flex items-center text-white">
         <div class="max-w-4xl mx-auto px-6 text-center">
@@ -104,6 +122,7 @@
         </div>
     </footer>
 
+    
     <script>
         async function loadArticles() {
             try {
@@ -138,6 +157,11 @@
                     </div>
                 `).join('');
             } catch(e) {}
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
         }
 
         window.onload = () => {
