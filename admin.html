@@ -86,12 +86,16 @@
         <label class="block text-sm font-medium mb-1" for="loginPassword">Password</label>
         <input type="password" id="loginPassword" placeholder="Password"
                class="w-full px-5 py-3 border border-gray-300 rounded-2xl mb-6 text-lg">
-
+    
+        <!-- ==================== NEW: LOGIN LOCK COUNTDOWN ==================== -->
+        <div id="lockCountdown" class="text-center text-amber-600 text-sm font-medium hidden mt-2"></div>
+        <!-- ================================================================== -->
+    
         <button id="loginButton"
                 class="w-full bg-emerald-600 text-white py-4 rounded-3xl font-medium text-lg hover:bg-emerald-700">
             Login
         </button>
-
+    
         <p id="loginError" class="text-red-500 text-center mt-4 hidden">Wrong username or password</p>
     </div>
 </div>
@@ -727,6 +731,11 @@
     const VALID_USERNAME = "admin";
     const VALID_PASSWORD_HASH = "4e2f51b1f6ff8ab433eb869bddf1a9bb89a9073f85e30f4d0c4fc41aa33bb8de";
     let isLoggedIn = false;
+    
+    // ==================== LOGIN RATE LIMIT ====================
+    const MAX_LOGIN_ATTEMPTS = 5;
+    const LOCKOUT_DURATION_MS = 3 * 60 * 1000; // 3 minutes
+    // ========================================================
 
     let quillArticle, quillResearch, quillProject;
 
@@ -898,25 +907,56 @@
     }
 
     async function attemptLogin() {
-        const username = document.getElementById('loginUsername').value.trim();
-        const password = document.getElementById('loginPassword').value;
-
+        const usernameInput = document.getElementById('loginUsername');
+        const passwordInput = document.getElementById('loginPassword');
+        const errorEl = document.getElementById('loginError');
+    
+        // Check if we are currently locked out
+        const lockUntil = localStorage.getItem('loginLockUntil');
+        if (lockUntil && Date.now() < parseInt(lockUntil)) {
+            const remaining = Math.ceil((parseInt(lockUntil) - Date.now()) / 1000 / 60);
+            showLoginError(`Too many failed attempts. Try again in ${remaining} minute${remaining > 1 ? 's' : ''}.`);
+            return;
+        }
+    
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+    
         if (!username || !password) {
             showLoginError("Please fill both fields");
             return;
         }
+    
         if (username !== VALID_USERNAME) {
-            showLoginError("Wrong username or password");
+            handleFailedAttempt();
             return;
         }
-
+    
         const inputHash = await hashPassword(password);
         if (inputHash === VALID_PASSWORD_HASH) {
+            // SUCCESS → reset everything
+            localStorage.removeItem('loginAttempts');
+            localStorage.removeItem('loginLockUntil');
             isLoggedIn = true;
             sessionStorage.setItem('enlilAdminLoggedIn', 'true');
             document.getElementById('loginScreen').classList.add('hidden');
         } else {
-            showLoginError("Wrong username or password");
+            handleFailedAttempt();
+        }
+    }
+    
+    function handleFailedAttempt() {
+        let attempts = parseInt(localStorage.getItem('loginAttempts') || '0');
+        attempts++;
+        localStorage.setItem('loginAttempts', attempts.toString());
+    
+        if (attempts >= MAX_LOGIN_ATTEMPTS) {
+            const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+            localStorage.setItem('loginLockUntil', lockUntil.toString());
+            const minutes = Math.ceil(LOCKOUT_DURATION_MS / 1000 / 60);
+            showLoginError(`Too many failed attempts. Login locked for ${minutes} minutes.`);
+        } else {
+            showLoginError(`Wrong username or password (${MAX_LOGIN_ATTEMPTS - attempts} attempts left)`);
         }
     }
 
@@ -924,8 +964,29 @@
         const err = document.getElementById('loginError');
         err.textContent = msg;
         err.classList.remove('hidden');
-        setTimeout(() => err.classList.add('hidden'), 3000);
+        // Auto-hide after 6 seconds
+        setTimeout(() => {
+            if (err.textContent === msg) err.classList.add('hidden');
+        }, 6000);
     }
+    
+
+    function updateLockCountdown() {
+        const el = document.getElementById('lockCountdown');
+        const lockUntil = localStorage.getItem('loginLockUntil');
+        if (!lockUntil || Date.now() >= parseInt(lockUntil)) {
+            el.classList.add('hidden');
+            return;
+        }
+    
+        el.classList.remove('hidden');
+        const remaining = Math.ceil((parseInt(lockUntil) - Date.now()) / 1000);
+        const min = Math.floor(remaining / 60);
+        const sec = remaining % 60;
+        el.textContent = `Locked — try again in ${min}:${sec < 10 ? '0' : ''}${sec}`;
+        setTimeout(updateLockCountdown, 1000);
+    }
+    
 
     function logout() {
         if (confirm('Logout and return to login screen?')) {
@@ -2423,6 +2484,7 @@
         updateProjectPreview();
 
         switchTab(0);
+        updateLockCountdown();
     });
 </script>
 </body>
