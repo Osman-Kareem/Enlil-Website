@@ -111,31 +111,31 @@
 </div>
 
 <script>
+    const API_BASE = "https://enlil-cms-api.osmanalikareem.workers.dev";
     let quillArticle, quillResearch, quillProject;
     let articles = [], research = [], projects = [], partners = [], authors = [];
    
-    // ====================== LOAD DATA FROM FILES ======================
-    async function loadFromFiles() {
-        try {
-            const [aRes, rRes, pRes, prRes, paRes] = await Promise.all([
-                fetch('data/authors.json').catch(() => ({json: () => []})),
-                fetch('data/articles.json').catch(() => ({json: () => []})),
-                fetch('data/research.json').catch(() => ({json: () => []})),
-                fetch('data/projects.json').catch(() => ({json: () => []})),
-                fetch('data/partners.json').catch(() => ({json: () => []}))
-            ]);
-    
-            authors = await aRes.json() || [];
-            articles = await rRes.json() || [];
-            research = await pRes.json() || [];
-            projects = await prRes.json() || [];
-            partners = await paRes.json() || [];
-        } catch(e) {
-            console.log("First time run - no data yet");
-        }
+    // ====================== LOAD DATA FROM CLOUD (KV) ======================
+async function loadFromFiles() {
+    try {
+        const [aRes, rRes, pRes, prRes, paRes] = await Promise.all([
+            fetch(`${API_BASE}/data/authors`),
+            fetch(`${API_BASE}/data/articles`),
+            fetch(`${API_BASE}/data/research`),
+            fetch(`${API_BASE}/data/projects`),
+            fetch(`${API_BASE}/data/partners`)
+        ]);
+
+        authors = await aRes.json() || [];
+        articles = await rRes.json() || [];
+        research = await pRes.json() || [];
+        projects = await prRes.json() || [];
+        partners = await paRes.json() || [];
+    } catch(e) {
+        console.log("First time - no data yet");
+    }
     renderAll();
 }
-
     function switchTab(n) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         document.getElementById('tab' + n).classList.remove('hidden');
@@ -225,20 +225,83 @@
         document.getElementById('researchPDFPreview').classList.add('hidden');
         quillResearch.root.innerHTML = '';
         renderResearch();
-    });
+    // Authors form
+document.getElementById('authorForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const newAuthor = {
+        name: document.getElementById('authorName').value,
+        photo: document.getElementById('authorPhoto').files[0] ? 
+               await fileToBase64(document.getElementById('authorPhoto').files[0]) : null,
+        bio: document.getElementById('authorBio').value,
+        email: document.getElementById('authorEmail').value,
+        linkedin: document.getElementById('authorLinkedIn').value,
+        x: document.getElementById('authorX').value,
+        website: document.getElementById('authorWebsite').value,
+        id: Date.now().toString()
+    };
+    authors.unshift(newAuthor);
+    await saveToJSON('data/authors.json', authors);
+    alert('Author saved!');
+    e.target.reset();
+    renderAuthors();
+});
+
+// Projects form
+document.getElementById('projectForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const newProject = {
+        title: document.getElementById('projectTitle').value,
+        sponsor: document.getElementById('projectSponsor').value,
+        content: quillProject.root.innerHTML,
+        date: new Date().toISOString().slice(0,10)
+    };
+    projects.unshift(newProject);
+    await saveToJSON('data/projects.json', projects);
+    alert('Project saved!');
+    e.target.reset();
+    quillProject.root.innerHTML = '';
+    renderProjects();
+});
+
+// Partners form
+document.getElementById('partnerForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const newPartner = {
+        name: document.getElementById('partnerName').value,
+        url: document.getElementById('partnerUrl').value,
+        logo: document.getElementById('partnerLogo').files[0] ? 
+              await fileToBase64(document.getElementById('partnerLogo').files[0]) : null
+    };
+    partners.unshift(newPartner);
+    await saveToJSON('data/partners.json', partners);
+    alert('Partner saved!');
+    e.target.reset();
+    renderPartners();
+});
 
 
-    async function saveToJSON(filename, data) {
-        try {
-            await fetch(filename, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-        } catch(e) {
-            console.error("Save failed for", filename);
+    // ====================== SAVE TO CLOUD (KV) ======================
+async function saveToJSON(filename, data) {
+    const key = filename.replace('data/', '').replace('.json', '');
+    
+    try {
+        const response = await fetch(`${API_BASE}/data/${key}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            console.log(`✅ ${key} saved to Cloudflare KV`);
+        } else {
+            console.error("❌ Save failed", await response.text());
+            alert("Save failed - check console (F12)");
         }
+    } catch(e) {
+        console.error("❌ Save failed for", key, e);
+        alert("Could not save to server. Check console (F12)");
     }
+}
 
 
      // ====================== RENDER FUNCTIONS ======================
