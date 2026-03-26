@@ -390,70 +390,94 @@
                         <p class="text-xs text-gray-500">${a.email || ''}</p>
                     </div>
                 </div>
-                <button onclick="deleteItem('authors', '${a.id || a.name}')" class="text-red-500 hover:text-red-600">×</button>
+                <button onclick="deleteItem('authors', '${a.id || a.name}')" class="text-red-500 hover:text-red-600 text-2xl">×</button>
             </div>
         `).join('');
     }
-
+    
     function renderArticles() {
         const container = document.getElementById('articlesList');
-        container.innerHTML = articles.map(a => `
-            <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between">
+        container.innerHTML = articles.map((a, index) => `
+            <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between items-center">
                 <div>
                     <p class="font-semibold">${a.title}</p>
                     <p class="text-xs text-gray-500">By ${a.author || '—'}</p>
                 </div>
-                <button onclick="deleteItem('articles', ${articles.indexOf(a)})" class="text-red-500">×</button>
+                <button onclick="deleteItem('articles', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
             </div>
         `).join('');
     }
+    
 
     function renderResearch() {
         const container = document.getElementById('researchList');
-        container.innerHTML = research.map(r => `
-            <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between">
+        container.innerHTML = research.map((r, index) => `
+            <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between items-center">
                 <div>
                     <p class="font-semibold">${r.title}</p>
                     <p class="text-xs text-gray-500">By ${r.author || '—'}</p>
                 </div>
-                <button onclick="deleteItem('research', ${research.indexOf(r)})" class="text-red-500">×</button>
+                <button onclick="deleteItem('research', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
             </div>
         `).join('');
     }
 
+    
     function renderProjects() {
         const container = document.getElementById('projectsList');
-        container.innerHTML = projects.map(p => `
-            <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between">
+        container.innerHTML = projects.map((p, index) => `
+            <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between items-center">
                 <div>
                     <p class="font-semibold">${p.title}</p>
                     <p class="text-xs text-gray-500">${p.sponsor || ''}</p>
                 </div>
-                <button onclick="deleteItem('projects', ${projects.indexOf(p)})" class="text-red-500">×</button>
+                <button onclick="deleteItem('projects', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
             </div>
         `).join('');
     }
 
     function renderPartners() {
         const container = document.getElementById('partnersList');
-        container.innerHTML = partners.map(p => `
+        container.innerHTML = partners.map((p, index) => `
             <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
-                <p class="font-semibold">${p.name}</p>
-                <button onclick="deleteItem('partners', ${partners.indexOf(p)})" class="text-red-500">×</button>
+                <div class="flex items-center gap-3">
+                    ${p.logo ? `<img src="${p.logo}" class="w-10 h-10 rounded-xl object-cover">` : ''}
+                    <p class="font-semibold">${p.name}</p>
+                </div>
+                <button onclick="deleteItem('partners', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
             </div>
         `).join('');
     }
 
-    function deleteItem(type, index) {
-        if (confirm('Delete this item?')) {
-            if (type === 'authors') authors.splice(index, 1);
-            else if (type === 'articles') articles.splice(index, 1);
-            else if (type === 'research') research.splice(index, 1);
-            else if (type === 'projects') projects.splice(index, 1);
-            else if (type === 'partners') partners.splice(index, 1);
-            saveToJSON(`data/${type}.json`, window[type]);   // save immediately
-            renderAll();
+    
+// ====================== DELETE ITEM ======================
+    function deleteItem(type, identifier) {
+        if (!confirm('Delete this item?')) return;
+    
+        if (type === 'authors') {
+            authors = authors.filter(a => a.id !== identifier && a.name !== identifier);
+        } 
+        else if (type === 'articles') {
+            articles.splice(identifier, 1);
+        } 
+        else if (type === 'research') {
+            research.splice(identifier, 1);
+        } 
+        else if (type === 'projects') {
+            projects.splice(identifier, 1);
+        } 
+        else if (type === 'partners') {
+            partners.splice(identifier, 1);
         }
+    
+        saveToJSON(`data/${type}.json`, 
+            type === 'authors' ? authors :
+            type === 'articles' ? articles :
+            type === 'research' ? research :
+            type === 'projects' ? projects : partners
+        );
+    
+        renderAll();
     }
 
     // ====================== FORM SUBMIT LISTENERS ======================
