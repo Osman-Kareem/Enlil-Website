@@ -113,6 +113,28 @@
 <script>
     let quillArticle, quillResearch, quillProject;
     let articles = [], research = [], projects = [], partners = [], authors = [];
+   
+    // ====================== LOAD DATA FROM FILES ======================
+    async function loadFromFiles() {
+        try {
+            const [aRes, rRes, pRes, prRes, paRes] = await Promise.all([
+                fetch('data/authors.json').catch(() => ({json: () => []})),
+                fetch('data/articles.json').catch(() => ({json: () => []})),
+                fetch('data/research.json').catch(() => ({json: () => []})),
+                fetch('data/projects.json').catch(() => ({json: () => []})),
+                fetch('data/partners.json').catch(() => ({json: () => []}))
+            ]);
+    
+            authors = await aRes.json() || [];
+            articles = await rRes.json() || [];
+            research = await pRes.json() || [];
+            projects = await prRes.json() || [];
+            partners = await paRes.json() || [];
+        } catch(e) {
+            console.log("First time run - no data yet");
+        }
+    renderAll();
+}
 
     function switchTab(n) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -205,21 +227,31 @@
         renderResearch();
     });
 
+
     async function saveToJSON(filename, data) {
-        await fetch(filename, {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
+        try {
+            await fetch(filename, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+        } catch(e) {
+            console.error("Save failed for", filename);
+        }
     }
+
 
     function renderArticles() { console.log('Articles rendered'); }
     function renderResearch() { console.log('Research rendered'); }
+
+   
 
     window.onload = () => {
         initEditors();
         setupPreview('articleCover', 'articleCoverPreview', 'articlePreviewImg');
         setupPreview('researchCover', 'researchCoverPreview', 'researchPreviewImg');
+        loadFromFiles();        // ← This line is the most important
+
     };
 </script>
 </body>
