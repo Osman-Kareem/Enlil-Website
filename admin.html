@@ -233,26 +233,27 @@
         }
     }
 
-    // Check login on page load
-    window.onload = () => {
-        if (localStorage.getItem('enlilAdminLoggedIn') === 'true') {
-            isLoggedIn = true;
-            document.getElementById('loginScreen').classList.add('hidden');
-        }
-        
-        initEditors();
-        loadFromFiles();
-    };
-    // Check login on page load
-    window.onload = () => {
-        if (localStorage.getItem('enlilAdminLoggedIn') === 'true') {
-            isLoggedIn = true;
-            document.getElementById('loginScreen').classList.add('hidden');
-        }
-        
-        initEditors();
-        loadFromFiles();           // your existing function
-        
+       // Check login on page load + attach all listeners
+window.onload = () => {
+    if (localStorage.getItem('enlilAdminLoggedIn') === 'true') {
+        isLoggedIn = true;
+        document.getElementById('loginScreen').classList.add('hidden');
+    }
+
+    initEditors();
+    loadFromFiles();
+
+    // ←←← CROP LISTENERS (very important)
+    document.getElementById('authorPhoto').addEventListener('change', e => handleImageSelect(e, 'authorPhoto'));
+    document.getElementById('articleCover').addEventListener('change', e => handleImageSelect(e, 'articleCover'));
+    document.getElementById('researchCover').addEventListener('change', e => handleImageSelect(e, 'researchCover'));
+    document.getElementById('partnerLogo').addEventListener('change', e => handleImageSelect(e, 'partnerLogo'));
+
+    // Research PDF (keep your existing code here)
+    document.getElementById('researchPDF').addEventListener('change', async e => {
+        // your existing PDF thumbnail code...
+    });
+};
 
     // ====================== IMAGE LIMITS ======================
     const IMAGE_CONFIG = {
