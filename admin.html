@@ -161,19 +161,14 @@
 
 </div>
 
-<script>
-    let quillArticle, quillResearch, quillProject;
-    let articles = [], research = [], projects = [], partners = [], authors = [];
-    let currentCropper = null;
-    let currentInputId = null;
-    let currentAspectRatio = 1;
-    let currentMaxKB = 1500;
 
-     const API_BASE = "https://enlil-cms-api.osmanalikareem.workers.dev";
-    
-    // === LOGIN CONFIGURATION ===
+
+<script>
+    const API_BASE = "https://enlil-cms-api.osmanalikareem.workers.dev";
+
+    // ====================== LOGIN ======================
     const VALID_USERNAME = "admin";
-    const VALID_PASSWORD_HASH = "4e2f51b1f6ff8ab433eb869bddf1a9bb89a9073f85e30f4d0c4fc41aa33bb8de"; 
+    const VALID_PASSWORD_HASH = "4e2f51b1f6ff8ab433eb869bddf1a9bb89a9073f85e30f4d0c4fc41aa33bb8de";
 
     let isLoggedIn = false;
 
@@ -187,8 +182,6 @@
     }
 
     async function attemptLogin() {
-        console.log("✅ attemptLogin() was called");   // ← for debugging
-
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
 
@@ -196,19 +189,15 @@
             showLoginError("Please fill both fields");
             return;
         }
-
         if (username !== VALID_USERNAME) {
             showLoginError();
             return;
         }
-
         const inputHash = await hashPassword(password);
-        
         if (inputHash === VALID_PASSWORD_HASH) {
             isLoggedIn = true;
             localStorage.setItem('enlilAdminLoggedIn', 'true');
             document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('loginError').classList.add('hidden');
         } else {
             showLoginError();
         }
@@ -229,47 +218,42 @@
             articles = research = projects = partners = authors = [];
         }
     }
+
     // ====================== TAB SWITCHING ======================
-function switchTab(n) {
-    // Hide all tab contents
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-    
-    // Show the selected tab
-    const selectedTab = document.getElementById('tab' + n);
-    if (selectedTab) selectedTab.classList.remove('hidden');
+    function switchTab(n) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById('tab' + n).classList.remove('hidden');
 
-    // Update active button styling
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('tab-active');
-        if (parseInt(btn.getAttribute('onclick').match(/\d+/)) === n) {
-            btn.classList.add('tab-active');
-        }
-    });
-}
-
-       // Check login on page load + attach all listeners
-window.onload = () => {
-    if (localStorage.getItem('enlilAdminLoggedIn') === 'true') {
-        isLoggedIn = true;
-        document.getElementById('loginScreen').classList.add('hidden');
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('tab-active'));
+        const activeBtn = Array.from(document.querySelectorAll('.tab-button')).find(btn => 
+            parseInt(btn.getAttribute('onclick').match(/\d+/)) === n);
+        if (activeBtn) activeBtn.classList.add('tab-active');
     }
 
-    initEditors();
-    loadFromFiles();
+    // ====================== QUILL EDITORS ======================
+    let quillArticle, quillResearch, quillProject;
 
-    // ←←← CROP LISTENERS (very important)
-    document.getElementById('authorPhoto').addEventListener('change', e => handleImageSelect(e, 'authorPhoto'));
-    document.getElementById('articleCover').addEventListener('change', e => handleImageSelect(e, 'articleCover'));
-    document.getElementById('researchCover').addEventListener('change', e => handleImageSelect(e, 'researchCover'));
-    document.getElementById('partnerLogo').addEventListener('change', e => handleImageSelect(e, 'partnerLogo'));
+    function initEditors() {
+        quillArticle = new Quill('#articleEditor', {
+            theme: 'snow',
+            modules: { toolbar: [['bold','italic','underline','link'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['image'], ['clean']] }
+        });
+        quillResearch = new Quill('#researchEditor', {
+            theme: 'snow',
+            modules: { toolbar: [['bold','italic','underline','link'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['image'], ['clean']] }
+        });
+        quillProject = new Quill('#projectEditor', {
+            theme: 'snow',
+            modules: { toolbar: [['bold','italic','underline','link'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['image'], ['clean']] }
+        });
+    }
 
-    // Research PDF (keep your existing code here)
-    document.getElementById('researchPDF').addEventListener('change', async e => {
-        // your existing PDF thumbnail code...
-    });
-};
+    // ====================== CROP & COMPRESS ======================
+    let currentCropper = null;
+    let currentInputId = null;
+    let currentAspectRatio = 1;
+    let currentMaxKB = 1500;
 
-    // ====================== IMAGE LIMITS ======================
     const IMAGE_CONFIG = {
         authorPhoto:   { aspect: 1,     maxWidth: 800,  maxKB: 600 },
         articleCover:  { aspect: 16/9,  maxWidth: 1200, maxKB: 1500 },
@@ -277,8 +261,7 @@ window.onload = () => {
         partnerLogo:   { aspect: 1,     maxWidth: 600,  maxKB: 500 }
     };
 
-    // ====================== CROP & COMPRESS ENGINE ======================
-    async function handleImageSelect(e, configKey) {
+    function handleImageSelect(e, configKey) {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -287,30 +270,19 @@ window.onload = () => {
         currentAspectRatio = config.aspect;
         currentMaxKB = config.maxKB;
 
-        // Show modal
         document.getElementById('cropModal').classList.remove('hidden');
         document.getElementById('cropTitle').textContent = 
-            configKey.includes('author') || configKey.includes('partner') 
-                ? "Crop profile / logo (square)" 
-                : "Crop cover image (landscape)";
+            (configKey.includes('author') || configKey.includes('partner')) ? "Crop square image" : "Crop landscape cover";
 
-        // Preview selected image
         const reader = new FileReader();
         reader.onload = ev => {
             const img = document.getElementById('cropImage');
             img.src = ev.target.result;
-
-            // Destroy old cropper if exists
             if (currentCropper) currentCropper.destroy();
-
-            // Create new cropper with correct aspect ratio
             currentCropper = new Cropper(img, {
                 aspectRatio: currentAspectRatio,
                 viewMode: 2,
-                autoCropArea: 1,
-                responsive: true,
-                guides: true,
-                center: true
+                autoCropArea: 1
             });
         };
         reader.readAsDataURL(file);
@@ -320,64 +292,51 @@ window.onload = () => {
         if (currentCropper) currentCropper.destroy();
         currentCropper = null;
         document.getElementById('cropModal').classList.add('hidden');
-        // Clear the file input so user can try again
         if (currentInputId) document.getElementById(currentInputId).value = '';
     }
 
     async function applyCrop() {
         if (!currentCropper) return;
-
-        // Get cropped canvas
-        const canvas = currentCropper.getCroppedCanvas({
-            width: IMAGE_CONFIG[currentInputId] ? IMAGE_CONFIG[currentInputId].maxWidth : 1200
-        });
-
-        // Convert to base64 + compress
+        const canvas = currentCropper.getCroppedCanvas({ width: IMAGE_CONFIG[currentInputId]?.maxWidth || 1200 });
         let base64 = canvas.toDataURL('image/jpeg', 0.92);
-
-        // Automatic compression loop until under maxKB
         base64 = await compressImage(base64, currentMaxKB);
 
-        // Store the final image
         window[`cropped_${currentInputId}`] = base64;
 
-        // Hide modal
         if (currentCropper) currentCropper.destroy();
         currentCropper = null;
         document.getElementById('cropModal').classList.add('hidden');
 
-        // Show preview immediately (same as before)
-        const previewImgId = currentInputId === 'authorPhoto' ? null : 
-                             currentInputId.replace('Cover', 'PreviewImg').replace('Logo', 'PreviewImg');
-        if (previewImgId && document.getElementById(previewImgId)) {
-            document.getElementById(previewImgId).src = base64;
-            document.getElementById(currentInputId.replace('Cover','CoverPreview').replace('Logo','Preview')).classList.remove('hidden');
+        // Show preview
+        const previewId = currentInputId.replace('Cover', 'CoverPreview').replace('Logo', 'Preview').replace('Photo', 'PhotoPreview');
+        const imgId = currentInputId.replace('Cover', 'PreviewImg').replace('Logo', 'PreviewImg').replace('Photo', 'PhotoPreviewImg');
+        if (document.getElementById(imgId)) {
+            document.getElementById(imgId).src = base64;
+            document.getElementById(previewId).classList.remove('hidden');
         }
-
-        alert('✅ Image cropped & compressed successfully!');
+        alert('✅ Image cropped & compressed!');
     }
 
     async function compressImage(base64, maxKB) {
         let quality = 0.92;
         let result = base64;
-
         while (result.length / 1024 > maxKB && quality > 0.1) {
             quality -= 0.05;
             const img = new Image();
             img.src = base64;
             await new Promise(r => img.onload = r);
-
             const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
             canvas.width = img.width;
             canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
+            canvas.getContext('2d').drawImage(img, 0, 0);
             result = canvas.toDataURL('image/jpeg', quality);
         }
         return result;
     }
 
-    // ====================== LOAD & SAVE (unchanged from before) ======================
+    // ====================== DATA LOAD / SAVE ======================
+    let articles = [], research = [], projects = [], partners = [], authors = [];
+
     async function loadFromFiles() {
         try {
             const [aRes, rRes, pRes, prRes, paRes] = await Promise.all([
@@ -387,131 +346,31 @@ window.onload = () => {
                 fetch(`${API_BASE}/data/projects`),
                 fetch(`${API_BASE}/data/partners`)
             ]);
-
             authors = await aRes.json() || [];
             articles = await rRes.json() || [];
             research = await pRes.json() || [];
             projects = await prRes.json() || [];
             partners = await paRes.json() || [];
-        } catch(e) {
-            console.log("First time - no data yet");
-        }
+        } catch(e) { console.log("First run - no data yet"); }
         renderAll();
     }
 
     async function saveToJSON(filename, data) {
         const key = filename.replace('data/', '').replace('.json', '');
         try {
-            const response = await fetch(`${API_BASE}/data/${key}`, {
+            await fetch(`${API_BASE}/data/${key}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            if (response.ok) console.log(`✅ ${key} saved`);
+            console.log(`✅ ${key} saved`);
         } catch(e) {
             console.error("Save failed", e);
-            alert("Could not save - check console (F12)");
+            alert("Could not save — check console");
         }
     }
 
-    // ====================== FORM SUBMITS (updated with cropped images) ======================
-    // Authors
-    document.getElementById('authorForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const newAuthor = {
-            name: document.getElementById('authorName').value,
-            photo: window.cropped_authorPhoto || null,
-            bio: document.getElementById('authorBio').value,
-            email: document.getElementById('authorEmail').value,
-            linkedin: document.getElementById('authorLinkedIn').value,
-            x: document.getElementById('authorX').value,
-            website: document.getElementById('authorWebsite').value,
-            id: Date.now().toString()
-        };
-        authors.unshift(newAuthor);
-        await saveToJSON('data/authors.json', authors);
-        alert('Author saved!');
-        e.target.reset();
-        delete window.cropped_authorPhoto;
-        renderAuthors();
-    });
-
-    // Articles
-    document.getElementById('articleForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const newArticle = {
-            title: document.getElementById('articleTitle').value,
-            author: document.getElementById('articleAuthor').value,
-            cover: window.cropped_articleCover || null,
-            content: quillArticle.root.innerHTML,
-            date: new Date().toISOString().slice(0,10)
-        };
-        articles.unshift(newArticle);
-        await saveToJSON('data/articles.json', articles);
-        alert('Article saved!');
-        e.target.reset();
-        document.getElementById('articleCoverPreview').classList.add('hidden');
-        quillArticle.root.innerHTML = '';
-        delete window.cropped_articleCover;
-        renderArticles();
-    });
-
-    // Research (same pattern)
-    document.getElementById('researchForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const newResearch = {
-            title: document.getElementById('researchTitle').value,
-            author: document.getElementById('researchAuthor').value,
-            cover: window.cropped_researchCover || null,
-            abstract: quillResearch.root.innerHTML,
-            pdfBase64: window.currentResearchPDF || null,
-            pdfThumb: document.getElementById('researchPDFThumb').src,
-            date: new Date().toISOString().slice(0,10)
-        };
-        research.unshift(newResearch);
-        await saveToJSON('data/research.json', research);
-        alert('Research saved!');
-        e.target.reset();
-        document.getElementById('researchCoverPreview').classList.add('hidden');
-        document.getElementById('researchPDFPreview').classList.add('hidden');
-        quillResearch.root.innerHTML = '';
-        delete window.cropped_researchCover;
-        renderResearch();
-    });
-
-    // Projects & Partners (same as before, no image change needed except partner)
-    document.getElementById('projectForm').addEventListener('submit', async e => { /* same as previous message */ });
-    document.getElementById('partnerForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const newPartner = {
-            name: document.getElementById('partnerName').value,
-            url: document.getElementById('partnerUrl').value,
-            logo: window.cropped_partnerLogo || null
-        };
-        partners.unshift(newPartner);
-        await saveToJSON('data/partners.json', partners);
-        alert('Partner saved!');
-        e.target.reset();
-        delete window.cropped_partnerLogo;
-        renderPartners();
-    });
-
-    // ====================== ATTACH CROP HANDLERS ======================
-    window.onload = () => {
-        initEditors();
-        loadFromFiles();
-
-        // Attach crop handlers to every image input
-        document.getElementById('authorPhoto').addEventListener('change', e => handleImageSelect(e, 'authorPhoto'));
-        document.getElementById('articleCover').addEventListener('change', e => handleImageSelect(e, 'articleCover'));
-        document.getElementById('researchCover').addEventListener('change', e => handleImageSelect(e, 'researchCover'));
-        document.getElementById('partnerLogo').addEventListener('change', e => handleImageSelect(e, 'partnerLogo'));
-
-        // Research PDF stays the same
-        document.getElementById('researchPDF').addEventListener('change', async e => { /* your existing PDF code */ });
-    };
-
-     // ====================== RENDER FUNCTIONS ======================
+    // ====================== RENDER FUNCTIONS (keep your existing ones) ======================
     function renderAll() {
         renderAuthors();
         renderArticles();
@@ -597,14 +456,160 @@ window.onload = () => {
         }
     }
 
-    window.onload = () => {
-        initEditors();
-        setupPreview('articleCover', 'articleCoverPreview', 'articlePreviewImg');
-        setupPreview('researchCover', 'researchCoverPreview', 'researchPreviewImg');
-        loadFromFiles();          // ← loads saved data
+    // ====================== FORM SUBMIT LISTENERS ======================
+    // Authors
+    document.getElementById('authorForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const newAuthor = {
+            name: document.getElementById('authorName').value,
+            photo: window.cropped_authorPhoto || null,
+            bio: document.getElementById('authorBio').value,
+            email: document.getElementById('authorEmail').value,
+            linkedin: document.getElementById('authorLinkedIn').value,
+            x: document.getElementById('authorX').value,
+            website: document.getElementById('authorWebsite').value,
+            id: Date.now().toString()
+        };
+        authors.unshift(newAuthor);
+        await saveToJSON('data/authors.json', authors);
+        alert('Author saved!');
+        e.target.reset();
+        delete window.cropped_authorPhoto;
+        renderAuthors();
+    });
+
+    // Articles
+    document.getElementById('articleForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const newArticle = {
+            title: document.getElementById('articleTitle').value,
+            author: document.getElementById('articleAuthor').value,
+            cover: window.cropped_articleCover || null,
+            content: quillArticle.root.innerHTML,
+            date: new Date().toISOString().slice(0,10)
+        };
+        articles.unshift(newArticle);
+        await saveToJSON('data/articles.json', articles);
+        alert('Article saved!');
+        e.target.reset();
+        document.getElementById('articleCoverPreview').classList.add('hidden');
+        quillArticle.root.innerHTML = '';
+        delete window.cropped_articleCover;
+        renderArticles();
+    });
+
+    // Research 
+    document.getElementById('researchForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const newResearch = {
+            title: document.getElementById('researchTitle').value,
+            author: document.getElementById('researchAuthor').value,
+            cover: window.cropped_researchCover || null,
+            abstract: quillResearch.root.innerHTML,
+            pdfBase64: window.currentResearchPDF || null,
+            pdfThumb: document.getElementById('researchPDFThumb').src,
+            date: new Date().toISOString().slice(0,10)
+        };
+        research.unshift(newResearch);
+        await saveToJSON('data/research.json', research);
+        alert('Research saved!');
+        e.target.reset();
+        document.getElementById('researchCoverPreview').classList.add('hidden');
+        document.getElementById('researchPDFPreview').classList.add('hidden');
+        quillResearch.root.innerHTML = '';
+        delete window.cropped_researchCover;
+        renderResearch();
+    });
+
+    // Projects 
+    document.getElementById('projectForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const newProject = {
+        title: document.getElementById('projectTitle').value,
+        sponsor: document.getElementById('projectSponsor').value,
+        content: quillProject.root.innerHTML,
+        date: new Date().toISOString().slice(0,10)
     };
-   
+    projects.unshift(newProject);
+    await saveToJSON('data/projects.json', projects);
+    alert('Project saved!');
+    e.target.reset();
+    quillProject.root.innerHTML = '';
+    renderProjects();
+    });
+    
+    // Partners
+    document.getElementById('partnerForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const newPartner = {
+            name: document.getElementById('partnerName').value,
+            url: document.getElementById('partnerUrl').value,
+            logo: window.cropped_partnerLogo || null
+        };
+        partners.unshift(newPartner);
+        await saveToJSON('data/partners.json', partners);
+        alert('Partner saved!');
+        e.target.reset();
+        delete window.cropped_partnerLogo;
+        renderPartners();
+    });
+
+
+    
+
+    // ====================== ON LOAD ======================
+    window.onload = () => {
+        if (localStorage.getItem('enlilAdminLoggedIn') === 'true') {
+            isLoggedIn = true;
+            document.getElementById('loginScreen').classList.add('hidden');
+        }
+
+        initEditors();
+        loadFromFiles();
+
+        // Crop listeners
+        document.getElementById('authorPhoto').addEventListener('change', e => handleImageSelect(e, 'authorPhoto'));
+        document.getElementById('articleCover').addEventListener('change', e => handleImageSelect(e, 'articleCover'));
+        document.getElementById('researchCover').addEventListener('change', e => handleImageSelect(e, 'researchCover'));
+        document.getElementById('partnerLogo').addEventListener('change', e => handleImageSelect(e, 'partnerLogo'));
+
+        // ====================== FILE TO BASE64 HELPER ======================
+    function fileToBase64(file) {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+// ====================== RESEARCH PDF UPLOAD (thumbnail + base64) ======================
+    document.getElementById('researchPDF').addEventListener('change', async e => {
+        const file = e.target.files[0];
+        if (!file) return;
+    
+        // Create PDF thumbnail
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({scale: 1.5});
+        const canvas = document.createElement('canvas');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
+    
+        document.getElementById('researchPDFThumb').src = canvas.toDataURL('image/jpeg', 0.8);
+        document.getElementById('researchPDFPreview').classList.remove('hidden');
+    
+        // Store PDF as base64 for later saving
+        window.currentResearchPDF = await fileToBase64(file);
+    });
+    };
+</script>
+
+
 
 </script>
 </body>
 </html>
+
+
