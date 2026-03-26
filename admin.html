@@ -229,6 +229,23 @@
             articles = research = projects = partners = authors = [];
         }
     }
+    // ====================== TAB SWITCHING ======================
+function switchTab(n) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    
+    // Show the selected tab
+    const selectedTab = document.getElementById('tab' + n);
+    if (selectedTab) selectedTab.classList.remove('hidden');
+
+    // Update active button styling
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('tab-active');
+        if (parseInt(btn.getAttribute('onclick').match(/\d+/)) === n) {
+            btn.classList.add('tab-active');
+        }
+    });
+}
 
        // Check login on page load + attach all listeners
 window.onload = () => {
