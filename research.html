@@ -1,1 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Dynamic SEO populated by JS -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enlil Center | Research &amp; Reports</title>
+  <meta name="description" content="In-depth research outputs, working papers and formal reports on Iraq's climate transition, water resources and environmental governance.">
 
+  <!-- Canonical -->
+  <link rel="canonical" href="https://enlilcenter.org/research.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
+  <meta property="og:title" content="Enlil Center | Research &amp; Reports">
+  <meta property="og:description" content="In-depth research on Iraq's climate, water, energy and environmental challenges.">
+  <meta property="og:url" content="https://enlilcenter.org/research.html">
+  <meta property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
+
+  <!-- JSON-LD CollectionPage schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Research &amp; Reports",
+    "description": "In-depth research outputs and formal reports on Iraq's environmental challenges",
+    "url": "https://enlilcenter.org/research.html",
+    "publisher": {
+      "@type": "NGO",
+      "name": "Enlil Center for Environment and Sustainable Development"
+    }
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .hero-bg {
+      background:
+        linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
+        url('image/bg.jpeg') center/cover no-repeat;
+    }
+    @media (max-width: 640px) {
+      .hero-bg h2 { font-size: 2.25rem; line-height: 1.15; }
+    }
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .legal-section { display: none; }
+    .legal-section:target { display: block; }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900">
+
+  <!-- Navbar -->
+  <nav class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-3">
+        <img src="image/logo.png" alt="Enlil Center logo" class="h-10 w-auto">
+        <span class="text-2xl font-semibold tracking-tight">
+          Enlil Center | Environment &amp; Sustainable Development
+        </span>
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex gap-8 text-sm font-medium">
+        <a href="/" class="hover:text-emerald-600">Home</a>
+        <a href="/articles.html" class="hover:text-emerald-600">Articles</a>
+        <a href="#research" class="text-emerald-600 font-medium">Research</a>
+        <a href="/projects.html" class="hover:text-emerald-600">Projects</a>
+        <a href="/partners.html" class="hover:text-emerald-600">Partners</a>
+        <a href="/contact.html" class="hover:text-emerald-600">Contact</a>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-slate-700" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars" id="hamburger-icon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-5 py-4">
+      <div class="flex flex-col gap-4 text-base">
+        <a href="/" onclick="toggleMobileMenu()" class="py-2">Home</a>
+        <a href="/articles.html" onclick="toggleMobileMenu()" class="py-2">Articles</a>
+        <a href="#research" onclick="toggleMobileMenu()" class="py-2 text-emerald-600 font-medium">Research</a>
+        <a href="/projects.html" onclick="toggleMobileMenu()" class="py-2">Projects</a>
+        <a href="/partners.html" onclick="toggleMobileMenu()" class="py-2">Partners</a>
+        <a href="/contact.html" onclick="toggleMobileMenu()" class="py-2">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero-bg min-h-[60vh] flex items-center text-white">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <nav class="text-sm mb-8 breadcrumbs" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+          <li class="inline-flex items-center">
+            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
+              <i class="fa-solid fa-house mr-1.5"></i>
+              Home
+            </a>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
+              <span class="ml-1 text-sm font-medium text-white">Research &amp; Reports</span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+      <h1 class="text-5xl md:text-6xl font-semibold leading-tight mb-6">
+        Research &amp; Reports
+      </h1>
+      <p class="text-xl md:text-2xl max-w-2xl mx-auto opacity-90">
+        In-depth research outputs, working papers and formal reports on Iraq's climate transition, water resources and environmental governance.
+      </p>
+    </div>
+  </section>
+
+  <!-- Research Grid -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div id="researchContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Loaded dynamically -->
+      </div>
+
+      <!-- Load More / Pagination -->
+      <div id="loadMoreContainer" class="text-center mt-16 pt-12 border-t border-gray-200">
+        <button id="loadMoreBtn" class="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-medium hover:bg-emerald-700 transition text-sm">
+          Load more research
+        </button>
+        <p id="noMoreMsg" class="text-sm text-gray-500 mt-4 hidden">You've seen all published research.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (identical to index.html and articles.html) -->
+  <footer class="bg-gray-900 text-gray-400 pt-10 pb-6">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col gap-6 text-sm">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p>&copy; 2026 Enlil Center for Environment and Sustainable Development. All rights reserved.</p>
+        <div class="flex flex-col md:flex-row items-center gap-3">
+          <span class="text-xs text-gray-500">Follow Enlil Center</span>
+          <div class="flex gap-2">
+            <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex
