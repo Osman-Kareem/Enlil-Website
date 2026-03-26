@@ -165,6 +165,8 @@
 
 <script>
     const API_BASE = "https://enlil-cms-api.osmanalikareem.workers.dev";
+    let editingType = null;
+    let editingIndex = null;
 
     // ====================== LOGIN ======================
     const VALID_USERNAME = "admin";
@@ -196,7 +198,7 @@
         const inputHash = await hashPassword(password);
         if (inputHash === VALID_PASSWORD_HASH) {
             isLoggedIn = true;
-            localStorage.setItem('enlilAdminLoggedIn', 'true');
+            sessionStorage.setItem('enlilAdminLoggedIn', 'true');
             document.getElementById('loginScreen').classList.add('hidden');
         } else {
             showLoginError();
@@ -213,7 +215,7 @@
     function logout() {
         if (confirm('Logout and return to login screen?')) {
             isLoggedIn = false;
-            localStorage.removeItem('enlilAdminLoggedIn');
+            sessionStorage.removeItem('enlilAdminLoggedIn');
             document.getElementById('loginScreen').classList.remove('hidden');
             articles = research = projects = partners = authors = [];
         }
@@ -370,7 +372,7 @@
         }
     }
 
-    // ====================== RENDER FUNCTIONS (keep your existing ones) ======================
+    // ====================== RENDER FUNCTIONS ======================
     function renderAll() {
         renderAuthors();
         renderArticles();
@@ -397,27 +399,32 @@
     
     function renderArticles() {
         const container = document.getElementById('articlesList');
-        container.innerHTML = articles.map((a, index) => `
+        container.innerHTML = articles.map((a, i) => `
             <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between items-center">
                 <div>
                     <p class="font-semibold">${a.title}</p>
                     <p class="text-xs text-gray-500">By ${a.author || '—'}</p>
                 </div>
-                <button onclick="deleteItem('articles', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
+                <div class="flex gap-3">
+                    <button onclick="editItem('articles', ${i})" class="text-blue-600 hover:text-blue-700">✏️</button>
+                    <button onclick="deleteItem('articles', ${i})" class="text-red-500 hover:text-red-600">×</button>
+                </div>
             </div>
         `).join('');
     }
-    
 
     function renderResearch() {
         const container = document.getElementById('researchList');
-        container.innerHTML = research.map((r, index) => `
+        container.innerHTML = research.map((r, i) => `
             <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between items-center">
                 <div>
                     <p class="font-semibold">${r.title}</p>
                     <p class="text-xs text-gray-500">By ${r.author || '—'}</p>
                 </div>
-                <button onclick="deleteItem('research', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
+                <div class="flex gap-3">
+                    <button onclick="editItem('research', ${i})" class="text-blue-600 hover:text-blue-700">✏️</button>
+                    <button onclick="deleteItem('research', ${i})" class="text-red-500 hover:text-red-600">×</button>
+                </div>
             </div>
         `).join('');
     }
@@ -425,59 +432,121 @@
     
     function renderProjects() {
         const container = document.getElementById('projectsList');
-        container.innerHTML = projects.map((p, index) => `
+        container.innerHTML = projects.map((p, i) => `
             <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 flex justify-between items-center">
                 <div>
                     <p class="font-semibold">${p.title}</p>
                     <p class="text-xs text-gray-500">${p.sponsor || ''}</p>
                 </div>
-                <button onclick="deleteItem('projects', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
+                <div class="flex gap-3">
+                    <button onclick="editItem('projects', ${i})" class="text-blue-600 hover:text-blue-700">✏️</button>
+                    <button onclick="deleteItem('projects', ${i})" class="text-red-500 hover:text-red-600">×</button>
+                </div>
             </div>
         `).join('');
     }
 
+    
     function renderPartners() {
         const container = document.getElementById('partnersList');
-        container.innerHTML = partners.map((p, index) => `
+        container.innerHTML = partners.map((p, i) => `
             <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     ${p.logo ? `<img src="${p.logo}" class="w-10 h-10 rounded-xl object-cover">` : ''}
                     <p class="font-semibold">${p.name}</p>
                 </div>
-                <button onclick="deleteItem('partners', ${index})" class="text-red-500 hover:text-red-600 text-2xl">×</button>
+                <div class="flex gap-3">
+                    <button onclick="editItem('partners', ${i})" class="text-blue-600 hover:text-blue-700">✏️</button>
+                    <button onclick="deleteItem('partners', ${i})" class="text-red-500 hover:text-red-600">×</button>
+                </div>
             </div>
         `).join('');
     }
 
+    // ====================== POPULATE AUTHOR DROPDOWNS ======================
+    function populateAuthorSelects() {
+        const authorSelects = [
+            document.getElementById('articleAuthor'),
+            document.getElementById('researchAuthor')
+        ];
+    
+        authorSelects.forEach(select => {
+            if (!select) return;
+            select.innerHTML = '<option value="">Select Author</option>';
+    
+            authors.forEach(author => {
+                const option = document.createElement('option');
+                option.value = author.name;
+                option.textContent = author.name;
+                select.appendChild(option);
+            });
+        });
+    }
+
     
 // ====================== DELETE ITEM ======================
-    function deleteItem(type, identifier) {
-        if (!confirm('Delete this item?')) return;
+    function deleteItem(type, index) {
+        if (confirm('Delete this item?')) {
+            if (type === 'authors') authors.splice(index, 1);
+            else if (type === 'articles') articles.splice(index, 1);
+            else if (type === 'research') research.splice(index, 1);
+            else if (type === 'projects') projects.splice(index, 1);
+            else if (type === 'partners') partners.splice(index, 1);
+    
+            saveToJSON(`data/${type}.json`, 
+                type === 'authors' ? authors : 
+                type === 'articles' ? articles : 
+                type === 'research' ? research : 
+                type === 'projects' ? projects : partners);
+    
+            renderAll();
+            if (type === 'authors') populateAuthorSelects();
+        }
+    }
+
+    // ====================== Edit ITEM ======================
+
+    function editItem(type, index) {
+        editingType = type;
+        editingIndex = index;
     
         if (type === 'authors') {
-            authors = authors.filter(a => a.id !== identifier && a.name !== identifier);
+            const item = authors[index];
+            document.getElementById('authorName').value = item.name || '';
+            document.getElementById('authorBio').value = item.bio || '';
+            document.getElementById('authorEmail').value = item.email || '';
+            document.getElementById('authorLinkedIn').value = item.linkedin || '';
+            document.getElementById('authorX').value = item.x || '';
+            document.getElementById('authorWebsite').value = item.website || '';
+            switchTab(0);
         } 
         else if (type === 'articles') {
-            articles.splice(identifier, 1);
+            const item = articles[index];
+            document.getElementById('articleTitle').value = item.title || '';
+            document.getElementById('articleAuthor').value = item.author || '';
+            quillArticle.root.innerHTML = item.content || '';
+            switchTab(1);
         } 
         else if (type === 'research') {
-            research.splice(identifier, 1);
+            const item = research[index];
+            document.getElementById('researchTitle').value = item.title || '';
+            document.getElementById('researchAuthor').value = item.author || '';
+            quillResearch.root.innerHTML = item.abstract || '';
+            switchTab(2);
         } 
         else if (type === 'projects') {
-            projects.splice(identifier, 1);
+            const item = projects[index];
+            document.getElementById('projectTitle').value = item.title || '';
+            document.getElementById('projectSponsor').value = item.sponsor || '';
+            quillProject.root.innerHTML = item.content || '';
+            switchTab(3);
         } 
         else if (type === 'partners') {
-            partners.splice(identifier, 1);
+            const item = partners[index];
+            document.getElementById('partnerName').value = item.name || '';
+            document.getElementById('partnerUrl').value = item.url || '';
+            switchTab(4);
         }
-    
-        saveToJSON(`data/${type}.json`, 
-            type === 'authors' ? authors :
-            type === 'articles' ? articles :
-            type === 'research' ? research :
-            type === 'projects' ? projects : partners
-        );
-    
-        renderAll();
     }
 
     // ====================== FORM SUBMIT LISTENERS ======================
@@ -500,6 +569,7 @@
         e.target.reset();
         delete window.cropped_authorPhoto;
         renderAuthors();
+        populateAuthorSelects();
     });
 
     // Articles
@@ -583,7 +653,7 @@
 
     // ====================== ON LOAD ======================
     window.onload = () => {
-        if (localStorage.getItem('enlilAdminLoggedIn') === 'true') {
+        if (sessionStorage.getItem('enlilAdminLoggedIn') === 'true') {
             isLoggedIn = true;
             document.getElementById('loginScreen').classList.add('hidden');
         }
@@ -597,6 +667,9 @@
         document.getElementById('researchCover').addEventListener('change', e => handleImageSelect(e, 'researchCover'));
         document.getElementById('partnerLogo').addEventListener('change', e => handleImageSelect(e, 'partnerLogo'));
 
+
+        populateAuthorSelects();
+        
         // ====================== FILE TO BASE64 HELPER ======================
     function fileToBase64(file) {
         return new Promise(resolve => {
