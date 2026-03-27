@@ -490,13 +490,6 @@
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
         const url = `/articles/article.html?slug=${encodeURIComponent(slug)}`;
 
-        function authorSlug(name) {
-          return (name || '')
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '') || 'author';
-        }
-
         const snippet = (item.seo && item.seo.description)
           || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
 
@@ -507,19 +500,8 @@
               <a href="${url}" class="hover:text-emerald-700">
                 <h3 class="font-semibold text-xl mb-2">${item.title || ''}</h3>
               </a>
-              const leadName =
-                (item.leadAuthor && item.leadAuthor.name) || item.author || '';
-              
-              const leadSlug = leadName ? authorSlug(leadName) : null;
-              const authorHtml = leadSlug
-                ? `By <a href="/authors/author.html?slug=${encodeURIComponent(leadSlug)}"
-                       class="text-emerald-700 hover:text-emerald-800 hover:underline">${leadName}</a>`
-                : (authorLine ? `By ${authorLine}` : '');
-              
-              ...
-              
               <p class="text-xs text-gray-500 mb-3">
-                ${authorHtml}${date ? ` · ${date}` : ''}
+                ${authorLine ? `By ${authorLine}` : ''}${date ? ` · ${date}` : ''}
               </p>
               ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
               <a href="${url}" class="mt-auto inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
