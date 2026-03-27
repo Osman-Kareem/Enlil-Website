@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Dynamic SEO -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enlil Center | Author Profile</title>
+  <meta name="description" content="Author profile and contributions at Enlil Center for Environment and Sustainable Development.">
+
+  <!-- Canonical (updated by JS) -->
+  <link id="canonicalLink" rel="canonical" href="https://enlilcenter.org/authors/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
+  <meta id="ogTitle" property="og:title" content="Enlil Center | Author Profile">
+  <meta id="ogDescription" property="og:description" content="Author profile at Enlil Center.">
+  <meta id="ogUrl" property="og:url" content="https://enlilcenter.org/authors/">
+  <meta id="ogImage" property="og:image" content="https://enlilcenter.org/image/logo.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta id="twTitle" name="twitter:title" content="Enlil Center | Author Profile">
+  <meta id="twDescription" name="twitter:description" content="Author profile at Enlil Center.">
+  <meta id="twImage" name="twitter:image" content="https://enlilcenter.org/image/logo.png">
+
+  <!-- JSON-LD ProfilePage schema (updated by JS) -->
+  <script id="ldJson" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "name": "Author",
+    "about": {
+      "@type": "Person",
+      "name": "Author"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Enlil Center for Environment and Sustainable Development"
+    }
+  }
+  </script>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .hero-bg {
+      background:
+        linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
+        url('../image/bg.jpeg') center/cover no-repeat;
+    }
+    .prose a {
+      color: #047857;
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 2px;
+      font-weight: 500;
+    }
+    .prose a:hover {
+      color: #065f46;
+    }
+    @media (max-width: 640px) {
+      .hero-bg h1 { font-size: 2.25rem; line-height: 1.15; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900">
+
+  <!-- Navbar -->
+  <nav class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-3">
+        <img src="../image/logo.png" alt="Enlil Center logo" class="h-10 w-auto">
+        <span class="text-2xl font-semibold tracking-tight">
+          Enlil Center | Environment &amp; Sustainable Development
+        </span>
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex gap-8 text-sm font-medium">
+        <a href="/" class="hover:text-emerald-600">Home</a>
+        <a href="/articles.html" class="hover:text-emerald-600">Articles</a>
+        <a href="/research.html" class="hover:text-emerald-600">Research</a>
+        <a href="/projects.html" class="hover:text-emerald-600">Projects</a>
+        <a href="/#partners" class="hover:text-emerald-600">Partners</a>
+        <a href="/#contact" class="hover:text-emerald-600">Contact</a>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-slate-700" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars" id="hamburger-icon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-5 py-4">
+      <div class="flex flex-col gap-4 text-base">
+        <a href="/" onclick="toggleMobileMenu()" class="py-2">Home</a>
+        <a href="/articles.html" onclick="toggleMobileMenu()" class="py-2">Articles</a>
+        <a href="/research.html" onclick="toggleMobileMenu()" class="py-2">Research</a>
+        <a href="/projects.html" onclick="toggleMobileMenu()" class="py-2">Projects</a>
+        <a href="/#partners" onclick="toggleMobileMenu()" class="py-2">Partners</a>
+        <a href="/#contact" onclick="toggleMobileMenu()" class="py-2">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero-bg min-h-[40vh] flex items-center text-white">
+    <div class="max-w-4xl mx-auto px-6">
+      <nav class="text-sm mb-6" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+          <li class="inline-flex items-center">
+            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
+              <i class="fa-solid fa-house mr-1.5"></i>
+              Home
+            </a>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
+              <span class="ml-1 text-sm text-white/80">Authors</span>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
+              <span id="breadcrumbName" class="ml-1 text-sm font-medium text-white line-clamp-1">
+                Author
+              </span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+      <h1 id="heroName" class="text-4xl md:text-5xl font-semibold leading-tight mb-2">
+        Author
+      </h1>
+      <p id="heroTagline" class="text-sm md:text-base text-white/80 max-w-xl">
+        Researcher and contributor at Enlil Center.
+      </p>
+    </div>
+  </section>
+
+  <!-- Profile -->
+  <main class="max-w-5xl mx-auto px-6 py-12 md:py-16">
+    <section class="bg-white rounded-3xl shadow-lg p-8 md:p-10 lg:p-12 mb-12 flex flex-col md:flex-row gap-8">
+      <div class="flex-shrink-0 flex justify-center md:justify-start">
+        <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-emerald-50 flex items-center justify-center overflow-hidden">
+          <img id="authorPhoto" src="" alt="" class="w-full h-full object-cover hidden">
+          <span id="authorInitials" class="text-3xl font-semibold text-emerald-800">
+            A
+          </span>
+        </div>
+      </div>
+      <div class="flex-1 space-y-4">
+        <div>
+          <h2 id="authorName" class="text-2xl md:text-3xl font-semibold mb-1">Author</h2>
+          <p id="authorRole" class="text-sm text-gray-500">
+            Enlil Center contributor
+          </p>
+        </div>
+        <div id="authorBio" class="prose prose-sm max-w-none text-gray-700">
+          <!-- Bio text -->
+        </div>
+
+        <!-- Contact links -->
+        <div id="linksWrapper" class="pt-2">
+          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Contact &amp; profiles</h3>
+          <div id="linksContainer" class="flex flex-wrap gap-2 text-sm">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contributions -->
+    <section class="space-y-10">
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Articles &amp; News</h2>
+        <div id="articlesList" class="space-y-3">
+          <p class="text-sm text-gray-500">Loading articles…</p>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Research &amp; Reports</h2>
+        <div id="researchList" class="space-y-3">
+          <p class="text-sm text-gray-500">Loading research…</p>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Projects</h2>
+        <div id="projectsList" class="space-y-3">
+          <p class="text-sm text-gray-500">Loading projects…</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="mt-12 text-center">
+      <a href="/articles.html" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+        <i class="fa-solid fa-arrow-left text-xs"></i>
+        Back to Articles &amp; News
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 pt-10 pb-6 mt-16">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col gap-6 text-sm">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p>&copy; 2026 Enlil Center for Environment and Sustainable Development. All rights reserved.</p>
+        <div class="flex flex-col md:flex-row items-center gap-3">
+          <span class="text-xs text-gray-500">Follow Enlil Center</span>
+          <div class="flex gap-2">
+            <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#1877F2] hover:bg-white hover:text-[#1877F2] transition"
+               aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f text-sm"></i>
+            </a>
+            <a href="https://x.com/enlilcenter" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white hover:text-black transition"
+               aria-label="X">
+              <i class="fa-brands fa-x-twitter text-sm"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/enlilcenter/" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#0A66C2] hover:bg-white hover:text-[#0A66C2] transition"
+               aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in text-sm"></i>
+            </a>
+            <a href="https://www.instagram.com/enlilcenter/" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#E1306C] hover:bg-white hover:text-[#E1306C] transition"
+               aria-label="Instagram">
+              <i class="fa-brands fa-instagram text-sm"></i>
+            </a>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500">
+          Built in Iraq · <a href="/" class="text-emerald-400 hover:text-emerald-300">Main site</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = 'https://enlil-cms-api.osmanalikareem.workers.dev';
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const icon = document.getElementById('hamburger-icon');
+      menu.classList.toggle('hidden');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-xmark');
+    }
+
+    function getSlugFromUrl() {
+      const url = new URL(window.location.href);
+      const q = url.searchParams.get('slug');
+      if (q) return q.trim().toLowerCase();
+      const parts = url.pathname.split('/').filter(Boolean);
+      const last = parts[parts.length - 1] || '';
+      return last.replace(/\.html$/i, '').toLowerCase();
+    }
+
+    function nameToSlug(name) {
+      return (name || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'author';
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return iso;
+      return d.toLocaleDateString('en-GB', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+    }
+
+    function updateMeta(author, slug) {
+      const fullName = author.name || 'Author';
+      const desc = author.bio || `Profile and publications of ${fullName} at Enlil Center.`;
+      const photo = author.photo || 'https://enlilcenter.org/image/logo.png';
+      const url = `https://enlilcenter.org/authors/${slug}`;
+
+      document.title = `Enlil Center | ${fullName}`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.content = desc;
+
+      document.getElementById('canonicalLink').href = url;
+      document.getElementById('ogTitle').content = `Enlil Center | ${fullName}`;
+      document.getElementById('ogDescription').content = desc;
+      document.getElementById('ogUrl').content = url;
+      document.getElementById('ogImage').content = photo;
+      document.getElementById('twTitle').content = `Enlil Center | ${fullName}`;
+      document.getElementById('twDescription').content = desc;
+      document.getElementById('twImage').content = photo;
+
+      const ldScript = document.getElementById('ldJson');
+      if (ldScript) {
+        const schema = {
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          "name": fullName,
+          "about": {
+            "@type": "Person",
+            "name": fullName,
+            "description": desc,
+            "image": photo
+          },
+          "url": url,
+          "publisher": {
+            "@type": "Organization",
+            "name": "Enlil Center for Environment and Sustainable Development",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://enlilcenter.org/image/logo.png"
+            }
+          }
+        };
+        ldScript.textContent = JSON.stringify(schema);
+      }
+    }
+
+    function renderLinks(author) {
+      const container = document.getElementById('linksContainer');
+      container.innerHTML = '';
+
+      if (author.email) {
+        container.innerHTML += `
+          <a href="mailto:${author.email}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-xs text-gray-700 hover:border-emerald-500 hover:text-emerald-700">
+            <i class="fa-solid fa-envelope text-[11px]"></i>
+            <span>${author.email}</span>
+          </a>
+        `;
+      }
+
+      if (Array.isArray(author.links)) {
+        author.links.forEach(link => {
+          if (!link || !link.url) return;
+          const label = link.label || 'Profile';
+          container.innerHTML += `
+            <a href="${link.url}" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-xs text-gray-700 hover:border-emerald-500 hover:text-emerald-700">
+              <i class="fa-solid fa-link text-[11px]"></i>
+              <span>${label}</span>
+            </a>
+          `;
+        });
+      }
+
+      if (!container.innerHTML.trim()) {
+        document.getElementById('linksWrapper').classList.add('hidden');
+      }
+    }
+
+    function contributesTo(authorName, item) {
+      if (!authorName || !item) return false;
+      const target = authorName.toLowerCase();
+
+      if (item.leadAuthor && item.leadAuthor.name &&
+          item.leadAuthor.name.toLowerCase() === target) {
+        return true;
+      }
+
+      if (Array.isArray(item.authors)) {
+        return item.authors.some(a => a && a.name && a.name.toLowerCase() === target);
+      }
+
+      if (item.author && item.author.toLowerCase() === target) {
+        return true;
+      }
+
+      return false;
+    }
+
+    function safeSlug(slug, title, fallback) {
+      if (slug && slug.trim()) {
+        return slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+      }
+      return (title || fallback || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'item';
+    }
+
+    function renderList(listEl, items, type) {
+      if (!items.length) {
+        listEl.innerHTML = '<p class="text-sm text-gray-500">No records yet.</p>';
+        return;
+      }
+
+      const html = items.map(item => {
+        const date = formatDate(item.date);
+        let url = '#';
+
+        if (type === 'article') {
+          const slug = safeSlug(item.seo?.slug, item.title, 'article');
+          url = `/articles/article.html?slug=${encodeURIComponent(slug)}`;
+        } else if (type === 'research') {
+          const slug = safeSlug(item.seo?.slug, item.title, 'research');
+          url = `/research/research-item.html?slug=${encodeURIComponent(slug)}`;
+        } else if (type === 'project') {
+          const slug = safeSlug(item.seo?.slug, item.title, 'project');
+          url = `/projects/project.html?slug=${encodeURIComponent(slug)}`;
+        }
+
+        const snippet = item.seo?.description ||
+          (item.content || item.abstract || '')
+            .replace(/<[^>]+>/g, '')
+            .slice(0, 120) + (item.content || item.abstract ? '…' : '');
+
+        return `
+          <article class="border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:border-emerald-300 hover:shadow-sm transition">
+            <div>
+              <a href="${url}" class="text-sm font-semibold text-slate-900 hover:text-emerald-700">
+                ${item.title || 'Untitled'}
+              </a>
+              ${date ? `<p class="text-xs text-gray-500 mt-0.5">${date}</p>` : ''}
+              ${snippet ? `<p class="text-xs text-gray-600 mt-1 line-clamp-2">${snippet}</p>` : ''}
+            </div>
+            <div class="flex-shrink-0 text-right">
+              <a href="${url}" class="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-800 font-medium">
+                View
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </a>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      listEl.innerHTML = html;
+    }
+
+    async function loadAuthorPage() {
+      const slug = getSlugFromUrl();
+
+      try {
+        const [authorsRes, articlesRes, researchRes, projectsRes] = await Promise.all([
+          fetch(`${API_BASE}/data/authors`),
+          fetch(`${API_BASE}/data/articles`),
+          fetch(`${API_BASE}/data/research`),
+          fetch(`${API_BASE}/data/projects`)
+        ]);
+
+        if (!authorsRes.ok) throw new Error('Authors fetch failed');
+        const authors = await authorsRes.json();
+        const articles = articlesRes.ok ? await articlesRes.json() : [];
+        const research = researchRes.ok ? await researchRes.json() : [];
+        const projects = projectsRes.ok ? await projectsRes.json() : [];
+
+        let author = null;
+        for (const a of authors) {
+          if (nameToSlug(a.name) === slug) {
+            author = a;
+            break;
+          }
+        }
+
+        if (!author) {
+          document.querySelector('main').innerHTML = `
+            <section class="max-w-xl mx-auto text-center py-16">
+              <h1 class="text-2xl font-semibold mb-3">Author not found</h1>
+              <p class="text-sm text-gray-500 mb-4">
+                This author profile could not be found. It may have been unpublished.
+              </p>
+              <a href="/articles.html" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+                Back to Articles &amp; News
+              </a>
+            </section>
+          `;
+          return;
+        }
+
+        const finalSlug = nameToSlug(author.name);
+        const niceUrl = `/authors/${finalSlug}`;
+        const current = window.location.pathname + window.location.search;
+        if (!current.startsWith(niceUrl)) {
+          window.history.replaceState({}, '', niceUrl);
+        }
+
+        const initials = (author.name || 'A')
+          .split(' ')
+          .filter(Boolean)
+          .slice(0, 2)
+          .map(p => p[0].toUpperCase())
+          .join('');
+        document.getElementById('authorInitials').textContent = initials;
+
+        if (author.photo) {
+          const img = document.getElementById('authorPhoto');
+          img.src = author.photo;
+          img.alt = author.name || 'Author photo';
+          img.classList.remove('hidden');
+          document.getElementById('authorInitials').classList.add('hidden');
+        }
+
+        document.getElementById('authorName').textContent = author.name || 'Author';
+        document.getElementById('heroName').textContent = author.name || 'Author';
+        document.getElementById('breadcrumbName').textContent = author.name || 'Author';
+
+        document.getElementById('heroTagline').textContent =
+          author.bio ? author.bio.slice(0, 140) + (author.bio.length > 140 ? '…' : '') :
+          'Researcher and contributor at Enlil Center.';
+
+        document.getElementById('authorRole').textContent =
+          author.role || 'Enlil Center contributor';
+
+        const bioEl = document.getElementById('authorBio');
+        bioEl.textContent = author.bio || 'Biography will be added soon.';
+
+        renderLinks(author);
+        updateMeta(author, finalSlug);
+
+        const fullName = author.name || '';
+        const authoredArticles = articles.filter(a => contributesTo(fullName, a));
+        const authoredResearch  = research.filter(r => contributesTo(fullName, r));
+        const authoredProjects  = projects.filter(p => contributesTo(fullName, p));
+
+        renderList(document.getElementById('articlesList'), authoredArticles, 'article');
+        renderList(document.getElementById('researchList'), authoredResearch, 'research');
+        renderList(document.getElementById('projectsList'), authoredProjects, 'project');
+
+      } catch (e) {
+        console.error('Author page load error', e);
+        document.querySelector('main').innerHTML = `
+          <section class="max-w-xl mx-auto text-center py-16">
+            <h1 class="text-2xl font-semibold mb-3">Error loading profile</h1>
+            <p class="text-sm text-red-600 mb-4">
+              We could not load this author profile. Please try again later.
+            </p>
+            <a href="/articles.html" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+              Back to Articles &amp; News
+            </a>
+          </section>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAuthorPage);
+  </script>
+</body>
+</html>
