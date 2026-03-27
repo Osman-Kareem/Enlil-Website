@@ -264,7 +264,7 @@
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo?.slug, item.title);
-        const url = `/articles/${slug}.html`;
+        const url = `/articles/article.html?slug=${encodeURIComponent(slug)}`;
 
         const snippet = (item.seo?.description || 
           (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : ''));
