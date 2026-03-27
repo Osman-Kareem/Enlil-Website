@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic SEO (will be overwritten by JS) -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enlil Center | Article</title>
+  <meta name="description" content="Article from Enlil Center for Environment and Sustainable Development.">
+
+  <!-- Canonical (updated by JS) -->
+  <link id="canonicalLink" rel="canonical" href="https://enlilcenter.org/articles/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
+  <meta id="ogTitle" property="og:title" content="Enlil Center | Article">
+  <meta id="ogDescription" property="og:description" content="Article from Enlil Center for Environment and Sustainable Development.">
+  <meta id="ogUrl" property="og:url" content="https://enlilcenter.org/articles/">
+  <meta id="ogImage" property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="twTitle" name="twitter:title" content="Enlil Center | Article">
+  <meta id="twDescription" name="twitter:description" content="Article from Enlil Center for Environment and Sustainable Development.">
+  <meta id="twImage" name="twitter:image" content="https://enlilcenter.org/image/og-hero.jpg">
+
+  <!-- JSON-LD Article schema (updated by JS) -->
+  <script id="ldJson" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": "Article",
+    "datePublished": "",
+    "author": {
+      "@type": "Person",
+      "name": "Enlil Center"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Enlil Center for Environment and Sustainable Development",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://enlilcenter.org/image/logo.png"
+      }
+    }
+  }
+  </script>
+
+  <!-- Tailwind & Icons (same as index.html) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .hero-bg {
+      background:
+        linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
+        url('../image/bg.jpeg') center/cover no-repeat;
+    }
+    .prose img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 1.5rem auto;
+      border-radius: 0.75rem;
+    }
+    .prose a {
+      color: #047857;
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 2px;
+      font-weight: 500;
+    }
+    .prose a:hover {
+      color: #065f46;
+    }
+    @media (max-width: 640px) {
+      .hero-bg h1 { font-size: 2.25rem; line-height: 1.15; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900">
+
+  <!-- Navbar -->
+  <nav class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-3">
+        <img src="../image/logo.png" alt="Enlil Center logo" class="h-10 w-auto">
+        <span class="text-2xl font-semibold tracking-tight">
+          Enlil Center | Environment &amp; Sustainable Development
+        </span>
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex gap-8 text-sm font-medium">
+        <a href="/" class="hover:text-emerald-600">Home</a>
+        <a href="/articles.html" class="text-emerald-600 font-medium">Articles</a>
+        <a href="/research.html" class="hover:text-emerald-600">Research</a>
+        <a href="/projects.html" class="hover:text-emerald-600">Projects</a>
+        <a href="/#partners" class="hover:text-emerald-600">Partners</a>
+        <a href="/#contact" class="hover:text-emerald-600">Contact</a>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-slate-700" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars" id="hamburger-icon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-5 py-4">
+      <div class="flex flex-col gap-4 text-base">
+        <a href="/" onclick="toggleMobileMenu()" class="py-2">Home</a>
+        <a href="/articles.html" onclick="toggleMobileMenu()" class="py-2 text-emerald-600 font-medium">Articles</a>
+        <a href="/research.html" onclick="toggleMobileMenu()" class="py-2">Research</a>
+        <a href="/projects.html" onclick="toggleMobileMenu()" class="py-2">Projects</a>
+        <a href="/#partners" onclick="toggleMobileMenu()" class="py-2">Partners</a>
+        <a href="/#contact" onclick="toggleMobileMenu()" class="py-2">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero / breadcrumb -->
+  <section class="hero-bg min-h-[40vh] flex items-center text-white">
+    <div class="max-w-4xl mx-auto px-6">
+      <nav class="text-sm mb-6" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+          <li class="inline-flex items-center">
+            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
+              <i class="fa-solid fa-house mr-1.5"></i>
+              Home
+            </a>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
+              <a href="/articles.html" class="ml-1 text-sm text-white/80 hover:text-white">Articles &amp; News</a>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
+              <span id="breadcrumbTitle" class="ml-1 text-sm font-medium text-white line-clamp-1">
+                Article
+              </span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+      <h1 id="heroTitle" class="text-4xl md:text-5xl font-semibold leading-tight">
+        Article
+      </h1>
+    </div>
+  </section>
+
+  <!-- Article content -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16">
+    <article class="bg-white rounded-3xl shadow-lg overflow-hidden">
+      <!-- Cover -->
+      <div id="coverWrapper" class="hidden">
+        <img id="articleCover"
+             src=""
+             alt=""
+             class="w-full h-80 md:h-[22rem] object-cover">
+      </div>
+
+      <div class="p-8 md:p-10 lg:p-12">
+        <header class="mb-8">
+          <p id="articleTagline" class="text-xs font-semibold tracking-wide text-emerald-700 uppercase mb-2">
+            Article
+          </p>
+          <h1 id="articleTitle" class="text-3xl md:text-4xl font-semibold mb-4">
+            Article title
+          </h1>
+
+          <div id="metaLine" class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-3">
+            <!-- filled by JS -->
+          </div>
+
+          <div id="authorChips" class="flex flex-wrap gap-2 text-xs">
+            <!-- filled by JS with clickable authors -->
+          </div>
+        </header>
+
+        <div id="articleBody" class="prose prose-lg max-w-none text-gray-800">
+          <!-- Quill HTML injected by JS -->
+        </div>
+      </div>
+    </article>
+
+    <!-- Back link -->
+    <div class="mt-10 text-center">
+      <a href="/articles.html" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+        <i class="fa-solid fa-arrow-left text-xs"></i>
+        Back to Articles &amp; News
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer (simplified, but consistent) -->
+  <footer class="bg-gray-900 text-gray-400 pt-10 pb-6 mt-16">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col gap-6 text-sm">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p>&copy; 2026 Enlil Center for Environment and Sustainable Development. All rights reserved.</p>
+        <div class="flex flex-col md:flex-row items-center gap-3">
+          <span class="text-xs text-gray-500">Follow Enlil Center</span>
+          <div class="flex gap-2">
+            <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#1877F2] hover:bg-white hover:text-[#1877F2] transition"
+               aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f text-sm"></i>
+            </a>
+            <a href="https://x.com/enlilcenter" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white hover:text-black transition"
+               aria-label="X">
+              <i class="fa-brands fa-x-twitter text-sm"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/enlilcenter/" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#0A66C2] hover:bg-white hover:text-[#0A66C2] transition"
+               aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in text-sm"></i>
+            </a>
+            <a href="https://www.instagram.com/enlilcenter/" target="_blank" rel="noopener"
+               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#E1306C] hover:bg-white hover:text-[#E1306C] transition"
+               aria-label="Instagram">
+              <i class="fa-brands fa-instagram text-sm"></i>
+            </a>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500">
+          Built in Iraq · <a href="/" class="text-emerald-400 hover:text-emerald-300">Main site</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = 'https://enlil-cms-api.osmanalikareem.workers.dev';
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const icon = document.getElementById('hamburger-icon');
+      menu.classList.toggle('hidden');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-xmark');
+    }
+
+    function getSlugFromUrl() {
+      const url = new URL(window.location.href);
+      const querySlug = url.searchParams.get('slug');
+      if (querySlug) return querySlug.trim().toLowerCase();
+
+      const parts = url.pathname.split('/').filter(Boolean);
+      const last = parts[parts.length - 1] || '';
+      return last.replace(/\.html$/i, '').toLowerCase();
+    }
+
+    function safeSlug(slug, title) {
+      if (slug && slug.trim()) {
+        return slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+      }
+      return (title || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'article';
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return iso;
+      return d.toLocaleDateString('en-GB', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+    }
+
+    function buildAuthorLine(item) {
+      if (item.leadAuthor && item.leadAuthor.name) {
+        const lead = item.leadAuthor.name;
+        const extra = Array.isArray(item.authors) ? item.authors.length : 0;
+        return extra ? `${lead} +${extra}` : lead;
+      }
+      return item.author || 'Enlil Center';
+    }
+
+    function buildAuthorChips(item) {
+      const chips = [];
+      if (item.leadAuthor && item.leadAuthor.name) {
+        chips.push({
+          name: item.leadAuthor.name,
+          role: item.leadAuthor.role || 'Lead author'
+        });
+      }
+      if (Array.isArray(item.authors)) {
+        item.authors.forEach(a => {
+          if (a && a.name) {
+            chips.push({
+              name: a.name,
+              role: a.role || 'Co-author'
+            });
+          }
+        });
+      }
+      return chips;
+    }
+
+    function authorSlug(name) {
+      return (name || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'author';
+    }
+
+    function updateMetaAndSchema(article, slug) {
+      const title = article.title || 'Article';
+      const desc = article.seo?.description ||
+        (article.content ? article.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
+      const cover = article.cover || 'https://enlilcenter.org/image/og-hero.jpg';
+      const url = `https://enlilcenter.org/articles/${slug}`;
+
+      document.title = `Enlil Center | ${title}`;
+
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.content = desc;
+
+      document.getElementById('canonicalLink').href = url;
+      document.getElementById('ogTitle').content = `Enlil Center | ${title}`;
+      document.getElementById('ogDescription').content = desc;
+      document.getElementById('ogUrl').content = url;
+      document.getElementById('ogImage').content = cover;
+      document.getElementById('twTitle').content = `Enlil Center | ${title}`;
+      document.getElementById('twDescription').content = desc;
+      document.getElementById('twImage').content = cover;
+
+      const ldScript = document.getElementById('ldJson');
+      if (ldScript) {
+        const authorName = (article.leadAuthor && article.leadAuthor.name) || article.author || 'Enlil Center';
+        const schema = {
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          "headline": title,
+          "description": desc,
+          "datePublished": article.date || "",
+          "author": {
+            "@type": "Person",
+            "name": authorName
+          },
+          "image": cover,
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": url
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Enlil Center for Environment and Sustainable Development",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://enlilcenter.org/image/logo.png"
+            }
+          }
+        };
+        ldScript.textContent = JSON.stringify(schema);
+      }
+    }
+
+    async function loadArticle() {
+      const slugFromUrl = getSlugFromUrl();
+      const loadingHtml = '<p class="text-center py-16 text-sm text-gray-500">Loading article…</p>';
+      document.getElementById('articleBody').innerHTML = loadingHtml;
+
+      try {
+        const res = await fetch(`${API_BASE}/data/articles`);
+        if (!res.ok) throw new Error('Fetch failed');
+        const articles = await res.json();
+
+        let article = null;
+        for (const a of articles) {
+          const s = safeSlug(a.seo?.slug, a.title);
+          if (s === slugFromUrl) {
+            article = a;
+            break;
+          }
+        }
+
+        if (!article) {
+          document.getElementById('articleBody').innerHTML =
+            '<p class="text-center py-16 text-sm text-gray-500">This article could not be found. It may have been unpublished.<br><a href="/articles.html" class="text-emerald-700 hover:underline">Back to Articles &amp; News</a></p>';
+          return;
+        }
+
+        const finalSlug = safeSlug(article.seo?.slug, article.title);
+        const niceUrl = `/articles/${finalSlug}`;
+        const current = window.location.pathname + window.location.search;
+        if (!current.startsWith(niceUrl)) {
+          const newUrl = `${niceUrl}`;
+          window.history.replaceState({}, '', newUrl);
+        }
+
+        document.getElementById('heroTitle').textContent = article.title || 'Article';
+        document.getElementById('breadcrumbTitle').textContent = article.title || 'Article';
+        document.getElementById('articleTitle').textContent = article.title || 'Article';
+
+        const tagline = document.getElementById('articleTagline');
+        tagline.textContent = 'Article';
+
+        const date = formatDate(article.date);
+        const authorLine = buildAuthorLine(article);
+        const meta = document.getElementById('metaLine');
+        meta.innerHTML = '';
+        if (authorLine) {
+          const span = document.createElement('span');
+          span.textContent = `By ${authorLine}`;
+          meta.appendChild(span);
+        }
+        if (date) {
+          const dot = document.createElement('span');
+          dot.textContent = '•';
+          meta.appendChild(dot);
+          const t = document.createElement('time');
+          t.dateTime = article.date;
+          t.textContent = date;
+          meta.appendChild(t);
+        }
+
+        const chipsWrap = document.getElementById('authorChips');
+        chipsWrap.innerHTML = '';
+        const chips = buildAuthorChips(article);
+        chips.forEach(ch => {
+          const slug = authorSlug(ch.name);
+          const href = `/authors/author.html?slug=${encodeURIComponent(slug)}`;
+          const a = document.createElement('a');
+          a.href = href;
+          a.className = 'inline-flex items-center rounded-full bg-emerald-50 text-emerald-800 px-3 py-1 border border-emerald-100 hover:bg-emerald-600 hover:text-white transition text-xs';
+          a.innerHTML = `<i class="fa-solid fa-user text-[11px] mr-1.5"></i><span>${ch.name}</span>${ch.role ? `<span class="ml-1 text-[11px] text-emerald-900/70">(${ch.role})</span>` : ''}`;
+          chipsWrap.appendChild(a);
+        });
+
+        if (article.cover) {
+          const coverWrapper = document.getElementById('coverWrapper');
+          const img = document.getElementById('articleCover');
+          img.src = article.cover;
+          img.alt = article.title || 'Article cover';
+          coverWrapper.classList.remove('hidden');
+        }
+
+        document.getElementById('articleBody').innerHTML = article.content || '';
+
+        updateMetaAndSchema(article, finalSlug);
+      } catch (e) {
+        console.error('Article load error', e);
+        document.getElementById('articleBody').innerHTML =
+          '<p class="text-center py-16 text-sm text-red-600">We could not load this article. Please try again later.</p>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadArticle);
+  </script>
+</body>
+</html>
