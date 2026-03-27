@@ -259,45 +259,42 @@
     function renderArticles() {
       const container = document.getElementById('articlesContainer');
       const slice = allArticles.slice(0, visibleCount + PAGE_SIZE);
-      
+
+      function authorSlug(name) {
+        return (name || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '') || 'author';
+      }
+            
       container.innerHTML = slice.map((item, idx) => {
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
-        const slug = safeSlug(item.seo?.slug, item.title);
-        const url = `/articles/article.html?slug=${encodeURIComponent(slug)}`;
-
-        const snippet = (item.seo?.description || 
-          (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : ''));
-
-        return `
-          <article class="group bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full border border-gray-100 hover:border-emerald-200">
-            ${item.cover ? `
-              <a href="${url}" aria-label="${item.title}">
-                <img src="${item.cover}" alt="${item.title}" 
-                     class="w-full h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300">
-              </a>
-            ` : ''}
-            <div class="p-7 flex flex-col flex-1">
-              <a href="${url}" class="hover:text-emerald-700 mb-3 block">
-                <h3 class="font-semibold text-xl md:text-2xl leading-tight line-clamp-2 group-hover:underline">${item.title}</h3>
-              </a>
-              <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-4">
-                ${authorLine ? `<span>By ${authorLine}</span>` : ''}
-                ${date ? `<span>• ${date}</span>` : ''}
-              </div>
-              ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 flex-1">${snippet}</p>` : ''}
-              <a href="${url}" 
-                 class="mt-auto inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium pt-2 group-hover:underline transition-colors">
-                Read full article
-                <i class="fa-solid fa-arrow-right text-xs"></i>
-              </a>
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      updateLoadMore();
-    }
+        
+        const leadName =
+          (item.leadAuthor && item.leadAuthor.name) || item.author || '';
+        const leadSlug = leadName ? authorSlug(leadName) : null;
+        const authorHtml = leadSlug
+          ? `By <a href="/authors/author.html?slug=${encodeURIComponent(leadSlug)}"
+                 class="text-emerald-700 hover:text-emerald-800 hover:underline">${leadName}</a>`
+          : (authorLine ? `By ${authorLine}` : '');
+        ...
+        <p class="text-xs text-gray-500 mb-3">
+          ${authorHtml}${date ? ` · ${date}` : ''}
+        </p>
+                      ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 flex-1">${snippet}</p>` : ''}
+                      <a href="${url}" 
+                         class="mt-auto inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium pt-2 group-hover:underline transition-colors">
+                        Read full article
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                      </a>
+                    </div>
+                  </article>
+                `;
+              }).join('');
+        
+              updateLoadMore();
+            }
 
     function updateLoadMore() {
       const btn = document.getElementById('loadMoreBtn');
