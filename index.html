@@ -477,42 +477,49 @@
         return [];
       }
     }
-
+        
     async function loadArticles() {
-      const data = await fetchJson(API_BASE + '/data/articles');
-      data.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-      const container = document.getElementById('articlesContainer');
-      if (!container) return;
+            try {
+                const res = await fetch(`${API_BASE}/data/articles`);
+                const data = await res.json();
+                data.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+                
+                const container = document.getElementById('articlesContainer');
+                container.innerHTML = data.slice(0, 3).map(item => {
+                    const slug = safeSlug(item.seo?.slug, item.title);
+                    const url = `/articles/article.html?slug=${encodeURIComponent(slug)}`;
+                    const leadName = (item.leadAuthor && item.leadAuthor.name) || item.author || '';
+                    const leadSlug = leadName ? authorSlug(leadName) : null;
+                    const date = formatDate(item.date);
+                    
+                    const authorHtml = leadSlug 
+                        ? `By <a href="/authors/author.html?slug=${encodeURIComponent(leadSlug)}" class="text-emerald-700 hover:underline">${leadName}</a>`
+                        : (leadName ? `By ${leadName}` : '');
 
-      container.innerHTML = data.slice(0, 6).map(item => {
-        const authorLine = buildAuthorLine(item);
-        const date = formatDate(item.date);
-        const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        const url = `/articles/article.html?slug=${encodeURIComponent(slug)}`;
+                    const snippet = (item.seo?.description) || 
+                                    (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 150) + '...' : '');
 
-        const snippet = (item.seo && item.seo.description)
-          || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
-
-        return `
-          <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full">
-            ${item.cover ? `<a href="${url}"><img src="${item.cover}" alt="${item.title}" class="w-full h-52 object-cover"></a>` : ''}
-            <div class="p-6 flex flex-col flex-1">
-              <a href="${url}" class="hover:text-emerald-700">
-                <h3 class="font-semibold text-xl mb-2">${item.title || ''}</h3>
-              </a>
-              <p class="text-xs text-gray-500 mb-3">
-                ${authorLine ? `By ${authorLine}` : ''}${date ? ` · ${date}` : ''}
-              </p>
-              ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
-              <a href="${url}" class="mt-auto inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                Read article
-                <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
-              </a>
-            </div>
-          </article>
-        `;
-      }).join('') || '<p class="text-sm text-gray-500">No articles published yet.</p>';
-    }
+                    return `
+                        <article class="group flex flex-col">
+                            ${item.cover ? `<a href="${url}" class="overflow-hidden rounded-3xl mb-6 block">
+                                <img src="${item.cover}" alt="${item.title}" class="w-full h-64 object-cover group-hover:scale-105 transition duration-500">
+                            </a>` : ''}
+                            <div class="flex flex-col flex-1">
+                                <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                                    <span>${authorHtml}</span>
+                                    ${date ? `<span>• ${date}</span>` : ''}
+                                </div>
+                                <a href="${url}" class="hover:text-emerald-600 transition"><h3 class="text-2xl font-bold mb-3 line-clamp-2">${item.title}</h3></a>
+                                <p class="text-gray-600 line-clamp-3 mb-6 text-sm">${snippet}</p>
+                                <a href="${url}" class="mt-auto text-emerald-600 font-bold text-sm inline-flex items-center gap-2">Read Article <i class="fa-solid fa-arrow-right text-xs"></i></a>
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error("Failed to load articles", e);
+            }
+        }
 
     async function loadResearch() {
       const data = await fetchJson(API_BASE + '/data/research');
