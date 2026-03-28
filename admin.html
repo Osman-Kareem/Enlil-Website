@@ -1,76 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ====================== META & LIBRARIES ====================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enlil Center - Admin Dashboard</title>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Quill Editor -->
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-
-    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-    <!-- Cropper.js -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-
-    <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/a2e0e6ad54.js" crossorigin="anonymous"></script>
 
-    <!-- ====================== GLOBAL STYLES ====================== -->
     <style>
-        .ql-editor {
-            min-height: 420px;
-            font-size: 1.1rem;
-            line-height: 1.7;
+        .ql-editor { min-height: 420px; font-size: 1.1rem; line-height: 1.7; }
+        .tab-active { border-bottom: 3px solid #10b981; color: #10b981; font-weight: 600; }
+        .ql-editor img, .preview-body img {
+            max-width: 100%; height: auto; display: block;
+            margin: 1.25rem auto; border-radius: 0.75rem;
         }
-        .tab-active {
-            border-bottom: 3px solid #10b981;
-            color: #10b981;
-            font-weight: 600;
+        .ql-editor a, .preview-body a {
+            color: #047857; text-decoration: underline;
+            text-decoration-thickness: 1.5px; text-underline-offset: 2px; font-weight: 500;
         }
-        /* Normalize images inside article/research/project content */
-        .ql-editor img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1.25rem auto;
-            border-radius: 0.75rem;
-        }
-        /* Preview content images */
-        .preview-body img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1.25rem auto;
-            border-radius: 0.75rem;
-        }
-        /* Make links in editor + preview obvious */
-        .ql-editor a,
-        .preview-body a {
-            color: #047857;          /* emerald-700 */
-            text-decoration: underline;
-            text-decoration-thickness: 1.5px;
-            text-underline-offset: 2px;
-            font-weight: 500;
-        }
-        .ql-editor a:hover,
-        .preview-body a:hover {
-            color: #065f46;          /* darker emerald */
-        }
+        .ql-editor a:hover, .preview-body a:hover { color: #065f46; }
     </style>
 </head>
 <body class="bg-gray-50">
 
-<!-- ===================================================================== -->
-<!-- LOGIN SCREEN                                                          -->
-<!-- ===================================================================== -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-[10000]">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md mx-4 p-10">
         <div class="flex justify-center mb-6">
@@ -86,25 +45,20 @@
         <label class="block text-sm font-medium mb-1" for="loginPassword">Password</label>
         <input type="password" id="loginPassword" placeholder="Password"
                class="w-full px-5 py-3 border border-gray-300 rounded-2xl mb-6 text-lg">
-    
-        <!-- ==================== NEW: LOGIN LOCK COUNTDOWN ==================== -->
+
         <div id="lockCountdown" class="text-center text-amber-600 text-sm font-medium hidden mt-2"></div>
-        <!-- ================================================================== -->
-    
+
         <button id="loginButton"
                 class="w-full bg-emerald-600 text-white py-4 rounded-3xl font-medium text-lg hover:bg-emerald-700">
             Login
         </button>
-    
         <p id="loginError" class="text-red-500 text-center mt-4 hidden">Wrong username or password</p>
     </div>
 </div>
 
-<!-- ===================================================================== -->
-<!-- MAIN LAYOUT (SIDEBAR + CONTENT)                                       -->
-<!-- ===================================================================== -->
+<!-- MAIN LAYOUT -->
 <div class="flex min-h-screen">
-    <!-- ====================== SIDEBAR ====================== -->
+    <!-- SIDEBAR -->
     <div class="w-72 bg-white shadow-2xl p-6 flex flex-col">
         <div class="flex items-center gap-3 mb-12">
             <i class="fa-solid fa-leaf text-4xl text-emerald-600"></i>
@@ -132,12 +86,10 @@
         </nav>
     </div>
 
-    <!-- ====================== MAIN CONTENT ====================== -->
+    <!-- MAIN CONTENT -->
     <div class="flex-1 p-10 overflow-auto">
 
-        <!-- ========================================================= -->
-        <!-- TAB 0: AUTHORS                                             -->
-        <!-- ========================================================= -->
+        <!-- TAB 0: AUTHORS -->
         <div id="tab0" class="tab-content">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-3xl font-semibold">Authors</h2>
@@ -147,7 +99,6 @@
             <form id="authorForm" class="bg-white p-8 rounded-3xl shadow mb-10 space-y-6">
                 <input type="hidden" id="authorEditIndex" value="">
 
-                <!-- ========== BASIC INFO ========== -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium mb-2" for="authorName">Full Name</label>
@@ -162,18 +113,22 @@
                     </div>
                 </div>
 
-                <!-- ========== BIO ========== -->
+                <!-- FIX: Added Role field — displayed on author.html as styled subtitle -->
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="authorRole">Role / Title</label>
+                    <input type="text" id="authorRole" placeholder="e.g. Senior Researcher, Policy Analyst"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                    <p class="text-xs text-gray-500 mt-1">Shown under the author's name on their public profile page.</p>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium mb-2" for="authorBio">Short Bio</label>
                     <textarea id="authorBio" rows="4"
                               class="w-full px-4 py-3 border border-gray-300 rounded-2xl"></textarea>
                 </div>
 
-                <!-- ========== CONTACT & LINKS ========== -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold">Contact & Profiles</h3>
-
-                    <!-- Primary email -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-2" for="authorEmail">Email (primary)</label>
@@ -182,16 +137,11 @@
                                    placeholder="name@example.org">
                         </div>
                     </div>
-
-                    <!-- Dynamic contact links -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-medium">Additional scholarly / social links</span>
-                            <button type="button"
-                                    class="text-sm text-emerald-600 hover:text-emerald-700"
-                                    onclick="addAuthorLinkRow()">
-                                + Add link
-                            </button>
+                            <button type="button" class="text-sm text-emerald-600 hover:text-emerald-700"
+                                    onclick="addAuthorLinkRow()">+ Add link</button>
                         </div>
                         <p class="text-xs text-gray-500 mb-2">
                             Examples: ORCID, Google Scholar, ResearchGate, LinkedIn, X (Twitter), institutional profile, personal website.
@@ -200,80 +150,57 @@
                     </div>
                 </div>
 
-                <!-- ========== FORM BUTTONS ========== -->
                 <div class="flex flex-col md:flex-row gap-3 mt-4">
                     <button type="submit"
                             class="flex-1 bg-emerald-600 text-white py-4 rounded-3xl font-medium hover:bg-emerald-700"
-                            id="authorSubmitButton">
-                        Save Author
-                    </button>
+                            id="authorSubmitButton">Save Author</button>
                     <button type="button"
                             class="px-6 py-4 rounded-3xl border border-gray-300 text-gray-700 hover:bg-gray-100"
-                            onclick="resetAuthorForm()">
-                        Clear Form
-                    </button>
+                            onclick="resetAuthorForm()">Clear Form</button>
                 </div>
             </form>
 
-            <!-- Authors list -->
             <div id="authorsList" class="space-y-3"></div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- TAB 1: ARTICLES & NEWS (WITH PREVIEW + SEO)               -->
-        <!-- ========================================================= -->
+        <!-- TAB 1: ARTICLES & NEWS -->
         <div id="tab1" class="tab-content hidden">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-3xl font-semibold">Articles & News</h2>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-500 hidden md:inline">Publish updates, stories, and analysis</span>
-                    <button type="button"
-                            id="articlePreviewToggle"
-                            class="text-sm text-emerald-600 hover:text-emerald-700">
-                        Hide preview
-                    </button>
+                    <button type="button" id="articlePreviewToggle" class="text-sm text-emerald-600 hover:text-emerald-700">Hide preview</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] gap-8 items-start">
-                <!-- ========== ARTICLE FORM ========== -->
                 <form id="articleForm" class="bg-white p-8 rounded-3xl shadow mb-10 space-y-6">
                     <input type="hidden" id="articleEditIndex" value="">
 
-                    <!-- Title -->
                     <div>
                         <label class="block text-sm font-medium mb-2" for="articleTitle">Title</label>
                         <input type="text" id="articleTitle" placeholder="Article title"
                                class="w-full px-4 py-3 border border-gray-300 rounded-2xl" required>
                     </div>
 
-                    <!-- Publish date -->
                     <div>
                         <label class="block text-sm font-medium mb-2" for="articleDate">Publish date</label>
-                        <input type="date" id="articleDate"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
-                        <p class="text-xs text-gray-500 mt-1">
-                            Leave empty to use today's date. Fill for older articles (migration).
-                        </p>
+                        <input type="date" id="articleDate" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                        <p class="text-xs text-gray-500 mt-1">Leave empty to use today's date.</p>
                     </div>
 
-                    <!-- Authors -->
                     <div class="space-y-3">
                         <label class="block text-sm font-medium">Authors</label>
-
-                        <!-- Lead author -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
                             <div>
                                 <label class="block text-xs font-medium mb-1" for="articleLeadAuthor">Lead Author</label>
-                                <select id="articleLeadAuthor"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                                <select id="articleLeadAuthor" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
                                     <option value="">Select lead author</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-medium mb-1" for="articleLeadRole">Lead Author Role</label>
-                                <select id="articleLeadRole"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                                <select id="articleLeadRole" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
                                     <option value="">Lead author (default)</option>
                                     <option value="Lead author">Lead author</option>
                                     <option value="Principal investigator">Principal investigator</option>
@@ -287,22 +214,16 @@
                                        placeholder="Custom lead role">
                             </div>
                         </div>
-
-                        <!-- Additional authors -->
                         <div>
                             <div class="flex items-center justify-between mb-2 mt-2">
                                 <span class="text-xs font-medium text-gray-600">Additional authors (optional)</span>
-                                <button type="button"
-                                        class="text-xs text-emerald-600 hover:text-emerald-700"
-                                        onclick="addArticleAuthorRow()">
-                                    + Add author
-                                </button>
+                                <button type="button" class="text-xs text-emerald-600 hover:text-emerald-700"
+                                        onclick="addArticleAuthorRow()">+ Add author</button>
                             </div>
                             <div id="articleAuthorsContainer" class="space-y-2"></div>
                         </div>
                     </div>
 
-                    <!-- Cover image -->
                     <div>
                         <label class="block text-sm font-medium mb-2" for="articleCover">Cover Image (16:9)</label>
                         <input type="file" id="articleCover" accept="image/*" class="w-full text-sm">
@@ -311,20 +232,16 @@
                         </div>
                     </div>
 
-                    <!-- Body -->
                     <div>
                         <label class="block text-sm font-medium mb-2">Body (text + images)</label>
                         <div id="articleEditor" class="border border-gray-300 rounded-3xl"></div>
-                        <p class="text-xs text-gray-500 mt-1">
-                            Images will auto-resize. To add a caption/source, write a new line starting with "Caption:" right after the image.
-                        </p>
+                        <p class="text-xs text-gray-500 mt-1">To add a caption, write a new line starting with "Caption:" right after the image.</p>
                     </div>
 
-                    <!-- SEO -->
                     <div class="space-y-3">
                         <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
                         <div>
-                            <label class="block text-xs font-medium mb-1" for="articleSlug">Canonical slug (URL-friendly)</label>
+                            <label class="block text-xs font-medium mb-1" for="articleSlug">Canonical slug</label>
                             <input type="text" id="articleSlug" placeholder="e.g. climate-adaptation-basra"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
                         </div>
@@ -332,36 +249,28 @@
                             <label class="block text-xs font-medium mb-1" for="articleSeoDescription">Meta description (150–160 chars)</label>
                             <textarea id="articleSeoDescription" rows="2"
                                       class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"
-                                      placeholder="Short summary that would appear in Google results."></textarea>
+                                      placeholder="Short summary for Google results."></textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-medium mb-1" for="articleSeoKeywords">SEO keywords (comma-separated)</label>
                             <textarea id="articleSeoKeywords" rows="2"
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"
-                                      placeholder="climate change research Iraq, Enlil Center, ..."></textarea>
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"></textarea>
                         </div>
                     </div>
 
-                    <!-- Buttons -->
                     <div class="flex flex-col md:flex-row gap-3 mt-4">
                         <button type="submit"
                                 class="flex-1 bg-emerald-600 text-white py-4 rounded-3xl font-medium hover:bg-emerald-700"
-                                id="articleSubmitButton">
-                            Save Article
-                        </button>
+                                id="articleSubmitButton">Save Article</button>
                         <button type="button"
                                 class="px-6 py-4 rounded-3xl border border-gray-300 text-gray-700 hover:bg-gray-100"
-                                onclick="resetArticleForm()">
-                            Clear Form
-                        </button>
+                                onclick="resetArticleForm()">Clear Form</button>
                     </div>
                 </form>
 
-                <!-- ========== ARTICLE PREVIEW ========== -->
                 <aside id="articlePreviewPanel" class="bg-white p-8 rounded-3xl shadow space-y-4">
                     <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-eye text-emerald-500"></i>
-                        Article Preview
+                        <i class="fa-solid fa-eye text-emerald-500"></i> Article Preview
                     </h3>
                     <div id="articlePreviewContent" class="space-y-4 text-gray-800 preview-body"></div>
                 </aside>
@@ -370,61 +279,44 @@
             <div id="articlesList" class="space-y-3 mt-4"></div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- TAB 2: RESEARCH & REPORTS (WITH PREVIEW + SEO)            -->
-        <!-- ========================================================= -->
+        <!-- TAB 2: RESEARCH & REPORTS -->
         <div id="tab2" class="tab-content hidden">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-3xl font-semibold">Research & Reports</h2>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-500 hidden md:inline">Upload research outputs and formal reports</span>
-                    <button type="button"
-                            id="researchPreviewToggle"
-                            class="text-sm text-emerald-600 hover:text-emerald-700">
-                        Hide preview
-                    </button>
+                    <button type="button" id="researchPreviewToggle" class="text-sm text-emerald-600 hover:text-emerald-700">Hide preview</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] gap-8 items-start">
-                <!-- ========== RESEARCH FORM ========== -->
                 <form id="researchForm" class="bg-white p-8 rounded-3xl shadow mb-10 space-y-6">
                     <input type="hidden" id="researchEditIndex" value="">
 
-                    <!-- Title -->
                     <div>
                         <label class="block text-sm font-medium mb-2" for="researchTitle">Title</label>
                         <input type="text" id="researchTitle" placeholder="Research title"
                                class="w-full px-4 py-3 border border-gray-300 rounded-2xl" required>
                     </div>
 
-                    <!-- Publish date -->
                     <div>
                         <label class="block text-sm font-medium mb-2" for="researchDate">Publish date</label>
-                        <input type="date" id="researchDate"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
-                        <p class="text-xs text-gray-500 mt-1">
-                            Leave empty to use today's date. Fill for older publications.
-                        </p>
+                        <input type="date" id="researchDate" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                        <p class="text-xs text-gray-500 mt-1">Leave empty to use today's date.</p>
                     </div>
 
-                    <!-- Authors -->
                     <div class="space-y-3">
                         <label class="block text-sm font-medium">Authors</label>
-
-                        <!-- Lead author -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
                             <div>
                                 <label class="block text-xs font-medium mb-1" for="researchLeadAuthor">Lead Author</label>
-                                <select id="researchLeadAuthor"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                                <select id="researchLeadAuthor" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
                                     <option value="">Select lead author</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-medium mb-1" for="researchLeadRole">Lead Author Role</label>
-                                <select id="researchLeadRole"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                                <select id="researchLeadRole" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
                                     <option value="">Lead author (default)</option>
                                     <option value="Lead author">Lead author</option>
                                     <option value="Principal investigator">Principal investigator</option>
@@ -440,22 +332,16 @@
                                        placeholder="Custom lead role">
                             </div>
                         </div>
-
-                        <!-- Additional authors -->
                         <div>
                             <div class="flex items-center justify-between mb-2 mt-2">
                                 <span class="text-xs font-medium text-gray-600">Additional authors (optional)</span>
-                                <button type="button"
-                                        class="text-xs text-emerald-600 hover:text-emerald-700"
-                                        onclick="addResearchAuthorRow()">
-                                    + Add author
-                                </button>
+                                <button type="button" class="text-xs text-emerald-600 hover:text-emerald-700"
+                                        onclick="addResearchAuthorRow()">+ Add author</button>
                             </div>
                             <div id="researchAuthorsContainer" class="space-y-2"></div>
                         </div>
                     </div>
 
-                    <!-- Cover image -->
                     <div>
                         <label class="block text-sm font-medium mb-2" for="researchCover">Cover Image (16:9)</label>
                         <input type="file" id="researchCover" accept="image/*" class="w-full text-sm">
@@ -464,7 +350,6 @@
                         </div>
                     </div>
 
-                    <!-- PDF -->
                     <div>
                         <label class="block text-sm font-medium mb-2" for="researchPDF">PDF File</label>
                         <input type="file" id="researchPDF" accept="application/pdf" class="w-full text-sm">
@@ -474,20 +359,16 @@
                         <p class="text-xs text-gray-500 mt-1">A thumbnail is generated automatically from the first page.</p>
                     </div>
 
-                    <!-- Abstract -->
                     <div>
                         <label class="block text-sm font-medium mb-2">Abstract / Summary</label>
                         <div id="researchEditor" class="border border-gray-300 rounded-3xl"></div>
-                        <p class="text-xs text-gray-500 mt-1">
-                            Images will auto-resize. To add a caption/source, write a new line starting with "Caption:" right after the image.
-                        </p>
+                        <p class="text-xs text-gray-500 mt-1">To add a caption, write a new line starting with "Caption:" right after the image.</p>
                     </div>
 
-                    <!-- SEO -->
                     <div class="space-y-3">
                         <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
                         <div>
-                            <label class="block text-xs font-medium mb-1" for="researchSlug">Canonical slug (URL-friendly)</label>
+                            <label class="block text-xs font-medium mb-1" for="researchSlug">Canonical slug</label>
                             <input type="text" id="researchSlug" placeholder="e.g. water-scarcity-diyala"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
                         </div>
@@ -500,31 +381,23 @@
                         <div>
                             <label class="block text-xs font-medium mb-1" for="researchSeoKeywords">SEO keywords (comma-separated)</label>
                             <textarea id="researchSeoKeywords" rows="2"
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"
-                                      placeholder="water scarcity solutions Iraq, Enlil Center, ..."></textarea>
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"></textarea>
                         </div>
                     </div>
 
-                    <!-- Buttons -->
                     <div class="flex flex-col md:flex-row gap-3 mt-4">
                         <button type="submit"
                                 class="flex-1 bg-emerald-600 text-white py-4 rounded-3xl font-medium hover:bg-emerald-700"
-                                id="researchSubmitButton">
-                            Save Research
-                        </button>
+                                id="researchSubmitButton">Save Research</button>
                         <button type="button"
                                 class="px-6 py-4 rounded-3xl border border-gray-300 text-gray-700 hover:bg-gray-100"
-                                onclick="resetResearchForm()">
-                            Clear Form
-                        </button>
+                                onclick="resetResearchForm()">Clear Form</button>
                     </div>
                 </form>
 
-                <!-- ========== RESEARCH PREVIEW ========== -->
                 <aside id="researchPreviewPanel" class="bg-white p-8 rounded-3xl shadow space-y-4">
                     <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-eye text-emerald-500"></i>
-                        Research Preview
+                        <i class="fa-solid fa-eye text-emerald-500"></i> Research Preview
                     </h3>
                     <div id="researchPreviewContent" class="space-y-4 text-gray-800 preview-body"></div>
                 </aside>
@@ -533,24 +406,17 @@
             <div id="researchList" class="space-y-3 mt-4"></div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- TAB 3: PROJECTS (WITH PREVIEW + SEO)                      -->
-        <!-- ========================================================= -->
+        <!-- TAB 3: PROJECTS -->
         <div id="tab3" class="tab-content hidden">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-3xl font-semibold">Projects</h2>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-500 hidden md:inline">Document funded and ongoing projects</span>
-                    <button type="button"
-                            id="projectPreviewToggle"
-                            class="text-sm text-emerald-600 hover:text-emerald-700">
-                        Hide preview
-                    </button>
+                    <button type="button" id="projectPreviewToggle" class="text-sm text-emerald-600 hover:text-emerald-700">Hide preview</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] gap-8 items-start">
-                <!-- ========== PROJECT FORM ========== -->
                 <form id="projectForm" class="bg-white p-8 rounded-3xl shadow mb-10 space-y-6">
                     <input type="hidden" id="projectEditIndex" value="">
 
@@ -566,30 +432,55 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
                     </div>
 
-                    <!-- Project year -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2" for="projectYear">Project Year</label>
+                            <input type="number" id="projectYear" min="1900" max="2100" step="1"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-2xl"
+                                   placeholder="e.g. 2024">
+                        </div>
+                        <!-- FIX: Added Status field — shown as colored pill on project-item.html -->
+                        <div>
+                            <label class="block text-sm font-medium mb-2" for="projectStatus">Status</label>
+                            <select id="projectStatus" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                                <option value="">— Select status —</option>
+                                <option value="Active">Active</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
+                                <option value="On hold">On hold</option>
+                                <option value="Planned">Planned</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Active/Ongoing shows green pill; Completed/On hold shows grey.</p>
+                        </div>
+                    </div>
+
+                    <!-- FIX: Added Location field — shown as location pill on project-item.html -->
                     <div>
-                        <label class="block text-sm font-medium mb-2" for="projectYear">Project year</label>
-                        <input type="number" id="projectYear" min="1900" max="2100" step="1"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-2xl"
-                               placeholder="e.g. 2020">
-                        <p class="text-xs text-gray-500 mt-1">
-                            Only the year is shown on the website.
-                        </p>
+                        <label class="block text-sm font-medium mb-2" for="projectLocation">Location</label>
+                        <input type="text" id="projectLocation" placeholder="e.g. Basra, Iraq"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+                        <p class="text-xs text-gray-500 mt-1">Optional. Shown as a location pill on the project page.</p>
+                    </div>
+
+                    <!-- FIX: Added Cover Image — shown as hero image on project-item.html -->
+                    <div>
+                        <label class="block text-sm font-medium mb-2" for="projectCover">Cover Image (16:9)</label>
+                        <input type="file" id="projectCover" accept="image/*" class="w-full text-sm">
+                        <div id="projectCoverPreview" class="mt-3 hidden">
+                            <img id="projectCoverPreviewImg" class="max-h-64 rounded-2xl border object-cover">
+                        </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium mb-2">Project Description</label>
                         <div id="projectEditor" class="border border-gray-300 rounded-3xl"></div>
-                        <p class="text-xs text-gray-500 mt-1">
-                            Images will auto-resize. To add a caption/source, write a new line starting with "Caption:" right after the image.
-                        </p>
+                        <p class="text-xs text-gray-500 mt-1">To add a caption, write a new line starting with "Caption:" right after the image.</p>
                     </div>
 
-                    <!-- SEO -->
                     <div class="space-y-3">
                         <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
                         <div>
-                            <label class="block text-xs font-medium mb-1" for="projectSlug">Canonical slug (URL-friendly)</label>
+                            <label class="block text-xs font-medium mb-1" for="projectSlug">Canonical slug</label>
                             <input type="text" id="projectSlug" placeholder="e.g. climate-adaptation-basra"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
                         </div>
@@ -597,35 +488,28 @@
                             <label class="block text-xs font-medium mb-1" for="projectSeoDescription">Meta description (150–160 chars)</label>
                             <textarea id="projectSeoDescription" rows="2"
                                       class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"
-                                      placeholder="Short summary that would appear in search results."></textarea>
+                                      placeholder="Short summary for search results."></textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-medium mb-1" for="projectSeoKeywords">SEO keywords (comma-separated)</label>
                             <textarea id="projectSeoKeywords" rows="2"
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"
-                                      placeholder="climate adaptation Iraq, Enlil Center, ..."></textarea>
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"></textarea>
                         </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-3 mt-4">
                         <button type="submit"
                                 class="flex-1 bg-emerald-600 text-white py-4 rounded-3xl font-medium hover:bg-emerald-700"
-                                id="projectSubmitButton">
-                            Save Project
-                        </button>
+                                id="projectSubmitButton">Save Project</button>
                         <button type="button"
                                 class="px-6 py-4 rounded-3xl border border-gray-300 text-gray-700 hover:bg-gray-100"
-                                onclick="resetProjectForm()">
-                            Clear Form
-                        </button>
+                                onclick="resetProjectForm()">Clear Form</button>
                     </div>
                 </form>
 
-                <!-- ========== PROJECT PREVIEW ========== -->
                 <aside id="projectPreviewPanel" class="bg-white p-8 rounded-3xl shadow space-y-4">
                     <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-eye text-emerald-500"></i>
-                        Project Preview
+                        <i class="fa-solid fa-eye text-emerald-500"></i> Project Preview
                     </h3>
                     <div id="projectPreviewContent" class="space-y-4 text-gray-800 preview-body"></div>
                 </aside>
@@ -634,9 +518,7 @@
             <div id="projectsList" class="space-y-3 mt-4"></div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- TAB 4: PARTNERS & SPONSORS                                -->
-        <!-- ========================================================= -->
+        <!-- TAB 4: PARTNERS & SPONSORS -->
         <div id="tab4" class="tab-content hidden">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-3xl font-semibold">Partners & Sponsors</h2>
@@ -669,25 +551,20 @@
                 <div class="flex flex-col md:flex-row gap-3 mt-4">
                     <button type="submit"
                             class="flex-1 bg-emerald-600 text-white py-4 rounded-3xl font-medium hover:bg-emerald-700"
-                            id="partnerSubmitButton">
-                        Save Partner
-                    </button>
+                            id="partnerSubmitButton">Save Partner</button>
                     <button type="button"
                             class="px-6 py-4 rounded-3xl border border-gray-300 text-gray-700 hover:bg-gray-100"
-                            onclick="resetPartnerForm()">
-                        Clear Form
-                    </button>
+                            onclick="resetPartnerForm()">Clear Form</button>
                 </div>
             </form>
 
             <div id="partnersList" class="space-y-3"></div>
         </div>
+
     </div>
 </div>
 
-<!-- ===================================================================== -->
-<!-- CROP MODAL                                                            -->
-<!-- ===================================================================== -->
+<!-- CROP MODAL -->
 <div id="cropModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
     <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden">
         <div class="p-6 border-b flex items-center justify-between">
@@ -698,243 +575,85 @@
             <img id="cropImage" class="max-h-[460px] w-full object-contain mx-auto">
         </div>
         <div class="p-6 bg-gray-50 flex items-center justify-end gap-4">
-            <button onclick="cancelCrop()"
-                    class="px-8 py-3 text-lg font-medium text-gray-600 hover:bg-gray-100 rounded-2xl">
-                Cancel
-            </button>
-            <button onclick="applyCrop()"
-                    class="px-10 py-3 text-lg font-medium bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700">
-                Crop & Compress
-            </button>
+            <button onclick="cancelCrop()" class="px-8 py-3 text-lg font-medium text-gray-600 hover:bg-gray-100 rounded-2xl">Cancel</button>
+            <button onclick="applyCrop()" class="px-10 py-3 text-lg font-medium bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700">Crop & Compress</button>
         </div>
     </div>
 </div>
 
-<!-- ===================================================================== -->
-<!-- MAIN SCRIPT                                                           -->
-<!-- ===================================================================== -->
 <script>
-    // =====================================================================
-    // CONFIG & STATE
-    // =====================================================================
     const API_BASE = "https://enlil-cms-api.osmanalikareem.workers.dev";
 
-    let authors = [];
-    let articles = [];
-    let research = [];
-    let projects = [];
-    let partners = [];
-
-    let editingType = null;
-    let editingIndex = null;
+    let authors = [], articles = [], research = [], projects = [], partners = [];
+    let editingType = null, editingIndex = null;
 
     const VALID_USERNAME = "admin";
     const VALID_PASSWORD_HASH = "4e2f51b1f6ff8ab433eb869bddf1a9bb89a9073f85e30f4d0c4fc41aa33bb8de";
     let isLoggedIn = false;
-    
-    // ==================== LOGIN RATE LIMIT ====================
+
     const MAX_LOGIN_ATTEMPTS = 5;
-    const LOCKOUT_DURATION_MS = 3 * 60 * 1000; // 3 minutes
-    // ========================================================
+    const LOCKOUT_DURATION_MS = 3 * 60 * 1000;
 
     let quillArticle, quillResearch, quillProject;
-
-    let currentCropper = null;
-    let currentInputId = null;
-    let currentAspectRatio = 1;
-    let currentMaxKB = 1500;
+    let currentCropper = null, currentInputId = null, currentAspectRatio = 1, currentMaxKB = 1500;
 
     const IMAGE_CONFIG = {
-        authorPhoto:   { aspect: 1,     maxWidth: 800,  maxKB: 600  },
-        articleCover:  { aspect: 16/9,  maxWidth: 1200, maxKB: 1500 },
-        researchCover: { aspect: 16/9,  maxWidth: 1200, maxKB: 1500 },
-        partnerLogo:   { aspect: 1,     maxWidth: 600,  maxKB: 500  }
+        authorPhoto:      { aspect: 1,     maxWidth: 800,  maxKB: 600  },
+        articleCover:     { aspect: 16/9,  maxWidth: 1200, maxKB: 1500 },
+        researchCover:    { aspect: 16/9,  maxWidth: 1200, maxKB: 1500 },
+        // FIX: Added projectCover config
+        projectCover:     { aspect: 16/9,  maxWidth: 1200, maxKB: 1500 },
+        partnerLogo:      { aspect: 1,     maxWidth: 600,  maxKB: 500  }
     };
 
     const AUTHOR_ROLE_OPTIONS = [
-        "",
-        "Lead author",
-        "Principal investigator",
-        "Corresponding author",
-        "Co-author",
-        "Data analyst",
-        "Field researcher",
-        "Project coordinator",
-        "Editor",
-        "Reviewer",
-        "Other"
+        "", "Lead author", "Principal investigator", "Corresponding author",
+        "Co-author", "Data analyst", "Field researcher", "Project coordinator",
+        "Editor", "Reviewer", "Other"
     ];
 
     const AUTHOR_LINK_TYPES = [
-        "ORCID",
-        "Google Scholar",
-        "ResearchGate",
-        "Academia.edu",
-        "Mendeley",
-        "Scopus Author ID",
-        "LinkedIn",
-        "X (Twitter)",
-        "Personal website",
-        "Institutional profile",
-        "Other (custom)"
+        "ORCID", "Google Scholar", "ResearchGate", "Academia.edu", "Mendeley",
+        "Scopus Author ID", "LinkedIn", "X (Twitter)", "Personal website",
+        "Institutional profile", "Other (custom)"
     ];
 
     const ENLIL_CORE_KEYWORDS = [
-      "Enlil Center", "Enlil Center Iraq", "مركز انليل", "مركز انليل العراق",
-      "Enlil Center for Environment and Sustainable Development", "مركز انليل للبيئة والتنمية المستدامة",
-      "Enlil think tank Iraq", "مركز أبحاث انليل العراق",
-      "climate change research Iraq", "أبحاث تغير المناخ العراق",
-      "environmental think tank Iraq", "مركز أبحاث بيئية العراق",
-      "climate adaptation Iraq", "التكيف مع تغير المناخ العراق",
-      "Iraq climate resilience", "بناء القدرة على الصمود المناخي العراق",
-      "climate policy Iraq", "سياسات المناخ العراق",
-      "sustainable development institute Iraq", "معهد التنمية المستدامة العراق",
-      "policy research center Iraq", "مركز أبحاث السياسات العراق",
-      "policy advocacy Iraq", "المناصرة السياسية العراق",
-      "think tank Iraq", "مركز أبحاث فكرية العراق",
-      "evidence based policy Iraq", "سياسات مبنية على الأدلة العراق",
-      "Baghdad think tank", "مركز أبحاث بغداد",
-      "capacity building Iraq", "بناء القدرات العراق",
-      "capacity building programs Iraq", "برامج بناء القدرات العراق",
-      "training and capacity development Iraq", "التدريب وبناء القدرات العراق",
-      "institutional capacity building Iraq", "بناء القدرات المؤسسية العراق",
-      "energy policy research Iraq", "أبحاث سياسات الطاقة العراق",
-      "renewable energy policy Iraq", "سياسات الطاقة المتجددة العراق",
-      "water resources management Iraq", "إدارة الموارد المائية العراق",
-      "water scarcity solutions Iraq", "حلول شحة المياه العراق",
-      "sustainable agriculture research Iraq", "أبحاث الزراعة المستدامة العراق",
-      "market research consultancy Iraq", "شركة أبحاث سوق العراق",
-      "market research institute Iraq", "معهد أبحاث السوق العراق",
-      "economic research Iraq", "أبحاث اقتصادية العراق",
-      "climate change research institute in Iraq",
-      "best environmental think tank in Iraq",
-      "policy advocacy organizations Baghdad",
-      "sustainable development consultancy Iraq",
-      "Iraq climate adaptation projects",
-      "water and energy policy research Iraq",
-      "capacity building programs for NGOs Iraq",
-      "renewable energy research center Iraq",
-      "مركز أبحاث تغير المناخ في العراق",
-      "أفضل مركز أبحاث بيئية في العراق",
-      "مركز سياسات وبناء قدرات العراق",
-      "معهد أبحاث الطاقة والمياه العراق",
-      "مشاريع التكيف مع تغير المناخ العراق",
-      "برامج بناء القدرات في العراق",
-      "أبحاث السياسات البيئية العراق",
-      "مركز دراسات التنمية المستدامة العراق",
-      "Iraq environmental research center",
-      "climate solutions Iraq",
-      "sustainable development think tank Iraq",
-      "policy research institute Baghdad",
-      "environmental consultancy Iraq",
-      "climate change think tank Middle East",
-      "Iraq sustainability institute",
-      "green policy research Iraq",
-      "environmental advocacy Iraq",
-      "research and development institute Iraq",
-      "مركز بحوث بيئية العراق",
-      "حلول المناخ العراق",
-      "معهد التنمية المستدامة بغداد",
-      "مركز سياسات خضراء العراق",
-      "المناصرة البيئية العراق",
-      "بحوث الطاقة المتجددة العراق",
-      "إدارة المياه في العراق",
-      "أبحاث الزراعة المستدامة العراق",
-      "مركز أبحاث السياسات العامة العراق",
-      "بناء القدرات المؤسسية العراق",
-      "best think tank for climate policy in Iraq",
-      "environmental policy advisor Iraq",
-      "capacity building for government Iraq",
-      "market research firm Baghdad",
-      "water management research institute Iraq",
-      "renewable energy think tank Iraq",
-      "climate resilience projects Iraq",
-      "sustainable development consultancy Baghdad",
-      "policy advocacy NGO Iraq",
-      "Iraq climate change research organization",
-      "أفضل مركز أبحاث مناخية في العراق",
-      "استشارات سياسات بيئية العراق",
-      "بناء قدرات الحكومة العراقية",
-      "شركة أبحاث سوق في بغداد",
-      "معهد بحوث إدارة المياه العراق",
-      "مركز أبحاث الطاقة المتجددة العراق",
-      "مشاريع الصمود المناخي العراق",
-      "استشارات التنمية المستدامة بغداد",
-      "منظمة مناصرة سياسات العراق",
-      "منظمة أبحاث تغير المناخ العراق",
-      "Enlil Center Baghdad",
-      "Enlil sustainable development",
-      "Enlil policy research",
-      "Enlil capacity building",
-      "Enlil climate solutions",
-      "Enlil water energy research",
-      "مركز انليل بغداد",
-      "انليل التنمية المستدامة",
-      "انليل أبحاث السياسات",
-      "انليل بناء القدرات",
-      "انليل حلول المناخ",
-      "انليل أبحاث المياه والطاقة",
-      "Iraq climate think tank",
-      "Iraq environmental policy center",
-      "Iraq sustainability research institute",
-      "مركز أبحاث الاستدامة العراق",
-      "مركز سياسات بيئية العراق",
-      "معهد بحوث الاستدامة العراق",
-      "climate change consultancy Iraq",
-      "sustainable agriculture policy Iraq",
-      "energy transition research Iraq",
-      "استشارات تغير المناخ العراق",
-      "سياسات الزراعة المستدامة العراق",
-      "أبحاث انتقال الطاقة العراق",
-      "Enlil Center official website",
-      "Enlil Center Al Qadisiya",
-      "مركز انليل الرسمي",
-      "انليل القادسية",
-      "Iraq think tank directory",
-      "Iraq research institutes list",
-      "دليل مراكز الأبحاث العراق",
-      "قائمة معاهد الأبحاث في العراق"
+        "Enlil Center","Enlil Center Iraq","مركز انليل","مركز انليل العراق",
+        "Enlil Center for Environment and Sustainable Development","مركز انليل للبيئة والتنمية المستدامة",
+        "Enlil think tank Iraq","مركز أبحاث انليل العراق","climate change research Iraq",
+        "أبحاث تغير المناخ العراق","environmental think tank Iraq","مركز أبحاث بيئية العراق",
+        "climate adaptation Iraq","التكيف مع تغير المناخ العراق","Iraq climate resilience",
+        "بناء القدرة على الصمود المناخي العراق","climate policy Iraq","سياسات المناخ العراق",
+        "sustainable development institute Iraq","معهد التنمية المستدامة العراق",
+        "policy research center Iraq","مركز أبحاث السياسات العراق","think tank Iraq",
+        "مركز أبحاث فكرية العراق","Baghdad think tank","مركز أبحاث بغداد",
+        "water resources management Iraq","إدارة الموارد المائية العراق",
+        "renewable energy policy Iraq","سياسات الطاقة المتجددة العراق",
+        "capacity building Iraq","بناء القدرات العراق","Enlil Center Baghdad",
+        "Enlil sustainable development","Enlil policy research","Enlil capacity building"
     ];
 
-    // LOGIN & SESSION
+    // LOGIN
     async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
+        const data = new TextEncoder().encode(password);
         const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(hashBuffer))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
     }
 
     async function attemptLogin() {
-        const usernameInput = document.getElementById('loginUsername');
-        const passwordInput = document.getElementById('loginPassword');
-        const errorEl = document.getElementById('loginError');
-    
-        // Check if we are currently locked out
         const lockUntil = localStorage.getItem('loginLockUntil');
         if (lockUntil && Date.now() < parseInt(lockUntil)) {
             const remaining = Math.ceil((parseInt(lockUntil) - Date.now()) / 1000 / 60);
             showLoginError(`Too many failed attempts. Try again in ${remaining} minute${remaining > 1 ? 's' : ''}.`);
             return;
         }
-    
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
-    
-        if (!username || !password) {
-            showLoginError("Please fill both fields");
-            return;
-        }
-    
-        if (username !== VALID_USERNAME) {
-            handleFailedAttempt();
-            return;
-        }
-    
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!username || !password) { showLoginError("Please fill both fields"); return; }
+        if (username !== VALID_USERNAME) { handleFailedAttempt(); return; }
         const inputHash = await hashPassword(password);
         if (inputHash === VALID_PASSWORD_HASH) {
-            // SUCCESS → reset everything
             localStorage.removeItem('loginAttempts');
             localStorage.removeItem('loginLockUntil');
             isLoggedIn = true;
@@ -944,17 +663,15 @@
             handleFailedAttempt();
         }
     }
-    
+
     function handleFailedAttempt() {
         let attempts = parseInt(localStorage.getItem('loginAttempts') || '0');
         attempts++;
         localStorage.setItem('loginAttempts', attempts.toString());
-    
         if (attempts >= MAX_LOGIN_ATTEMPTS) {
             const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
             localStorage.setItem('loginLockUntil', lockUntil.toString());
-            const minutes = Math.ceil(LOCKOUT_DURATION_MS / 1000 / 60);
-            showLoginError(`Too many failed attempts. Login locked for ${minutes} minutes.`);
+            showLoginError(`Too many failed attempts. Login locked for ${Math.ceil(LOCKOUT_DURATION_MS/1000/60)} minutes.`);
         } else {
             showLoginError(`Wrong username or password (${MAX_LOGIN_ATTEMPTS - attempts} attempts left)`);
         }
@@ -964,29 +681,19 @@
         const err = document.getElementById('loginError');
         err.textContent = msg;
         err.classList.remove('hidden');
-        // Auto-hide after 6 seconds
-        setTimeout(() => {
-            if (err.textContent === msg) err.classList.add('hidden');
-        }, 6000);
+        setTimeout(() => { if (err.textContent === msg) err.classList.add('hidden'); }, 6000);
     }
-    
 
     function updateLockCountdown() {
         const el = document.getElementById('lockCountdown');
         const lockUntil = localStorage.getItem('loginLockUntil');
-        if (!lockUntil || Date.now() >= parseInt(lockUntil)) {
-            el.classList.add('hidden');
-            return;
-        }
-    
+        if (!lockUntil || Date.now() >= parseInt(lockUntil)) { el.classList.add('hidden'); return; }
         el.classList.remove('hidden');
         const remaining = Math.ceil((parseInt(lockUntil) - Date.now()) / 1000);
-        const min = Math.floor(remaining / 60);
-        const sec = remaining % 60;
+        const min = Math.floor(remaining / 60), sec = remaining % 60;
         el.textContent = `Locked — try again in ${min}:${sec < 10 ? '0' : ''}${sec}`;
         setTimeout(updateLockCountdown, 1000);
     }
-    
 
     function logout() {
         if (confirm('Logout and return to login screen?')) {
@@ -999,7 +706,7 @@
     }
 
     function clearAllLists() {
-        ['authorsList', 'articlesList', 'researchList', 'projectsList', 'partnersList']
+        ['authorsList','articlesList','researchList','projectsList','partnersList']
             .forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
     }
 
@@ -1008,106 +715,57 @@
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         const activeTab = document.getElementById('tab' + n);
         if (activeTab) activeTab.classList.remove('hidden');
-
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('tab-active'));
-        const activeBtn = Array.from(document.querySelectorAll('.tab-button')).find(btn =>
-            btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`switchTab(${n})`)
-        );
+        const activeBtn = Array.from(document.querySelectorAll('.tab-button'))
+            .find(btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`switchTab(${n})`));
         if (activeBtn) activeBtn.classList.add('tab-active');
     }
 
-    // QUILL + IMAGE NORMALIZATION
+    // QUILL
     function normalizeQuillImages(quillInstance) {
         if (!quillInstance) return;
-        const editor = quillInstance.root;
-        const imgs = editor.querySelectorAll('img');
-        imgs.forEach(img => {
-            img.removeAttribute('width');
-            img.removeAttribute('height');
-            img.style.maxWidth = '100%';
-            img.style.height = 'auto';
-            img.style.display = 'block';
-            img.style.margin = '1.25rem auto';
+        quillInstance.root.querySelectorAll('img').forEach(img => {
+            img.removeAttribute('width'); img.removeAttribute('height');
+            img.style.maxWidth = '100%'; img.style.height = 'auto';
+            img.style.display = 'block'; img.style.margin = '1.25rem auto';
             img.style.borderRadius = '0.75rem';
         });
     }
 
     function initEditors() {
-        quillArticle = new Quill('#articleEditor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'link'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['image'],
-                    ['clean']
-                ]
-            }
-        });
-        quillArticle.on('text-change', () => {
-            normalizeQuillImages(quillArticle);
-            updateArticlePreview();
-        });
+        const toolbar = [
+            ['bold','italic','underline','link'],
+            [{'list':'ordered'},{'list':'bullet'}],
+            ['image'],['clean']
+        ];
+        quillArticle = new Quill('#articleEditor', { theme: 'snow', modules: { toolbar } });
+        quillArticle.on('text-change', () => { normalizeQuillImages(quillArticle); updateArticlePreview(); });
 
-        quillResearch = new Quill('#researchEditor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'link'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['image'],
-                    ['clean']
-                ]
-            }
-        });
-        quillResearch.on('text-change', () => {
-            normalizeQuillImages(quillResearch);
-            updateResearchPreview();
-        });
+        quillResearch = new Quill('#researchEditor', { theme: 'snow', modules: { toolbar } });
+        quillResearch.on('text-change', () => { normalizeQuillImages(quillResearch); updateResearchPreview(); });
 
-        quillProject = new Quill('#projectEditor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'link'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['image'],
-                    ['clean']
-                ]
-            }
-        });
-        quillProject.on('text-change', () => {
-            normalizeQuillImages(quillProject);
-            updateProjectPreview();
-        });
+        quillProject = new Quill('#projectEditor', { theme: 'snow', modules: { toolbar } });
+        quillProject.on('text-change', () => { normalizeQuillImages(quillProject); updateProjectPreview(); });
     }
 
     // IMAGE CROP & COMPRESS
     function handleImageSelect(e, configKey) {
         const file = e.target.files[0];
         if (!file) return;
-
         const config = IMAGE_CONFIG[configKey];
         currentInputId = e.target.id;
         currentAspectRatio = config.aspect;
         currentMaxKB = config.maxKB;
-
         document.getElementById('cropModal').classList.remove('hidden');
         document.getElementById('cropTitle').textContent =
             (configKey.includes('author') || configKey.includes('partner'))
-                ? "Crop square image"
-                : "Crop landscape cover";
-
+                ? "Crop square image" : "Crop landscape cover";
         const reader = new FileReader();
         reader.onload = ev => {
             const img = document.getElementById('cropImage');
             img.src = ev.target.result;
             if (currentCropper) currentCropper.destroy();
-            currentCropper = new Cropper(img, {
-                aspectRatio: currentAspectRatio,
-                viewMode: 2,
-                autoCropArea: 1
-            });
+            currentCropper = new Cropper(img, { aspectRatio: currentAspectRatio, viewMode: 2, autoCropArea: 1 });
         };
         reader.readAsDataURL(file);
     }
@@ -1116,63 +774,40 @@
         if (currentCropper) currentCropper.destroy();
         currentCropper = null;
         document.getElementById('cropModal').classList.add('hidden');
-        if (currentInputId) {
-            const input = document.getElementById(currentInputId);
-            if (input) input.value = '';
-        }
+        if (currentInputId) { const input = document.getElementById(currentInputId); if (input) input.value = ''; }
         currentInputId = null;
     }
 
     async function applyCrop() {
         if (!currentCropper || !currentInputId) return;
-
         const config = IMAGE_CONFIG[currentInputId] || { maxWidth: 1200, maxKB: currentMaxKB };
         const canvas = currentCropper.getCroppedCanvas({ width: config.maxWidth });
-
         let base64 = canvas.toDataURL('image/jpeg', 0.92);
         base64 = await compressImage(base64, currentMaxKB);
-
         window[`cropped_${currentInputId}`] = base64;
-
         if (currentCropper) currentCropper.destroy();
         currentCropper = null;
         document.getElementById('cropModal').classList.add('hidden');
-
-        const previewId = currentInputId + "Preview";
-        const imgId = currentInputId + "PreviewImg";
-
-        const previewEl = document.getElementById(previewId);
-        const imgEl = document.getElementById(imgId);
-        if (previewEl && imgEl) {
-            imgEl.src = base64;
-            previewEl.classList.remove('hidden');
-        }
-
-        updateArticlePreview();
-        updateResearchPreview();
-        updateProjectPreview();
-
+        const previewEl = document.getElementById(currentInputId + "Preview");
+        const imgEl = document.getElementById(currentInputId + "PreviewImg");
+        if (previewEl && imgEl) { imgEl.src = base64; previewEl.classList.remove('hidden'); }
+        updateArticlePreview(); updateResearchPreview(); updateProjectPreview();
         alert('✅ Image cropped & compressed!');
         currentInputId = null;
     }
 
     async function compressImage(base64, maxKB) {
-        let quality = 0.92;
-        let result = base64;
-
+        let quality = 0.92, result = base64;
         while (result.length / 1024 > maxKB && quality > 0.1) {
             quality -= 0.05;
             const img = new Image();
             img.src = base64;
             await new Promise(resolve => img.onload = resolve);
-
             const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = img.width; canvas.height = img.height;
             canvas.getContext('2d').drawImage(img, 0, 0);
             result = canvas.toDataURL('image/jpeg', quality);
         }
-
         return result;
     }
 
@@ -1186,15 +821,12 @@
                 fetch(`${API_BASE}/data/projects`),
                 fetch(`${API_BASE}/data/partners`)
             ]);
-
-            authors = (await aRes.json()) || [];
+            authors  = (await aRes.json())  || [];
             articles = (await arRes.json()) || [];
-            research = (await rRes.json()) || [];
-            projects = (await pRes.json()) || [];
+            research = (await rRes.json())  || [];
+            projects = (await pRes.json())  || [];
             partners = (await prRes.json()) || [];
-        } catch (e) {
-            console.log("First run or load error - no data yet", e);
-        }
+        } catch (e) { console.log("First run or load error", e); }
         renderAll();
         populateAuthorSelects();
     }
@@ -1206,7 +838,6 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            console.log(`✅ ${key} saved`);
         } catch (e) {
             console.error("Save failed", e);
             alert("Could not save — check console / network");
@@ -1215,32 +846,27 @@
 
     // RENDER LISTS
     function renderAll() {
-        renderAuthors();
-        renderArticles();
-        renderResearch();
-        renderProjects();
-        renderPartners();
+        renderAuthors(); renderArticles(); renderResearch(); renderProjects(); renderPartners();
     }
 
     function renderAuthors() {
         const container = document.getElementById('authorsList');
         if (!container) return;
-
         container.innerHTML = authors.map((a, index) => {
             const contactSummary = [];
             if (a.email) contactSummary.push(a.email);
-            if (Array.isArray(a.links)) {
-                a.links.slice(0, 2).forEach(l => {
-                    if (l.url && l.type) contactSummary.push(`${l.type}: ${l.url}`);
-                });
-            }
+            if (Array.isArray(a.links)) a.links.slice(0, 2).forEach(l => {
+                if (l.url && l.type) contactSummary.push(`${l.type}: ${l.url}`);
+            });
             return `
             <div class="bg-white p-4 rounded-2xl shadow-sm mb-1 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     ${a.photo ? `<img src="${a.photo}" class="w-10 h-10 rounded-xl object-cover border">` : ''}
                     <div>
                         <p class="font-semibold">${a.name || ''}</p>
-                        <p class="text-xs text-gray-500 line-clamp-2">${contactSummary.join(' · ')}</p>
+                        <!-- FIX: Show role in list card -->
+                        <p class="text-xs text-emerald-600">${a.role || ''}</p>
+                        <p class="text-xs text-gray-500 line-clamp-1">${contactSummary.join(' · ')}</p>
                     </div>
                 </div>
                 <div class="flex gap-3 items-center">
@@ -1249,9 +875,7 @@
                         <i class="fa-solid fa-pen"></i><span>Edit</span>
                     </button>
                     <button onclick="deleteItem('authors', ${index})"
-                            class="text-red-500 hover:text-red-600 text-xl leading-none">
-                        ×
-                    </button>
+                            class="text-red-500 hover:text-red-600 text-xl leading-none">×</button>
                 </div>
             </div>`;
         }).join('');
@@ -1260,7 +884,6 @@
     function renderArticles() {
         const container = document.getElementById('articlesList');
         if (!container) return;
-
         container.innerHTML = articles.map((a, i) => {
             const leadName = (a.leadAuthor && a.leadAuthor.name) || a.author || '—';
             const authorsCount = Array.isArray(a.authors) ? a.authors.length : 0;
@@ -1277,9 +900,7 @@
                         <i class="fa-solid fa-pen"></i><span>Edit</span>
                     </button>
                     <button onclick="deleteItem('articles', ${i})"
-                            class="text-red-500 hover:text-red-600 text-xl leading-none">
-                        ×
-                    </button>
+                            class="text-red-500 hover:text-red-600 text-xl leading-none">×</button>
                 </div>
             </div>`;
         }).join('');
@@ -1288,7 +909,6 @@
     function renderResearch() {
         const container = document.getElementById('researchList');
         if (!container) return;
-
         container.innerHTML = research.map((r, i) => {
             const leadName = (r.leadAuthor && r.leadAuthor.name) || r.author || '—';
             const authorsCount = Array.isArray(r.authors) ? r.authors.length : 0;
@@ -1305,9 +925,7 @@
                         <i class="fa-solid fa-pen"></i><span>Edit</span>
                     </button>
                     <button onclick="deleteItem('research', ${i})"
-                            class="text-red-500 hover:text-red-600 text-xl leading-none">
-                        ×
-                    </button>
+                            class="text-red-500 hover:text-red-600 text-xl leading-none">×</button>
                 </div>
             </div>`;
         }).join('');
@@ -1316,13 +934,18 @@
     function renderProjects() {
         const container = document.getElementById('projectsList');
         if (!container) return;
-
-        container.innerHTML = projects.map((p, i) => `
+        container.innerHTML = projects.map((p, i) => {
+            // FIX: Show status badge in list card
+            const isActive = p.status && (p.status.toLowerCase().includes('active') || p.status.toLowerCase().includes('ongoing'));
+            const statusBadge = p.status ? `<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full ${
+                isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'
+            }">${p.status}</span>` : '';
+            return `
             <div class="bg-white p-4 rounded-2xl shadow-sm mb-1 flex justify-between items-center">
                 <div>
                     <p class="font-semibold">${p.title || ''}</p>
-                    <p class="text-xs text-gray-500">
-                        ${p.sponsor || ''} ${p.year ? '· ' + p.year : ''}
+                    <p class="text-xs text-gray-500 flex items-center gap-2">
+                        ${p.sponsor || ''} ${p.year ? '· ' + p.year : ''} ${statusBadge}
                     </p>
                 </div>
                 <div class="flex gap-3 items-center">
@@ -1331,18 +954,15 @@
                         <i class="fa-solid fa-pen"></i><span>Edit</span>
                     </button>
                     <button onclick="deleteItem('projects', ${i})"
-                            class="text-red-500 hover:text-red-600 text-xl leading-none">
-                        ×
-                    </button>
+                            class="text-red-500 hover:text-red-600 text-xl leading-none">×</button>
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
     }
 
     function renderPartners() {
         const container = document.getElementById('partnersList');
         if (!container) return;
-
         container.innerHTML = partners.map((p, i) => `
             <div class="bg-white p-4 rounded-2xl shadow-sm mb-1 flex justify-between items-center">
                 <div class="flex items-center gap-3">
@@ -1358,28 +978,21 @@
                         <i class="fa-solid fa-pen"></i><span>Edit</span>
                     </button>
                     <button onclick="deleteItem('partners', ${i})"
-                            class="text-red-500 hover:text-red-600 text-xl leading-none">
-                        ×
-                    </button>
+                            class="text-red-500 hover:text-red-600 text-xl leading-none">×</button>
                 </div>
-            </div>
-        `).join('');
+            </div>`).join('');
     }
 
-    // AUTHOR SELECTS & DYNAMIC AUTHOR ROWS
+    // AUTHOR SELECTS
     function populateAuthorSelects() {
-        const leadSelects = [
-            document.getElementById('articleLeadAuthor'),
-            document.getElementById('researchLeadAuthor')
-        ];
-        leadSelects.forEach(select => {
+        ['articleLeadAuthor','researchLeadAuthor'].forEach(id => {
+            const select = document.getElementById(id);
             if (!select) return;
             const prev = select.value;
             select.innerHTML = '<option value="">Select lead author</option>';
             authors.forEach(author => {
                 const opt = document.createElement('option');
-                opt.value = author.name;
-                opt.textContent = author.name;
+                opt.value = author.name; opt.textContent = author.name;
                 select.appendChild(opt);
             });
             if (prev) select.value = prev;
@@ -1391,14 +1004,12 @@
     function syncDynamicAuthorSelects(containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
-        const selects = container.querySelectorAll('select[data-author-select="true"]');
-        selects.forEach(select => {
+        container.querySelectorAll('select[data-author-select="true"]').forEach(select => {
             const prev = select.value;
             select.innerHTML = '<option value="">Select author</option>';
             authors.forEach(author => {
                 const opt = document.createElement('option');
-                opt.value = author.name;
-                opt.textContent = author.name;
+                opt.value = author.name; opt.textContent = author.name;
                 select.appendChild(opt);
             });
             if (prev) select.value = prev;
@@ -1408,122 +1019,75 @@
     function createAuthorRow(existing) {
         const row = document.createElement('div');
         row.className = "grid grid-cols-1 md:grid-cols-[minmax(0,0.6fr)_minmax(0,0.4fr)_auto] gap-2 items-center";
-
         const authorSelect = document.createElement('select');
         authorSelect.className = "w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm";
         authorSelect.setAttribute('data-author-select', 'true');
         authorSelect.innerHTML = '<option value="">Select author</option>';
         authors.forEach(a => {
             const opt = document.createElement('option');
-            opt.value = a.name;
-            opt.textContent = a.name;
-            authorSelect.appendChild(opt);
+            opt.value = a.name; opt.textContent = a.name; authorSelect.appendChild(opt);
         });
-
         const roleSelect = document.createElement('select');
         roleSelect.className = "w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm";
         AUTHOR_ROLE_OPTIONS.forEach(r => {
             const opt = document.createElement('option');
-            opt.value = r;
-            opt.textContent = r || 'Role';
-            roleSelect.appendChild(opt);
+            opt.value = r; opt.textContent = r || 'Role'; roleSelect.appendChild(opt);
         });
-
         const customRoleInput = document.createElement('input');
-        customRoleInput.type = "text";
-        customRoleInput.placeholder = "Custom role";
+        customRoleInput.type = "text"; customRoleInput.placeholder = "Custom role";
         customRoleInput.className = "w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm mt-2 hidden";
-
         roleSelect.addEventListener('change', () => {
-            if (roleSelect.value === 'Other') {
-                customRoleInput.classList.remove('hidden');
-            } else {
-                customRoleInput.classList.add('hidden');
-                customRoleInput.value = '';
-            }
+            if (roleSelect.value === 'Other') customRoleInput.classList.remove('hidden');
+            else { customRoleInput.classList.add('hidden'); customRoleInput.value = ''; }
         });
-
         const removeBtn = document.createElement('button');
-        removeBtn.type = "button";
-        removeBtn.className = "text-red-500 hover:text-red-600 text-lg px-2";
-        removeBtn.textContent = "×";
-        removeBtn.onclick = () => row.remove();
-
-        const leftCol = document.createElement('div');
-        leftCol.appendChild(authorSelect);
-
-        const midCol = document.createElement('div');
-        midCol.appendChild(roleSelect);
-        midCol.appendChild(customRoleInput);
-
-        row.appendChild(leftCol);
-        row.appendChild(midCol);
-        row.appendChild(removeBtn);
-
+        removeBtn.type = "button"; removeBtn.className = "text-red-500 hover:text-red-600 text-lg px-2";
+        removeBtn.textContent = "×"; removeBtn.onclick = () => row.remove();
+        const leftCol = document.createElement('div'); leftCol.appendChild(authorSelect);
+        const midCol = document.createElement('div'); midCol.appendChild(roleSelect); midCol.appendChild(customRoleInput);
+        row.appendChild(leftCol); row.appendChild(midCol); row.appendChild(removeBtn);
         if (existing) {
             authorSelect.value = existing.name || '';
             const role = existing.role || '';
-            if (AUTHOR_ROLE_OPTIONS.includes(role)) {
-                roleSelect.value = role;
-            } else if (role) {
-                roleSelect.value = 'Other';
-                customRoleInput.classList.remove('hidden');
-                customRoleInput.value = role;
-            }
+            if (AUTHOR_ROLE_OPTIONS.includes(role)) { roleSelect.value = role; }
+            else if (role) { roleSelect.value = 'Other'; customRoleInput.classList.remove('hidden'); customRoleInput.value = role; }
         }
-
         return row;
     }
 
     function addArticleAuthorRow(existing) {
         const container = document.getElementById('articleAuthorsContainer');
         if (!container) return;
-        const row = createAuthorRow(existing);
-        container.appendChild(row);
+        container.appendChild(createAuthorRow(existing));
         updateArticlePreview();
     }
 
     function addResearchAuthorRow(existing) {
         const container = document.getElementById('researchAuthorsContainer');
         if (!container) return;
-        const row = createAuthorRow(existing);
-        container.appendChild(row);
+        container.appendChild(createAuthorRow(existing));
         updateResearchPreview();
     }
 
     function clearDynamicAuthorRows(containerId) {
-        const container = document.getElementById(containerId);
-        if (container) container.innerHTML = '';
+        const c = document.getElementById(containerId); if (c) c.innerHTML = '';
     }
 
     function collectAuthorsFromContainer(containerId, leadName, leadRole) {
         const container = document.getElementById(containerId);
         const result = [];
-
         if (container) {
-            const rows = Array.from(container.children);
-            rows.forEach(row => {
+            Array.from(container.children).forEach(row => {
                 const selects = row.getElementsByTagName('select');
                 const inputs = row.getElementsByTagName('input');
-                const aSelect = selects[0];
-                const rSelect = selects[1];
-                const customRoleInput = inputs[0];
-
+                const aSelect = selects[0], rSelect = selects[1], customRoleInput = inputs[0];
                 if (!aSelect.value) return;
-
                 let role = rSelect.value;
-                if (role === 'Other') {
-                    role = customRoleInput.value.trim() || 'Other';
-                }
-                result.push({
-                    name: aSelect.value,
-                    role: role
-                });
+                if (role === 'Other') role = customRoleInput.value.trim() || 'Other';
+                result.push({ name: aSelect.value, role });
             });
         }
-
-        const leadAuthor = leadName ? { name: leadName, role: leadRole || null } : null;
-        return { leadAuthor, coAuthors: result };
+        return { leadAuthor: leadName ? { name: leadName, role: leadRole || null } : null, coAuthors: result };
     }
 
     function resolveLeadRole(selectId, customId) {
@@ -1531,81 +1095,46 @@
         const custom = document.getElementById(customId);
         if (!select) return null;
         let val = select.value;
-        if (val === 'Other') {
-            val = (custom && custom.value.trim()) || 'Other';
-        }
-        if (!val) return null;
-        return val;
+        if (val === 'Other') val = (custom && custom.value.trim()) || 'Other';
+        return val || null;
     }
 
-    // AUTHOR CONTACT LINKS
+    // AUTHOR LINKS
     function clearAuthorLinks() {
-        const container = document.getElementById('authorLinksContainer');
-        if (container) container.innerHTML = '';
+        const c = document.getElementById('authorLinksContainer'); if (c) c.innerHTML = '';
     }
 
     function addAuthorLinkRow(existing) {
         const container = document.getElementById('authorLinksContainer');
         if (!container) return;
-
         const row = document.createElement('div');
         row.className = "grid grid-cols-1 md:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)_auto] gap-2 items-center";
-
         const typeSelect = document.createElement('select');
         typeSelect.className = "w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm";
         AUTHOR_LINK_TYPES.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t;
-            opt.textContent = t || 'Link type';
+            const opt = document.createElement('option'); opt.value = t; opt.textContent = t;
             typeSelect.appendChild(opt);
         });
-
         const customTypeInput = document.createElement('input');
-        customTypeInput.type = "text";
-        customTypeInput.placeholder = "Custom type (e.g. Blog, Podcast)";
+        customTypeInput.type = "text"; customTypeInput.placeholder = "Custom type";
         customTypeInput.className = "w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm mt-2 hidden";
-
         typeSelect.addEventListener('change', () => {
-            if (typeSelect.value === 'Other (custom)') {
-                customTypeInput.classList.remove('hidden');
-            } else {
-                customTypeInput.classList.add('hidden');
-                customTypeInput.value = '';
-            }
+            if (typeSelect.value === 'Other (custom)') customTypeInput.classList.remove('hidden');
+            else { customTypeInput.classList.add('hidden'); customTypeInput.value = ''; }
         });
-
         const urlInput = document.createElement('input');
-        urlInput.type = "url";
-        urlInput.placeholder = "Paste link (https://...)";
+        urlInput.type = "url"; urlInput.placeholder = "Paste link (https://...)";
         urlInput.className = "w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm";
-
         const removeBtn = document.createElement('button');
-        removeBtn.type = "button";
-        removeBtn.className = "text-red-500 hover:text-red-600 text-lg px-2";
-        removeBtn.textContent = "×";
-        removeBtn.onclick = () => row.remove();
-
-        const leftCol = document.createElement('div');
-        leftCol.appendChild(typeSelect);
-        leftCol.appendChild(customTypeInput);
-
-        const midCol = document.createElement('div');
-        midCol.appendChild(urlInput);
-
-        row.appendChild(leftCol);
-        row.appendChild(midCol);
-        row.appendChild(removeBtn);
-
+        removeBtn.type = "button"; removeBtn.className = "text-red-500 hover:text-red-600 text-lg px-2";
+        removeBtn.textContent = "×"; removeBtn.onclick = () => row.remove();
+        const leftCol = document.createElement('div'); leftCol.appendChild(typeSelect); leftCol.appendChild(customTypeInput);
+        const midCol = document.createElement('div'); midCol.appendChild(urlInput);
+        row.appendChild(leftCol); row.appendChild(midCol); row.appendChild(removeBtn);
         container.appendChild(row);
-
         if (existing) {
-            if (AUTHOR_LINK_TYPES.includes(existing.type)) {
-                typeSelect.value = existing.type;
-            } else {
-                typeSelect.value = "Other (custom)";
-                customTypeInput.classList.remove('hidden');
-                customTypeInput.value = existing.type;
-            }
+            if (AUTHOR_LINK_TYPES.includes(existing.type)) typeSelect.value = existing.type;
+            else { typeSelect.value = "Other (custom)"; customTypeInput.classList.remove('hidden'); customTypeInput.value = existing.type; }
             urlInput.value = existing.url || '';
         }
     }
@@ -1613,116 +1142,81 @@
     function collectAuthorLinksFromForm() {
         const container = document.getElementById('authorLinksContainer');
         if (!container) return [];
-        const rows = Array.from(container.children);
-        return rows.map(row => {
+        return Array.from(container.children).map(row => {
             const selects = row.getElementsByTagName('select');
             const inputs = row.getElementsByTagName('input');
-            const typeSelect = selects[0];
-            const customTypeInput = inputs[0];
-            const urlInput = inputs[1];
+            const typeSelect = selects[0], customTypeInput = inputs[0], urlInput = inputs[1];
             if (!urlInput.value.trim()) return null;
             let type = typeSelect.value;
-            if (type === 'Other (custom)') {
-                type = customTypeInput.value.trim() || 'Other';
-            }
-            return {
-                type,
-                url: urlInput.value.trim()
-            };
+            if (type === 'Other (custom)') type = customTypeInput.value.trim() || 'Other';
+            return { type, url: urlInput.value.trim() };
         }).filter(Boolean);
     }
 
     // SEO HELPERS
     function buildSeoKeywords(customInput, extraTerms = []) {
-        const userTerms = (customInput || '')
-            .split(',')
-            .map(s => s.trim())
-            .filter(Boolean);
-
-        const base = ENLIL_CORE_KEYWORDS.slice(0, 30);
-        const extras = extraTerms.filter(Boolean);
-
-        const merged = [...userTerms, ...extras, ...base];
+        const userTerms = (customInput || '').split(',').map(s => s.trim()).filter(Boolean);
+        const merged = [...userTerms, ...extraTerms.filter(Boolean), ...ENLIL_CORE_KEYWORDS.slice(0, 30)];
         const seen = new Set();
         return merged.filter(k => {
             const lower = k.toLowerCase();
-            if (seen.has(lower)) return false;
-            seen.add(lower);
-            return true;
+            if (seen.has(lower)) return false; seen.add(lower); return true;
         }).join(', ');
     }
 
     function buildMetaPreviewHtml(url, title, desc) {
-        return `
-            <div class="mt-8 border-t pt-4 text-xs text-gray-600">
-                <p class="font-semibold mb-1">Search snippet preview</p>
-                <p class="text-emerald-700 break-all">${url}</p>
-                <p class="font-semibold text-gray-900 mt-1">${title}</p>
-                <p class="mt-1">${desc}</p>
-            </div>
-        `;
+        return `<div class="mt-8 border-t pt-4 text-xs text-gray-600">
+            <p class="font-semibold mb-1">Search snippet preview</p>
+            <p class="text-emerald-700 break-all">${url}</p>
+            <p class="font-semibold text-gray-900 mt-1">${title}</p>
+            <p class="mt-1">${desc}</p>
+        </div>`;
     }
 
     // IMAGE CAPTION TRANSFORMER
     function transformImagesWithCaptions(html) {
         if (!html) return html;
-
         const wrapper = document.createElement('div');
         wrapper.innerHTML = html;
-
         const paragraphs = Array.from(wrapper.querySelectorAll('p, div'));
         paragraphs.forEach((p, idx) => {
             const img = p.querySelector('img');
             if (!img) return;
-
             const next = paragraphs[idx + 1];
             let captionText = '';
-
             if (next && next.innerText && next.innerText.trim().toLowerCase().startsWith('caption:')) {
                 captionText = next.innerText.trim().slice(8).trim();
             }
-
             const figure = document.createElement('figure');
-            figure.style.margin = '1.25rem auto';
-            figure.style.textAlign = 'center';
-
+            figure.style.cssText = 'margin:1.25rem auto;text-align:center;';
             img.parentNode && img.parentNode.removeChild(img);
-            img.style.margin = '0 auto';
-            figure.appendChild(img);
-
+            img.style.margin = '0 auto'; figure.appendChild(img);
             if (captionText) {
                 const figcap = document.createElement('figcaption');
                 figcap.innerText = captionText;
-                figcap.style.fontSize = '0.75rem';
-                figcap.style.color = '#6b7280';
-                figcap.style.marginTop = '0.25rem';
-                figcap.style.fontStyle = 'italic';
+                figcap.style.cssText = 'font-size:0.75rem;color:#6b7280;margin-top:0.25rem;font-style:italic;';
                 figure.appendChild(figcap);
-
                 next && next.parentNode && next.parentNode.removeChild(next);
             }
-
             p.parentNode && p.parentNode.replaceChild(figure, p);
         });
-
         return wrapper.innerHTML;
     }
 
-    // EDIT ITEM (LOAD FORMS)
+    // EDIT ITEM
     function editItem(type, index) {
-        editingType = type;
-        editingIndex = index;
+        editingType = type; editingIndex = index;
 
         if (type === 'authors') {
             const item = authors[index];
             document.getElementById('authorEditIndex').value = index;
             document.getElementById('authorName').value = item.name || '';
+            // FIX: Restore role field
+            document.getElementById('authorRole').value = item.role || '';
             document.getElementById('authorBio').value = item.bio || '';
             document.getElementById('authorEmail').value = item.email || '';
-
             clearAuthorLinks();
             if (Array.isArray(item.links)) item.links.forEach(link => addAuthorLinkRow(link));
-
             if (item.photo) {
                 window.cropped_authorPhoto = item.photo;
                 const prev = document.getElementById('authorPhotoPreview');
@@ -1733,7 +1227,6 @@
                 const prev = document.getElementById('authorPhotoPreview');
                 if (prev) prev.classList.add('hidden');
             }
-
             document.getElementById('authorSubmitButton').textContent = 'Update Author';
             switchTab(0);
 
@@ -1742,35 +1235,18 @@
             document.getElementById('articleEditIndex').value = index;
             document.getElementById('articleTitle').value = item.title || '';
             document.getElementById('articleDate').value = item.date || '';
-
-            document.getElementById('articleLeadAuthor').value =
-                (item.leadAuthor && item.leadAuthor.name) || item.author || '';
-
+            document.getElementById('articleLeadAuthor').value = (item.leadAuthor && item.leadAuthor.name) || item.author || '';
             const leadRoleSelect = document.getElementById('articleLeadRole');
             const leadRoleCustom = document.getElementById('articleLeadRoleCustom');
             if (item.leadAuthor && item.leadAuthor.role) {
                 const role = item.leadAuthor.role;
-                if (AUTHOR_ROLE_OPTIONS.includes(role)) {
-                    leadRoleSelect.value = role;
-                    leadRoleCustom.classList.add('hidden');
-                    leadRoleCustom.value = '';
-                } else {
-                    leadRoleSelect.value = 'Other';
-                    leadRoleCustom.classList.remove('hidden');
-                    leadRoleCustom.value = role;
-                }
-            } else {
-                leadRoleSelect.value = "";
-                leadRoleCustom.classList.add('hidden');
-                leadRoleCustom.value = '';
-            }
-
+                if (AUTHOR_ROLE_OPTIONS.includes(role)) { leadRoleSelect.value = role; leadRoleCustom.classList.add('hidden'); leadRoleCustom.value = ''; }
+                else { leadRoleSelect.value = 'Other'; leadRoleCustom.classList.remove('hidden'); leadRoleCustom.value = role; }
+            } else { leadRoleSelect.value = ""; leadRoleCustom.classList.add('hidden'); leadRoleCustom.value = ''; }
             clearDynamicAuthorRows('articleAuthorsContainer');
             if (Array.isArray(item.authors)) item.authors.forEach(a => addArticleAuthorRow(a));
-
             quillArticle.root.innerHTML = item.content || '';
             normalizeQuillImages(quillArticle);
-
             if (item.cover) {
                 window.cropped_articleCover = item.cover;
                 const prev = document.getElementById('articleCoverPreview');
@@ -1781,49 +1257,30 @@
                 const prev = document.getElementById('articleCoverPreview');
                 if (prev) prev.classList.add('hidden');
             }
-
             document.getElementById('articleSlug').value = (item.seo && item.seo.slug) || '';
             document.getElementById('articleSeoDescription').value = (item.seo && item.seo.description) || '';
             document.getElementById('articleSeoKeywords').value = (item.seo && item.seo.keywords) || '';
-
             document.getElementById('articleSubmitButton').textContent = 'Update Article';
-            switchTab(1);
-            updateArticlePreview();
+            switchTab(1); updateArticlePreview();
 
         } else if (type === 'research') {
             const item = research[index];
             document.getElementById('researchEditIndex').value = index;
             document.getElementById('researchTitle').value = item.title || '';
             document.getElementById('researchDate').value = item.date || '';
-
-            document.getElementById('researchLeadAuthor').value =
-                (item.leadAuthor && item.leadAuthor.name) || item.author || '';
-
+            document.getElementById('researchLeadAuthor').value = (item.leadAuthor && item.leadAuthor.name) || item.author || '';
             const leadRoleSelect = document.getElementById('researchLeadRole');
             const leadRoleCustom = document.getElementById('researchLeadRoleCustom');
             if (item.leadAuthor && item.leadAuthor.role) {
                 const role = item.leadAuthor.role;
-                if (AUTHOR_ROLE_OPTIONS.includes(role)) {
-                    leadRoleSelect.value = role;
-                    leadRoleCustom.classList.add('hidden');
-                    leadRoleCustom.value = '';
-                } else {
-                    leadRoleSelect.value = 'Other';
-                    leadRoleCustom.classList.remove('hidden');
-                    leadRoleCustom.value = role;
-                }
-            } else {
-                leadRoleSelect.value = "";
-                leadRoleCustom.classList.add('hidden');
-                leadRoleCustom.value = '';
-            }
-
+                if (AUTHOR_ROLE_OPTIONS.includes(role)) { leadRoleSelect.value = role; leadRoleCustom.classList.add('hidden'); leadRoleCustom.value = ''; }
+                else { leadRoleSelect.value = 'Other'; leadRoleCustom.classList.remove('hidden'); leadRoleCustom.value = role; }
+            } else { leadRoleSelect.value = ""; leadRoleCustom.classList.add('hidden'); leadRoleCustom.value = ''; }
             clearDynamicAuthorRows('researchAuthorsContainer');
             if (Array.isArray(item.authors)) item.authors.forEach(a => addResearchAuthorRow(a));
-
-            quillResearch.root.innerHTML = item.abstract || '';
+            // FIX: Load both abstract and content fields (abstract is legacy key)
+            quillResearch.root.innerHTML = item.abstract || item.content || '';
             normalizeQuillImages(quillResearch);
-
             if (item.cover) {
                 window.cropped_researchCover = item.cover;
                 const prev = document.getElementById('researchCoverPreview');
@@ -1834,21 +1291,17 @@
                 const prev = document.getElementById('researchCoverPreview');
                 if (prev) prev.classList.add('hidden');
             }
-
             if (item.pdfThumb) {
                 const pdfPrev = document.getElementById('researchPDFPreview');
                 const pdfImg = document.getElementById('researchPDFThumb');
                 if (pdfPrev && pdfImg) { pdfImg.src = item.pdfThumb; pdfPrev.classList.remove('hidden'); }
             }
             window.currentResearchPDF = item.pdfBase64 || null;
-
             document.getElementById('researchSlug').value = (item.seo && item.seo.slug) || '';
             document.getElementById('researchSeoDescription').value = (item.seo && item.seo.description) || '';
             document.getElementById('researchSeoKeywords').value = (item.seo && item.seo.keywords) || '';
-
             document.getElementById('researchSubmitButton').textContent = 'Update Research';
-            switchTab(2);
-            updateResearchPreview();
+            switchTab(2); updateResearchPreview();
 
         } else if (type === 'projects') {
             const item = projects[index];
@@ -1856,23 +1309,32 @@
             document.getElementById('projectTitle').value = item.title || '';
             document.getElementById('projectSponsor').value = item.sponsor || '';
             document.getElementById('projectYear').value = item.year || '';
+            // FIX: Restore status, location, cover
+            document.getElementById('projectStatus').value = item.status || '';
+            document.getElementById('projectLocation').value = item.location || '';
+            if (item.cover) {
+                window.cropped_projectCover = item.cover;
+                const prev = document.getElementById('projectCoverPreview');
+                const img = document.getElementById('projectCoverPreviewImg');
+                if (prev && img) { img.src = item.cover; prev.classList.remove('hidden'); }
+            } else {
+                delete window.cropped_projectCover;
+                const prev = document.getElementById('projectCoverPreview');
+                if (prev) prev.classList.add('hidden');
+            }
             quillProject.root.innerHTML = item.content || '';
             normalizeQuillImages(quillProject);
-
             document.getElementById('projectSlug').value = (item.seo && item.seo.slug) || '';
             document.getElementById('projectSeoDescription').value = (item.seo && item.seo.description) || '';
             document.getElementById('projectSeoKeywords').value = (item.seo && item.seo.keywords) || '';
-
             document.getElementById('projectSubmitButton').textContent = 'Update Project';
-            switchTab(3);
-            updateProjectPreview();
+            switchTab(3); updateProjectPreview();
 
         } else if (type === 'partners') {
             const item = partners[index];
             document.getElementById('partnerEditIndex').value = index;
             document.getElementById('partnerName').value = item.name || '';
             document.getElementById('partnerUrl').value = item.url || '';
-
             if (item.logo) {
                 window.cropped_partnerLogo = item.logo;
                 const prev = document.getElementById('partnerLogoPreview');
@@ -1883,17 +1345,18 @@
                 const prev = document.getElementById('partnerLogoPreview');
                 if (prev) prev.classList.add('hidden');
             }
-
             document.getElementById('partnerSubmitButton').textContent = 'Update Partner';
             switchTab(4);
         }
     }
 
-    // FORM RESET HELPERS
+    // FORM RESETS
     function resetAuthorForm() {
         document.getElementById('authorForm').reset();
         document.getElementById('authorEditIndex').value = '';
         document.getElementById('authorSubmitButton').textContent = 'Save Author';
+        // FIX: Clear role field
+        document.getElementById('authorRole').value = '';
         delete window.cropped_authorPhoto;
         const prev = document.getElementById('authorPhotoPreview');
         if (prev) prev.classList.add('hidden');
@@ -1912,8 +1375,7 @@
         document.getElementById('articleSlug').value = '';
         document.getElementById('articleSeoDescription').value = '';
         document.getElementById('articleSeoKeywords').value = '';
-        normalizeQuillImages(quillArticle);
-        updateArticlePreview();
+        normalizeQuillImages(quillArticle); updateArticlePreview();
     }
 
     function resetResearchForm() {
@@ -1931,20 +1393,24 @@
         document.getElementById('researchSlug').value = '';
         document.getElementById('researchSeoDescription').value = '';
         document.getElementById('researchSeoKeywords').value = '';
-        normalizeQuillImages(quillResearch);
-        updateResearchPreview();
+        normalizeQuillImages(quillResearch); updateResearchPreview();
     }
 
     function resetProjectForm() {
         document.getElementById('projectForm').reset();
         document.getElementById('projectEditIndex').value = '';
         document.getElementById('projectSubmitButton').textContent = 'Save Project';
+        // FIX: Clear status, location, cover
+        document.getElementById('projectStatus').value = '';
+        document.getElementById('projectLocation').value = '';
+        delete window.cropped_projectCover;
+        const prev = document.getElementById('projectCoverPreview');
+        if (prev) prev.classList.add('hidden');
         if (quillProject) quillProject.root.innerHTML = '';
         document.getElementById('projectSlug').value = '';
         document.getElementById('projectSeoDescription').value = '';
         document.getElementById('projectSeoKeywords').value = '';
-        normalizeQuillImages(quillProject);
-        updateProjectPreview();
+        normalizeQuillImages(quillProject); updateProjectPreview();
     }
 
     function resetPartnerForm() {
@@ -1956,7 +1422,7 @@
         if (prev) prev.classList.add('hidden');
     }
 
-    // FILE -> BASE64 (PDF)
+    // PDF
     function fileToBase64(file) {
         return new Promise(resolve => {
             const reader = new FileReader();
@@ -1968,78 +1434,44 @@
     // FORM SUBMIT: AUTHORS
     document.getElementById('authorForm').addEventListener('submit', async e => {
         e.preventDefault();
-
         const indexStr = document.getElementById('authorEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-
         const links = collectAuthorLinksFromForm();
         const base = {
-            name: document.getElementById('authorName').value,
-            bio: document.getElementById('authorBio').value,
+            name:  document.getElementById('authorName').value,
+            // FIX: Include role in saved author object
+            role:  document.getElementById('authorRole').value,
+            bio:   document.getElementById('authorBio').value,
             email: document.getElementById('authorEmail').value,
-            links: links
+            links
         };
-
         if (index !== null && !isNaN(index)) {
             const existing = authors[index] || {};
-            authors[index] = {
-                ...existing,
-                ...base,
-                photo: window.cropped_authorPhoto || existing.photo || null,
-                id: existing.id || Date.now().toString()
-            };
-            await saveToJSON('authors', authors);
-            alert('Author updated!');
+            authors[index] = { ...existing, ...base, photo: window.cropped_authorPhoto || existing.photo || null, id: existing.id || Date.now().toString() };
+            await saveToJSON('authors', authors); alert('Author updated!');
         } else {
-            const newAuthor = {
-                ...base,
-                photo: window.cropped_authorPhoto || null,
-                id: Date.now().toString()
-            };
-            authors.unshift(newAuthor);
-            await saveToJSON('authors', authors);
-            alert('Author saved!');
+            authors.unshift({ ...base, photo: window.cropped_authorPhoto || null, id: Date.now().toString() });
+            await saveToJSON('authors', authors); alert('Author saved!');
         }
-
-        resetAuthorForm();
-        renderAuthors();
-        populateAuthorSelects();
+        resetAuthorForm(); renderAuthors(); populateAuthorSelects();
     });
 
-    // FORM SUBMIT: ARTICLES (WITH SEO + CAPTIONS + DATE)
+    // FORM SUBMIT: ARTICLES
     document.getElementById('articleForm').addEventListener('submit', async e => {
         e.preventDefault();
-
         const indexStr = document.getElementById('articleEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-
         const leadName = document.getElementById('articleLeadAuthor').value || '';
         const leadRole = resolveLeadRole('articleLeadRole', 'articleLeadRoleCustom');
-        const { leadAuthor, coAuthors } = collectAuthorsFromContainer(
-            'articleAuthorsContainer',
-            leadName,
-            leadRole
-        );
-
+        const { leadAuthor, coAuthors } = collectAuthorsFromContainer('articleAuthorsContainer', leadName, leadRole);
         normalizeQuillImages(quillArticle);
-        let articleHtml = quillArticle ? quillArticle.root.innerHTML : '';
-        articleHtml = transformImagesWithCaptions(articleHtml);
-
-        const extraTerms = [
-            document.getElementById('articleTitle').value,
-            leadName,
-            'article', 'news', 'Iraq'
-        ];
-        const rawKeywords = document.getElementById('articleSeoKeywords').value.trim();
-        const finalKeywords = buildSeoKeywords(rawKeywords, extraTerms);
-
+        let articleHtml = transformImagesWithCaptions(quillArticle ? quillArticle.root.innerHTML : '');
+        const extraTerms = [document.getElementById('articleTitle').value, leadName, 'article', 'news', 'Iraq'];
+        const finalKeywords = buildSeoKeywords(document.getElementById('articleSeoKeywords').value.trim(), extraTerms);
         const pickedDate = document.getElementById('articleDate').value;
-
         const base = {
             title: document.getElementById('articleTitle').value,
-            leadAuthor: leadAuthor,
-            authors: coAuthors,
-            author: leadName,
+            leadAuthor, authors: coAuthors, author: leadName,
             content: articleHtml,
             seo: {
                 slug: document.getElementById('articleSlug').value.trim(),
@@ -2047,129 +1479,71 @@
                 keywords: finalKeywords
             }
         };
-
         if (index !== null && !isNaN(index)) {
             const existing = articles[index] || {};
-            articles[index] = {
-                ...existing,
-                ...base,
-                cover: window.cropped_articleCover || existing.cover || null,
-                date: pickedDate || existing.date || new Date().toISOString().slice(0, 10)
-            };
-            await saveToJSON('articles', articles);
-            alert('Article updated!');
+            articles[index] = { ...existing, ...base, cover: window.cropped_articleCover || existing.cover || null, date: pickedDate || existing.date || new Date().toISOString().slice(0,10) };
+            await saveToJSON('articles', articles); alert('Article updated!');
         } else {
-            const newArticle = {
-                ...base,
-                cover: window.cropped_articleCover || null,
-                date: pickedDate || new Date().toISOString().slice(0, 10)
-            };
-            articles.unshift(newArticle);
-            await saveToJSON('articles', articles);
-            alert('Article saved!');
+            articles.unshift({ ...base, cover: window.cropped_articleCover || null, date: pickedDate || new Date().toISOString().slice(0,10) });
+            await saveToJSON('articles', articles); alert('Article saved!');
         }
-
-        resetArticleForm();
-        renderArticles();
+        resetArticleForm(); renderArticles();
     });
 
-    // FORM SUBMIT: RESEARCH (WITH SEO + CAPTIONS + DATE)
+    // FORM SUBMIT: RESEARCH
     document.getElementById('researchForm').addEventListener('submit', async e => {
         e.preventDefault();
-
         const indexStr = document.getElementById('researchEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-
         const leadName = document.getElementById('researchLeadAuthor').value || '';
         const leadRole = resolveLeadRole('researchLeadRole', 'researchLeadRoleCustom');
-        const { leadAuthor, coAuthors } = collectAuthorsFromContainer(
-            'researchAuthorsContainer',
-            leadName,
-            leadRole
-        );
-
+        const { leadAuthor, coAuthors } = collectAuthorsFromContainer('researchAuthorsContainer', leadName, leadRole);
         normalizeQuillImages(quillResearch);
-        let researchHtml = quillResearch ? quillResearch.root.innerHTML : '';
-        researchHtml = transformImagesWithCaptions(researchHtml);
-
+        // FIX: Save as both 'abstract' (legacy) and 'content' (used by research-item.html)
+        let researchHtml = transformImagesWithCaptions(quillResearch ? quillResearch.root.innerHTML : '');
         const pdfThumbEl = document.getElementById('researchPDFThumb');
-        const extraTerms = [
-            document.getElementById('researchTitle').value,
-            leadName,
-            'research', 'report', 'Iraq'
-        ];
-        const rawKeywords = document.getElementById('researchSeoKeywords').value.trim();
-        const finalKeywords = buildSeoKeywords(rawKeywords, extraTerms);
-
+        const extraTerms = [document.getElementById('researchTitle').value, leadName, 'research', 'report', 'Iraq'];
+        const finalKeywords = buildSeoKeywords(document.getElementById('researchSeoKeywords').value.trim(), extraTerms);
         const pickedDate = document.getElementById('researchDate').value;
-
         const base = {
             title: document.getElementById('researchTitle').value,
-            leadAuthor: leadAuthor,
-            authors: coAuthors,
-            author: leadName,
+            leadAuthor, authors: coAuthors, author: leadName,
             abstract: researchHtml,
+            content: researchHtml,   // FIX: dual-save so research-item.html works
             seo: {
                 slug: document.getElementById('researchSlug').value.trim(),
                 description: document.getElementById('researchSeoDescription').value.trim(),
                 keywords: finalKeywords
             }
         };
-
         if (index !== null && !isNaN(index)) {
             const existing = research[index] || {};
-            research[index] = {
-                ...existing,
-                ...base,
-                cover: window.cropped_researchCover || existing.cover || null,
-                pdfBase64: window.currentResearchPDF || existing.pdfBase64 || null,
-                pdfThumb: pdfThumbEl && pdfThumbEl.src ? pdfThumbEl.src : existing.pdfThumb || null,
-                date: pickedDate || existing.date || new Date().toISOString().slice(0, 10)
-            };
-            await saveToJSON('research', research);
-            alert('Research updated!');
+            research[index] = { ...existing, ...base, cover: window.cropped_researchCover || existing.cover || null, pdfBase64: window.currentResearchPDF || existing.pdfBase64 || null, pdfThumb: pdfThumbEl && pdfThumbEl.src ? pdfThumbEl.src : existing.pdfThumb || null, date: pickedDate || existing.date || new Date().toISOString().slice(0,10) };
+            await saveToJSON('research', research); alert('Research updated!');
         } else {
-            const newResearch = {
-                ...base,
-                cover: window.cropped_researchCover || null,
-                pdfBase64: window.currentResearchPDF || null,
-                pdfThumb: pdfThumbEl && pdfThumbEl.src ? pdfThumbEl.src : null,
-                date: pickedDate || new Date().toISOString().slice(0, 10)
-            };
-            research.unshift(newResearch);
-            await saveToJSON('research', research);
-            alert('Research saved!');
+            research.unshift({ ...base, cover: window.cropped_researchCover || null, pdfBase64: window.currentResearchPDF || null, pdfThumb: pdfThumbEl && pdfThumbEl.src ? pdfThumbEl.src : null, date: pickedDate || new Date().toISOString().slice(0,10) });
+            await saveToJSON('research', research); alert('Research saved!');
         }
-
-        resetResearchForm();
-        renderResearch();
+        resetResearchForm(); renderResearch();
     });
 
-    // FORM SUBMIT: PROJECTS (WITH SEO + CAPTIONS + YEAR)
+    // FORM SUBMIT: PROJECTS
     document.getElementById('projectForm').addEventListener('submit', async e => {
         e.preventDefault();
-
         const indexStr = document.getElementById('projectEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-
         normalizeQuillImages(quillProject);
-        let projectHtml = quillProject ? quillProject.root.innerHTML : '';
-        projectHtml = transformImagesWithCaptions(projectHtml);
-
-        const extraTerms = [
-            document.getElementById('projectTitle').value,
-            document.getElementById('projectSponsor').value,
-            'project', 'climate adaptation', 'Iraq'
-        ];
-        const rawKeywords = document.getElementById('projectSeoKeywords').value.trim();
-        const finalKeywords = buildSeoKeywords(rawKeywords, extraTerms);
-
+        let projectHtml = transformImagesWithCaptions(quillProject ? quillProject.root.innerHTML : '');
+        const extraTerms = [document.getElementById('projectTitle').value, document.getElementById('projectSponsor').value, 'project', 'climate adaptation', 'Iraq'];
+        const finalKeywords = buildSeoKeywords(document.getElementById('projectSeoKeywords').value.trim(), extraTerms);
         const year = document.getElementById('projectYear').value.trim();
-
         const base = {
-            title: document.getElementById('projectTitle').value,
-            sponsor: document.getElementById('projectSponsor').value,
-            content: projectHtml,
+            title:    document.getElementById('projectTitle').value,
+            sponsor:  document.getElementById('projectSponsor').value,
+            // FIX: Include status, location in saved project object
+            status:   document.getElementById('projectStatus').value,
+            location: document.getElementById('projectLocation').value,
+            content:  projectHtml,
             year: year || null,
             seo: {
                 slug: document.getElementById('projectSlug').value.trim(),
@@ -2177,95 +1551,59 @@
                 keywords: finalKeywords
             }
         };
-
         if (index !== null && !isNaN(index)) {
             const existing = projects[index] || {};
-            projects[index] = {
-                ...existing,
-                ...base,
-                year: year || existing.year || null
-            };
-            await saveToJSON('projects', projects);
-            alert('Project updated!');
+            // FIX: Include cover in update
+            projects[index] = { ...existing, ...base, cover: window.cropped_projectCover || existing.cover || null, year: year || existing.year || null };
+            await saveToJSON('projects', projects); alert('Project updated!');
         } else {
-            const newProject = {
-                ...base,
-                year: year || null
-            };
-            projects.unshift(newProject);
-            await saveToJSON('projects', projects);
-            alert('Project saved!');
+            // FIX: Include cover in new project
+            projects.unshift({ ...base, cover: window.cropped_projectCover || null, year: year || null });
+            await saveToJSON('projects', projects); alert('Project saved!');
         }
-
-        resetProjectForm();
-        renderProjects();
+        resetProjectForm(); renderProjects();
     });
 
     // FORM SUBMIT: PARTNERS
     document.getElementById('partnerForm').addEventListener('submit', async e => {
         e.preventDefault();
-
         const indexStr = document.getElementById('partnerEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-
-        const base = {
-            name: document.getElementById('partnerName').value,
-            url: document.getElementById('partnerUrl').value
-        };
-
+        const base = { name: document.getElementById('partnerName').value, url: document.getElementById('partnerUrl').value };
         if (index !== null && !isNaN(index)) {
             const existing = partners[index] || {};
-            partners[index] = {
-                ...existing,
-                ...base,
-                logo: window.cropped_partnerLogo || existing.logo || null
-            };
-            await saveToJSON('partners', partners);
-            alert('Partner updated!');
+            partners[index] = { ...existing, ...base, logo: window.cropped_partnerLogo || existing.logo || null };
+            await saveToJSON('partners', partners); alert('Partner updated!');
         } else {
-            const newPartner = {
-                ...base,
-                logo: window.cropped_partnerLogo || null
-            };
-            partners.unshift(newPartner);
-            await saveToJSON('partners', partners);
-            alert('Partner saved!');
+            partners.unshift({ ...base, logo: window.cropped_partnerLogo || null });
+            await saveToJSON('partners', partners); alert('Partner saved!');
         }
-
-        resetPartnerForm();
-        renderPartners();
+        resetPartnerForm(); renderPartners();
     });
 
-    // PDF UPLOAD (RESEARCH)
+    // PDF UPLOAD
     document.getElementById('researchPDF').addEventListener('change', async e => {
         const file = e.target.files[0];
         if (!file) return;
-
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         const page = await pdf.getPage(1);
         const viewport = page.getViewport({ scale: 1.5 });
         const canvas = document.createElement('canvas');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+        canvas.height = viewport.height; canvas.width = viewport.width;
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-
         document.getElementById('researchPDFThumb').src = canvas.toDataURL('image/jpeg', 0.8);
         document.getElementById('researchPDFPreview').classList.remove('hidden');
-
         window.currentResearchPDF = await fileToBase64(file);
         updateResearchPreview();
     });
 
-    // PREVIEW BUILDERS
+    // PREVIEWS
     function buildAuthorLine(leadAuthor, coAuthors) {
         if (!leadAuthor && (!coAuthors || !coAuthors.length)) return '';
         const names = [];
         if (leadAuthor && leadAuthor.name) names.push(leadAuthor.name);
-        if (coAuthors && coAuthors.length) {
-            const others = coAuthors.map(a => a.name).filter(Boolean);
-            if (others.length) names.push(...others);
-        }
+        if (coAuthors && coAuthors.length) names.push(...coAuthors.map(a => a.name).filter(Boolean));
         return names.join(', ');
     }
 
@@ -2273,137 +1611,96 @@
         const title = document.getElementById('articleTitle').value || 'Untitled article';
         const leadName = document.getElementById('articleLeadAuthor').value || '';
         const leadRole = resolveLeadRole('articleLeadRole', 'articleLeadRoleCustom');
-        const { leadAuthor, coAuthors } = collectAuthorsFromContainer(
-            'articleAuthorsContainer',
-            leadName,
-            leadRole
-        );
+        const { leadAuthor, coAuthors } = collectAuthorsFromContainer('articleAuthorsContainer', leadName, leadRole);
         const authorLine = buildAuthorLine(leadAuthor, coAuthors);
-        const cover = window.cropped_articleCover || (document.getElementById('articlePreviewImg').src || '');
-
-        let bodyHtml = quillArticle ? quillArticle.root.innerHTML : '';
-        bodyHtml = transformImagesWithCaptions(bodyHtml);
-
+        const cover = window.cropped_articleCover || '';
+        let bodyHtml = transformImagesWithCaptions(quillArticle ? quillArticle.root.innerHTML : '');
         const slug = document.getElementById('articleSlug').value.trim() || 'article-slug';
-        const desc = document.getElementById('articleSeoDescription').value.trim() ||
-            'Enlil Center Iraq – climate change research, policy and capacity building.';
+        const desc = document.getElementById('articleSeoDescription').value.trim() || 'Enlil Center Iraq – climate change research, policy and capacity building.';
         const url = `https://enlilcenter.org/articles/${slug}`;
-
         const target = document.getElementById('articlePreviewContent');
         if (!target) return;
-
         target.innerHTML = `
             <article class="max-w-2xl mx-auto">
-                ${cover ? `
-                    <figure class="mb-6">
-                        <img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm">
-                    </figure>
-                ` : ''}
+                ${cover ? `<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm"></figure>` : ''}
                 <header class="mb-4">
                     <h1 class="text-2xl font-semibold mb-2">${title}</h1>
                     ${authorLine ? `<p class="text-sm text-gray-500">By ${authorLine}</p>` : ''}
                 </header>
                 <section class="prose max-w-none preview-body">${bodyHtml}</section>
             </article>
-            ${buildMetaPreviewHtml(url, title, desc)}
-        `;
+            ${buildMetaPreviewHtml(url, title, desc)}`;
     }
 
     function updateResearchPreview() {
         const title = document.getElementById('researchTitle').value || 'Untitled research';
         const leadName = document.getElementById('researchLeadAuthor').value || '';
         const leadRole = resolveLeadRole('researchLeadRole', 'researchLeadRoleCustom');
-        const { leadAuthor, coAuthors } = collectAuthorsFromContainer(
-            'researchAuthorsContainer',
-            leadName,
-            leadRole
-        );
+        const { leadAuthor, coAuthors } = collectAuthorsFromContainer('researchAuthorsContainer', leadName, leadRole);
         const authorLine = buildAuthorLine(leadAuthor, coAuthors);
-        const cover = window.cropped_researchCover || (document.getElementById('researchPreviewImg').src || '');
-
-        let bodyHtml = quillResearch ? quillResearch.root.innerHTML : '';
-        bodyHtml = transformImagesWithCaptions(bodyHtml);
-
+        const cover = window.cropped_researchCover || '';
+        let bodyHtml = transformImagesWithCaptions(quillResearch ? quillResearch.root.innerHTML : '');
         const pdfThumb = document.getElementById('researchPDFThumb').src || '';
-
         const slug = document.getElementById('researchSlug').value.trim() || 'research-slug';
-        const desc = document.getElementById('researchSeoDescription').value.trim() ||
-            'Enlil Center Iraq – climate, water, energy and policy research.';
+        const desc = document.getElementById('researchSeoDescription').value.trim() || 'Enlil Center Iraq – climate, water, energy and policy research.';
         const url = `https://enlilcenter.org/research/${slug}`;
-
         const target = document.getElementById('researchPreviewContent');
         if (!target) return;
-
         target.innerHTML = `
             <article class="max-w-2xl mx-auto">
-                ${cover ? `
-                    <figure class="mb-6">
-                        <img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm">
-                    </figure>
-                ` : ''}
+                ${cover ? `<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm"></figure>` : ''}
                 <header class="mb-4">
                     <h1 class="text-2xl font-semibold mb-2">${title}</h1>
                     ${authorLine ? `<p class="text-sm text-gray-500">By ${authorLine}</p>` : ''}
                 </header>
-                ${pdfThumb ? `
-                    <div class="mb-4 flex items-center gap-3">
-                        <img src="${pdfThumb}" class="w-20 h-auto rounded-xl border object-cover">
-                        <p class="text-xs text-gray-600">PDF attached</p>
-                    </div>
-                ` : ''}
+                ${pdfThumb ? `<div class="mb-4 flex items-center gap-3"><img src="${pdfThumb}" class="w-20 h-auto rounded-xl border object-cover"><p class="text-xs text-gray-600">PDF attached</p></div>` : ''}
                 <section class="prose max-w-none preview-body">${bodyHtml}</section>
             </article>
-            ${buildMetaPreviewHtml(url, title, desc)}
-        `;
+            ${buildMetaPreviewHtml(url, title, desc)}`;
     }
 
     function updateProjectPreview() {
-        const title = document.getElementById('projectTitle').value || 'Untitled project';
-        const sponsor = document.getElementById('projectSponsor').value || '';
-
-        let bodyHtml = quillProject ? quillProject.root.innerHTML : '';
-        bodyHtml = transformImagesWithCaptions(bodyHtml);
-
+        const title    = document.getElementById('projectTitle').value || 'Untitled project';
+        const sponsor  = document.getElementById('projectSponsor').value || '';
+        // FIX: Show status and location in preview
+        const status   = document.getElementById('projectStatus').value || '';
+        const location = document.getElementById('projectLocation').value || '';
+        const cover    = window.cropped_projectCover || '';
+        let bodyHtml = transformImagesWithCaptions(quillProject ? quillProject.root.innerHTML : '');
         const slug = document.getElementById('projectSlug').value.trim() || 'project-slug';
-        const desc = document.getElementById('projectSeoDescription').value.trim() ||
-            'Enlil Center Iraq – climate, environment and development projects.';
+        const desc = document.getElementById('projectSeoDescription').value.trim() || 'Enlil Center Iraq – climate, environment and development projects.';
         const url = `https://enlilcenter.org/projects/${slug}`;
-
         const target = document.getElementById('projectPreviewContent');
         if (!target) return;
 
+        const isActive = status && (status.toLowerCase().includes('active') || status.toLowerCase().includes('ongoing'));
+        const statusBadge = status ? `<span class="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-full ${isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-gray-100 text-gray-600 border border-gray-200'}">${status}</span>` : '';
+        const locationBadge = location ? `<span class="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200"><i class="fa-solid fa-location-dot text-emerald-600 text-[10px]"></i>${location}</span>` : '';
+
         target.innerHTML = `
             <article class="max-w-2xl mx-auto">
+                ${cover ? `<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm"></figure>` : ''}
                 <header class="mb-4">
                     <h1 class="text-2xl font-semibold mb-2">${title}</h1>
-                    ${sponsor ? `<p class="text-sm text-gray-500">Funded by ${sponsor}</p>` : ''}
+                    ${sponsor ? `<p class="text-sm text-gray-500 mb-2">Funded by ${sponsor}</p>` : ''}
+                    <div class="flex flex-wrap gap-2">${statusBadge}${locationBadge}</div>
                 </header>
                 <section class="prose max-w-none preview-body">${bodyHtml}</section>
             </article>
-            ${buildMetaPreviewHtml(url, title, desc)}
-        `;
+            ${buildMetaPreviewHtml(url, title, desc)}`;
     }
 
-    // DELETE ITEMS
+    // DELETE
     function deleteItem(type, index) {
         if (!confirm('Delete this item?')) return;
-
-        if (type === 'authors') authors.splice(index, 1);
-        else if (type === 'articles') articles.splice(index, 1);
-        else if (type === 'research') research.splice(index, 1);
-        else if (type === 'projects') projects.splice(index, 1);
-        else if (type === 'partners') partners.splice(index, 1);
-
-        let key = '';
-        let dataRef = null;
-
-        if (type === 'authors') { key = 'authors'; dataRef = authors; }
-        else if (type === 'articles') { key = 'articles'; dataRef = articles; }
-        else if (type === 'research') { key = 'research'; dataRef = research; }
-        else if (type === 'projects') { key = 'projects'; dataRef = projects; }
-        else if (type === 'partners') { key = 'partners'; dataRef = partners; }
-
-        if (key) saveToJSON(key, dataRef);
+        if (type === 'authors')   authors.splice(index, 1);
+        else if (type === 'articles')  articles.splice(index, 1);
+        else if (type === 'research')  research.splice(index, 1);
+        else if (type === 'projects')  projects.splice(index, 1);
+        else if (type === 'partners')  partners.splice(index, 1);
+        const keyMap = { authors:'authors', articles:'articles', research:'research', projects:'projects', partners:'partners' };
+        const dataMap = { authors, articles, research, projects, partners };
+        if (keyMap[type]) saveToJSON(keyMap[type], dataMap[type]);
         renderAll();
         if (type === 'authors') populateAuthorSelects();
     }
@@ -2414,19 +1711,18 @@
             isLoggedIn = true;
             document.getElementById('loginScreen').classList.add('hidden');
         }
-
         document.getElementById('loginButton').addEventListener('click', attemptLogin);
-        document.getElementById('loginPassword').addEventListener('keydown', e => {
-            if (e.key === 'Enter') attemptLogin();
-        });
+        document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
 
         initEditors();
         loadFromFiles();
 
-        document.getElementById('authorPhoto').addEventListener('change', e => handleImageSelect(e, 'authorPhoto'));
-        document.getElementById('articleCover').addEventListener('change', e => handleImageSelect(e, 'articleCover'));
+        document.getElementById('authorPhoto').addEventListener('change',   e => handleImageSelect(e, 'authorPhoto'));
+        document.getElementById('articleCover').addEventListener('change',  e => handleImageSelect(e, 'articleCover'));
         document.getElementById('researchCover').addEventListener('change', e => handleImageSelect(e, 'researchCover'));
-        document.getElementById('partnerLogo').addEventListener('change', e => handleImageSelect(e, 'partnerLogo'));
+        // FIX: Register projectCover image handler
+        document.getElementById('projectCover').addEventListener('change',  e => handleImageSelect(e, 'projectCover'));
+        document.getElementById('partnerLogo').addEventListener('change',   e => handleImageSelect(e, 'partnerLogo'));
 
         document.getElementById('articleLeadRole').addEventListener('change', () => {
             const sel = document.getElementById('articleLeadRole');
@@ -2457,32 +1753,29 @@
 
         document.getElementById('projectTitle').addEventListener('input', updateProjectPreview);
         document.getElementById('projectSponsor').addEventListener('input', updateProjectPreview);
+        // FIX: Listen to new project fields for live preview
+        document.getElementById('projectStatus').addEventListener('change', updateProjectPreview);
+        document.getElementById('projectLocation').addEventListener('input', updateProjectPreview);
         document.getElementById('projectSlug').addEventListener('input', updateProjectPreview);
         document.getElementById('projectSeoDescription').addEventListener('input', updateProjectPreview);
 
         document.getElementById('articlePreviewToggle').addEventListener('click', () => {
             const panel = document.getElementById('articlePreviewPanel');
             const btn = document.getElementById('articlePreviewToggle');
-            const hidden = panel.classList.toggle('hidden');
-            btn.textContent = hidden ? 'Show preview' : 'Hide preview';
+            btn.textContent = panel.classList.toggle('hidden') ? 'Show preview' : 'Hide preview';
         });
         document.getElementById('researchPreviewToggle').addEventListener('click', () => {
             const panel = document.getElementById('researchPreviewPanel');
             const btn = document.getElementById('researchPreviewToggle');
-            const hidden = panel.classList.toggle('hidden');
-            btn.textContent = hidden ? 'Show preview' : 'Hide preview';
+            btn.textContent = panel.classList.toggle('hidden') ? 'Show preview' : 'Hide preview';
         });
         document.getElementById('projectPreviewToggle').addEventListener('click', () => {
             const panel = document.getElementById('projectPreviewPanel');
             const btn = document.getElementById('projectPreviewToggle');
-            const hidden = panel.classList.toggle('hidden');
-            btn.textContent = hidden ? 'Show preview' : 'Hide preview';
+            btn.textContent = panel.classList.toggle('hidden') ? 'Show preview' : 'Hide preview';
         });
 
-        updateArticlePreview();
-        updateResearchPreview();
-        updateProjectPreview();
-
+        updateArticlePreview(); updateResearchPreview(); updateProjectPreview();
         switchTab(0);
         updateLockCountdown();
     });
