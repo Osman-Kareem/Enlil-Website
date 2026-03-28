@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+
+
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enlil Center - Admin Dashboard</title>
@@ -1437,20 +1442,91 @@
         });
     }
 
+
+    // ============================================================
+    // INPUT VALIDATION & SANITIZATION HELPERS
+    // ============================================================
+    
+    const SANITIZE = {
+        // Plain text — strip all HTML tags
+        text(val) {
+            return (val || '').replace(/<[^>]*>/g, '').trim();
+        },
+        // URL — only allow http/https/mailto
+        url(val) {
+            const v = (val || '').trim();
+            if (!v) return '';
+            if (/^(https?:\/\/|mailto:)/i.test(v)) return v;
+            return ''; // reject anything else (javascript:, data:, etc.)
+        },
+        // Slug — only lowercase letters, numbers, hyphens
+        slug(val) {
+            return (val || '')
+                .toLowerCase()
+                .replace(/[^a-z0-9-]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 120);
+        },
+        // Year — must be a 4-digit number
+        year(val) {
+            const n = parseInt(val, 10);
+            if (isNaN(n) || n < 1900 || n > 2100) return null;
+            return n;
+        },
+        // Email
+        email(val) {
+            const v = (val || '').trim();
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : '';
+        },
+        // Rich HTML from Quill — only allow safe tags
+        richHtml(val) {
+            // DOMPurify must be loaded
+            if (typeof DOMPurify !== 'undefined') {
+                return DOMPurify.sanitize(val || '', {
+                    ALLOWED_TAGS: [
+                        'p','br','strong','em','u','s','a','ul','ol','li',
+                        'h1','h2','h3','h4','blockquote','pre','code',
+                        'img','figure','figcaption','span','div','table',
+                        'thead','tbody','tr','th','td'
+                    ],
+                    ALLOWED_ATTR: [
+                        'href','target','rel','src','alt','class','style',
+                        'width','height','download','data-*'
+                    ],
+                    FORCE_HTTPS: false // base64 images use data: URIs
+                });
+            }
+            return val || '';
+        }
+    };
+    
+    function validateRequired(val, fieldLabel) {
+        if (!val || !val.trim()) {
+            alert(`"${fieldLabel}" is required.`);
+            return false;
+        }
+        return true;
+    }
     // FORM SUBMIT: AUTHORS
     document.getElementById('authorForm').addEventListener('submit', async e => {
-        e.preventDefault();
+    e.preventDefault();
+
+        const name  = SANITIZE.text(document.getElementById('authorName').value);
+        const role  = SANITIZE.text(document.getElementById('authorRole').value);
+        const bio   = SANITIZE.text(document.getElementById('authorBio').value);
+        const email = SANITIZE.email(document.getElementById('authorEmail').value);
+    
+        if (!validateRequired(name, 'Full Name')) return;
+    
+        const links = collectAuthorLinksFromForm().map(l => ({
+            type: SANITIZE.text(l.type),
+            url:  SANITIZE.url(l.url)
+        })).filter(l => l.url); // drop empty/rejected URLs
+    
         const indexStr = document.getElementById('authorEditIndex').value;
-        const index = indexStr === '' ? null : parseInt(indexStr, 10);
-        const links = collectAuthorLinksFromForm();
-        const base = {
-            name:  document.getElementById('authorName').value,
-            // FIX: Include role in saved author object
-            role:  document.getElementById('authorRole').value,
-            bio:   document.getElementById('authorBio').value,
-            email: document.getElementById('authorEmail').value,
-            links
-        };
+        const index    = indexStr === '' ? null : parseInt(indexStr, 10);
+        const base     = { name, role, bio, email, links };
+        
         if (index !== null && !isNaN(index)) {
             const existing = authors[index] || {};
             authors[index] = { ...existing, ...base, photo: window.cropped_authorPhoto || existing.photo || null, id: existing.id || Date.now().toString() };
@@ -1463,28 +1539,47 @@
     });
 
     // FORM SUBMIT: ARTICLES
+  
     document.getElementById('articleForm').addEventListener('submit', async e => {
         e.preventDefault();
+    
+        // CHANGED: sanitize all text inputs before use
+        const title   = SANITIZE.text(document.getElementById('articleTitle').value);
+        const slug    = SANITIZE.slug(document.getElementById('articleSlug').value);
+        const seoDesc = SANITIZE.text(document.getElementById('articleSeoDescription').value);
+        const seoKw   = SANITIZE.text(document.getElementById('articleSeoKeywords').value);
+        const pickedDate = document.getElementById('articleDate').value; // date input is browser-controlled, already safe
+    
+        // CHANGED: validate required field
+        if (!validateRequired(title, 'Article Title')) return;
+    
         const indexStr = document.getElementById('articleEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-        const leadName = document.getElementById('articleLeadAuthor').value || '';
+        const leadName = SANITIZE.text(document.getElementById('articleLeadAuthor').value || ''); // CHANGED
         const leadRole = resolveLeadRole('articleLeadRole', 'articleLeadRoleCustom');
         const { leadAuthor, coAuthors } = collectAuthorsFromContainer('articleAuthorsContainer', leadName, leadRole);
+    
         normalizeQuillImages(quillArticle);
-        let articleHtml = transformImagesWithCaptions(quillArticle ? quillArticle.root.innerHTML : '');
-        const extraTerms = [document.getElementById('articleTitle').value, leadName, 'article', 'news', 'Iraq'];
-        const finalKeywords = buildSeoKeywords(document.getElementById('articleSeoKeywords').value.trim(), extraTerms);
-        const pickedDate = document.getElementById('articleDate').value;
+        let articleHtml = SANITIZE.richHtml(
+            transformImagesWithCaptions(quillArticle ? quillArticle.root.innerHTML : '')
+        ); // CHANGED: wrapped with SANITIZE.richHtml
+    
+        // CHANGED: use sanitized title and leadName in extraTerms
+        const extraTerms = [title, leadName, 'article', 'news', 'Iraq'];
+        const finalKeywords = buildSeoKeywords(seoKw, extraTerms); // CHANGED: use sanitized seoKw
+    
         const base = {
-            title: document.getElementById('articleTitle').value,
+            title,          // CHANGED: use sanitized variable instead of raw .value
             leadAuthor, authors: coAuthors, author: leadName,
             content: articleHtml,
             seo: {
-                slug: document.getElementById('articleSlug').value.trim(),
-                description: document.getElementById('articleSeoDescription').value.trim(),
+                slug,        // CHANGED: use sanitized slug
+                description: seoDesc,   // CHANGED: use sanitized seoDesc
                 keywords: finalKeywords
             }
         };
+    
+        // these two blocks are UNCHANGED
         if (index !== null && !isNaN(index)) {
             const existing = articles[index] || {};
             articles[index] = { ...existing, ...base, cover: window.cropped_articleCover || existing.cover || null, date: pickedDate || existing.date || new Date().toISOString().slice(0,10) };
@@ -1499,29 +1594,47 @@
     // FORM SUBMIT: RESEARCH
     document.getElementById('researchForm').addEventListener('submit', async e => {
         e.preventDefault();
+    
+        // CHANGED: sanitize all text inputs before use
+        const title   = SANITIZE.text(document.getElementById('researchTitle').value);
+        const slug    = SANITIZE.slug(document.getElementById('researchSlug').value);
+        const seoDesc = SANITIZE.text(document.getElementById('researchSeoDescription').value);
+        const seoKw   = SANITIZE.text(document.getElementById('researchSeoKeywords').value);
+        const pickedDate = document.getElementById('researchDate').value; // safe, browser-controlled
+    
+        // CHANGED: validate required field
+        if (!validateRequired(title, 'Research Title')) return;
+    
         const indexStr = document.getElementById('researchEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-        const leadName = document.getElementById('researchLeadAuthor').value || '';
+        const leadName = SANITIZE.text(document.getElementById('researchLeadAuthor').value || ''); // CHANGED
         const leadRole = resolveLeadRole('researchLeadRole', 'researchLeadRoleCustom');
         const { leadAuthor, coAuthors } = collectAuthorsFromContainer('researchAuthorsContainer', leadName, leadRole);
+    
         normalizeQuillImages(quillResearch);
-        // FIX: Save as both 'abstract' (legacy) and 'content' (used by research-item.html)
-        let researchHtml = transformImagesWithCaptions(quillResearch ? quillResearch.root.innerHTML : '');
+        // CHANGED: wrapped with SANITIZE.richHtml
+        let researchHtml = SANITIZE.richHtml(
+            transformImagesWithCaptions(quillResearch ? quillResearch.root.innerHTML : '')
+        );
+    
         const pdfThumbEl = document.getElementById('researchPDFThumb');
-        const extraTerms = [document.getElementById('researchTitle').value, leadName, 'research', 'report', 'Iraq'];
-        const finalKeywords = buildSeoKeywords(document.getElementById('researchSeoKeywords').value.trim(), extraTerms);
-        const pickedDate = document.getElementById('researchDate').value;
+        // CHANGED: use sanitized title and leadName in extraTerms
+        const extraTerms = [title, leadName, 'research', 'report', 'Iraq'];
+        const finalKeywords = buildSeoKeywords(seoKw, extraTerms); // CHANGED: use sanitized seoKw
+    
         const base = {
-            title: document.getElementById('researchTitle').value,
+            title,          // CHANGED: use sanitized variable
             leadAuthor, authors: coAuthors, author: leadName,
             abstract: researchHtml,
-            content: researchHtml,   // FIX: dual-save so research-item.html works
+            content:  researchHtml,
             seo: {
-                slug: document.getElementById('researchSlug').value.trim(),
-                description: document.getElementById('researchSeoDescription').value.trim(),
+                slug,           // CHANGED: use sanitized slug
+                description: seoDesc,   // CHANGED: use sanitized seoDesc
                 keywords: finalKeywords
             }
         };
+    
+        // these two blocks are UNCHANGED
         if (index !== null && !isNaN(index)) {
             const existing = research[index] || {};
             research[index] = { ...existing, ...base, cover: window.cropped_researchCover || existing.cover || null, pdfBase64: window.currentResearchPDF || existing.pdfBase64 || null, pdfThumb: pdfThumbEl && pdfThumbEl.src ? pdfThumbEl.src : existing.pdfThumb || null, date: pickedDate || existing.date || new Date().toISOString().slice(0,10) };
@@ -1532,50 +1645,91 @@
         }
         resetResearchForm(); renderResearch();
     });
-
+    
+    
     // FORM SUBMIT: PROJECTS
     document.getElementById('projectForm').addEventListener('submit', async e => {
         e.preventDefault();
+    
+        // CHANGED: sanitize all text inputs before use
+        const title    = SANITIZE.text(document.getElementById('projectTitle').value);
+        const sponsor  = SANITIZE.text(document.getElementById('projectSponsor').value);
+        const location = SANITIZE.text(document.getElementById('projectLocation').value);
+        const status   = SANITIZE.text(document.getElementById('projectStatus').value);
+        const slug     = SANITIZE.slug(document.getElementById('projectSlug').value);
+        const seoDesc  = SANITIZE.text(document.getElementById('projectSeoDescription').value);
+        const seoKw    = SANITIZE.text(document.getElementById('projectSeoKeywords').value);
+        const year     = SANITIZE.year(document.getElementById('projectYear').value); // CHANGED: use SANITIZE.year
+    
+        // CHANGED: validate required field
+        if (!validateRequired(title, 'Project Title')) return;
+    
         const indexStr = document.getElementById('projectEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
+    
         normalizeQuillImages(quillProject);
-        let projectHtml = transformImagesWithCaptions(quillProject ? quillProject.root.innerHTML : '');
-        const extraTerms = [document.getElementById('projectTitle').value, document.getElementById('projectSponsor').value, 'project', 'climate adaptation', 'Iraq'];
-        const finalKeywords = buildSeoKeywords(document.getElementById('projectSeoKeywords').value.trim(), extraTerms);
-        const year = document.getElementById('projectYear').value.trim();
+        // CHANGED: wrapped with SANITIZE.richHtml
+        let projectHtml = SANITIZE.richHtml(
+            transformImagesWithCaptions(quillProject ? quillProject.root.innerHTML : '')
+        );
+    
+        // CHANGED: use sanitized title and sponsor in extraTerms
+        const extraTerms = [title, sponsor, 'project', 'climate adaptation', 'Iraq'];
+        const finalKeywords = buildSeoKeywords(seoKw, extraTerms); // CHANGED: use sanitized seoKw
+    
         const base = {
-            title:    document.getElementById('projectTitle').value,
-            sponsor:  document.getElementById('projectSponsor').value,
-            // FIX: Include status, location in saved project object
-            status:   document.getElementById('projectStatus').value,
-            location: document.getElementById('projectLocation').value,
-            content:  projectHtml,
-            year: year || null,
+            title,      // CHANGED: use sanitized variable
+            sponsor,    // CHANGED: use sanitized variable
+            status,     // CHANGED: use sanitized variable
+            location,   // CHANGED: use sanitized variable
+            content: projectHtml,
+            year: year || null,  // CHANGED: use SANITIZE.year result
             seo: {
-                slug: document.getElementById('projectSlug').value.trim(),
-                description: document.getElementById('projectSeoDescription').value.trim(),
+                slug,           // CHANGED: use sanitized slug
+                description: seoDesc,   // CHANGED: use sanitized seoDesc
                 keywords: finalKeywords
             }
         };
+    
+        // these two blocks are UNCHANGED
         if (index !== null && !isNaN(index)) {
             const existing = projects[index] || {};
-            // FIX: Include cover in update
             projects[index] = { ...existing, ...base, cover: window.cropped_projectCover || existing.cover || null, year: year || existing.year || null };
             await saveToJSON('projects', projects); alert('Project updated!');
         } else {
-            // FIX: Include cover in new project
             projects.unshift({ ...base, cover: window.cropped_projectCover || null, year: year || null });
             await saveToJSON('projects', projects); alert('Project saved!');
         }
         resetProjectForm(); renderProjects();
     });
-
+    
+    
     // FORM SUBMIT: PARTNERS
     document.getElementById('partnerForm').addEventListener('submit', async e => {
         e.preventDefault();
+    
+        // CHANGED: sanitize all inputs before use
+        const name = SANITIZE.text(document.getElementById('partnerName').value);
+        const url  = SANITIZE.url(document.getElementById('partnerUrl').value);
+    
+        // CHANGED: validate required field
+        if (!validateRequired(name, 'Organization Name')) return;
+    
+        // CHANGED: reject dangerous URLs (javascript:, data:, etc.)
+        if (document.getElementById('partnerUrl').value.trim() && !url) {
+            alert('Partner URL must start with https:// — please check the link.');
+            return;
+        }
+    
         const indexStr = document.getElementById('partnerEditIndex').value;
         const index = indexStr === '' ? null : parseInt(indexStr, 10);
-        const base = { name: document.getElementById('partnerName').value, url: document.getElementById('partnerUrl').value };
+    
+        const base = {
+            name,   // CHANGED: use sanitized variable
+            url     // CHANGED: use sanitized variable
+        };
+    
+        // these two blocks are UNCHANGED
         if (index !== null && !isNaN(index)) {
             const existing = partners[index] || {};
             partners[index] = { ...existing, ...base, logo: window.cropped_partnerLogo || existing.logo || null };
@@ -1586,7 +1740,7 @@
         }
         resetPartnerForm(); renderPartners();
     });
-
+    
     // PDF UPLOAD
     document.getElementById('researchPDF').addEventListener('change', async e => {
         const file = e.target.files[0];
