@@ -582,6 +582,9 @@
 </div>
 
 <script>
+    // This is visible in browser source — acceptable for an admin-only page
+    // that you should protect with Cloudflare Access (Step 5)
+    const ADMIN_TOKEN = '1c9b444268b2aba1a6d2c53c02c1a8464eabf4743e468d4bf56e0a731d769ccd';
     const API_BASE = "https://enlil-cms-api.osmanalikareem.workers.dev";
 
     let authors = [], articles = [], research = [], projects = [], partners = [];
@@ -835,7 +838,10 @@
         try {
             await fetch(`${API_BASE}/data/${key}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' 
+                            'X-Admin-Token': ADMIN_TOKEN 
+                         },
+                
                 body: JSON.stringify(data)
             });
         } catch (e) {
