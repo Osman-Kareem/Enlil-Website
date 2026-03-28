@@ -427,19 +427,38 @@
         document.getElementById('articleTitle').textContent = article.title || 'Article';
         document.getElementById('articleTagline').textContent = 'Article';
 
-        // Meta line (date + plain author summary)
+        // Meta line (date + clickable author name)
         const date = formatDate(article.date);
-        const authorLine = buildAuthorLine(article);
         const meta = document.getElementById('metaLine');
         meta.innerHTML = '';
-        if (authorLine) {
-          const span = document.createElement('span');
-          span.textContent = `By ${authorLine}`;
-          meta.appendChild(span);
+        
+        // FIX: build clickable author link directly in metaLine
+        const leadName = (article.leadAuthor && article.leadAuthor.name) || article.author || null;
+        if (leadName) {
+          const slug = authorSlug(leadName);
+          const extra = Array.isArray(article.authors) ? article.authors.length : 0;
+          const bySpan = document.createElement('span');
+          bySpan.textContent = 'By ';
+          bySpan.className = 'text-gray-500';
+          meta.appendChild(bySpan);
+        
+          const authorLink = document.createElement('a');
+          authorLink.href = `../authors/author.html?slug=${encodeURIComponent(slug)}`;
+          authorLink.textContent = leadName;
+          authorLink.className = 'text-emerald-700 hover:underline font-medium';
+          meta.appendChild(authorLink);
+        
+          if (extra > 0) {
+            const moreSpan = document.createElement('span');
+            moreSpan.textContent = ` +${extra} more`;
+            moreSpan.className = 'text-gray-400';
+            meta.appendChild(moreSpan);
+          }
         }
+        
         if (date) {
           const dot = document.createElement('span');
-          dot.textContent = '·';
+          dot.textContent = ' · ';
           meta.appendChild(dot);
           const t = document.createElement('time');
           t.dateTime = article.date;
