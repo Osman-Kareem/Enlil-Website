@@ -70,13 +70,8 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    /* Hide legal sections unless directly targeted */
-    .legal-section {
-      display: none;
-    }
-    .legal-section:target {
-      display: block;
-    }
+    .legal-section { display: none; }
+    .legal-section:target { display: block; }
   </style>
 </head>
 <body class="bg-gray-50 text-slate-900">
@@ -162,7 +157,7 @@
         </div>
         <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100">
           <p class="italic text-gray-600 mb-4">
-            “Our mission is to bridge rigorous scientific research with practical, locally relevant solutions for a more resilient, prosperous Iraq.”
+            "Our mission is to bridge rigorous scientific research with practical, locally relevant solutions for a more resilient, prosperous Iraq."
           </p>
           <ul class="text-sm text-gray-600 space-y-2">
             <li><i class="fa-solid fa-check text-emerald-600 mr-2"></i>Independent, non-partisan research and analysis</li>
@@ -184,6 +179,12 @@
         </p>
       </div>
       <div id="articlesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+      <!-- FIX: "View all" link to articles listing page -->
+      <div class="text-center mt-10">
+        <a href="articles.html" class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800">
+          View all articles &amp; news <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -193,10 +194,16 @@
       <div class="flex items-end justify-between gap-4 mb-10">
         <h2 class="text-4xl font-semibold">Research &amp; Reports</h2>
         <p class="text-sm text-gray-500 max-w-md">
-          In-depth research outputs, working papers and reports on Iraq’s climate transition, water resources and environmental governance.
+          In-depth research outputs, working papers and reports on Iraq's climate transition, water resources and environmental governance.
         </p>
       </div>
       <div id="researchContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+      <!-- FIX: "View all" link to research listing page -->
+      <div class="text-center mt-10">
+        <a href="research.html" class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800">
+          View all research &amp; reports <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -210,6 +217,12 @@
         </p>
       </div>
       <div id="projectsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+      <!-- FIX: "View all" link to projects listing page -->
+      <div class="text-center mt-10">
+        <a href="projects.html" class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800">
+          View all projects <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -271,9 +284,7 @@
         <div class="space-y-6">
           <div>
             <h3 class="text-lg font-semibold mb-2">Enlil Center – Baghdad, Iraq</h3>
-            <p class="text-sm text-gray-600 mb-2">
-              Baghdad, Iraq
-            </p>
+            <p class="text-sm text-gray-600 mb-2">Baghdad, Iraq</p>
             <p class="text-sm text-gray-600">
               Email: <a href="mailto:info@enlilcenter.org" class="text-emerald-700 hover:text-emerald-800">info@enlilcenter.org</a><br>
               Phone: <a href="tel:+9647724219464" class="text-emerald-700 hover:text-emerald-800">+964 772 421 9464</a>
@@ -323,7 +334,7 @@
     <div class="max-w-4xl mx-auto px-6">
       <h2 class="text-2xl font-semibold mb-4">Privacy Policy</h2>
       <p class="text-sm text-gray-700 mb-3">
-        Enlil Center for Environment and Sustainable Development (“Enlil Center”, “we”, “our”) is committed to protecting the privacy of visitors to our website and partners who engage with our work.
+        Enlil Center for Environment and Sustainable Development ("Enlil Center", "we", "our") is committed to protecting the privacy of visitors to our website and partners who engage with our work.
       </p>
       <p class="text-sm text-gray-700 mb-3">
         We only collect personal data that you voluntarily provide, such as your name, email address and organization when you subscribe to updates or contact us via the website.
@@ -334,8 +345,7 @@
         You may request access, correction or deletion of your personal data at any time by emailing <a href="mailto:info@enlilcenter.org" class="text-emerald-700 hover:text-emerald-800">info@enlilcenter.org</a>.
       </p>
       <p class="text-sm text-gray-700">
-        We may update this policy from time to time to reflect legal or operational changes.
-        The latest version will always be available on this page and is effective from the date of publication.
+        We may update this policy from time to time to reflect legal or operational changes. The latest version will always be available on this page and is effective from the date of publication.
       </p>
     </div>
   </section>
@@ -344,21 +354,16 @@
     <div class="max-w-4xl mx-auto px-6">
       <h2 class="text-2xl font-semibold mb-4">Terms of Use</h2>
       <p class="text-sm text-gray-700 mb-3">
-        By accessing or using this website, you agree to these Terms of Use.
-        The content on this site is provided for informational and educational purposes only and does not constitute legal, financial or other professional advice.
+        By accessing or using this website, you agree to these Terms of Use. The content on this site is provided for informational and educational purposes only and does not constitute legal, financial or other professional advice.
       </p>
       <p class="text-sm text-gray-700 mb-3">
-        Unless otherwise indicated, Enlil Center owns the rights to the text, graphics and other materials on this website.
-        You may share or quote our content for non-commercial purposes with appropriate attribution.
-        Any reproduction or distribution for commercial use requires prior written permission.
+        Unless otherwise indicated, Enlil Center owns the rights to the text, graphics and other materials on this website. You may share or quote our content for non-commercial purposes with appropriate attribution. Any reproduction or distribution for commercial use requires prior written permission.
       </p>
       <p class="text-sm text-gray-700 mb-3">
-        While we strive for accuracy, we do not guarantee that all information on this site is complete or up to date, and we are not liable for any loss or damage arising from its use.
-        External links are provided for convenience and do not imply endorsement.
+        While we strive for accuracy, we do not guarantee that all information on this site is complete or up to date, and we are not liable for any loss or damage arising from its use. External links are provided for convenience and do not imply endorsement.
       </p>
       <p class="text-sm text-gray-700">
-        We may modify these Terms of Use at any time by updating this page.
-        Your continued use of the site after changes are posted constitutes acceptance of the revised terms.
+        We may modify these Terms of Use at any time by updating this page. Your continued use of the site after changes are posted constitutes acceptance of the revised terms.
       </p>
     </div>
   </section>
@@ -367,12 +372,10 @@
     <div class="max-w-4xl mx-auto px-6">
       <h2 class="text-2xl font-semibold mb-4">Cookies &amp; Data</h2>
       <p class="text-sm text-gray-700 mb-3">
-        This website may use limited cookies or similar technologies to improve performance and understand how visitors use our pages.
-        Where possible, we use anonymized analytics that do not identify individual users.
+        This website may use limited cookies or similar technologies to improve performance and understand how visitors use our pages. Where possible, we use anonymized analytics that do not identify individual users.
       </p>
       <p class="text-sm text-gray-700 mb-3">
-        You can control or disable cookies through your browser settings, but some features of the site may not function correctly as a result.
-        By continuing to browse this site, you consent to the use of cookies as described here.
+        You can control or disable cookies through your browser settings, but some features of the site may not function correctly as a result. By continuing to browse this site, you consent to the use of cookies as described here.
       </p>
       <p class="text-sm text-gray-700">
         If we introduce additional analytics or tracking tools in the future, this notice will be updated to describe what is used and how you can manage your preferences.
@@ -456,14 +459,27 @@
         || 'item';
     }
 
+    // FIX: authorSlug helper for author profile links
+    function authorSlug(name) {
+      return (name || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    // FIX: author name is now a clickable link to the author profile page
     function buildAuthorLine(item) {
       if (item.leadAuthor && item.leadAuthor.name) {
         const lead = item.leadAuthor.name;
+        const slug = authorSlug(lead);
         const extra = Array.isArray(item.authors) ? item.authors.length : 0;
-        if (extra) return `${lead} + ${extra} more`;
-        return lead;
+        const link = `<a href="authors/author.html?slug=${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${lead}</a>`;
+        return extra ? `${link} + ${extra} more` : link;
       }
-      if (item.author) return item.author;
+      if (item.author) {
+        const slug = authorSlug(item.author);
+        return `<a href="authors/author.html?slug=${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${item.author}</a>`;
+      }
       return 'Enlil Center';
     }
 
@@ -488,8 +504,8 @@
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        const url = `/articles/article.html?slug=${encodeURIComponent(slug)}`;
-
+        // FIX: correct single-article template URL with ?slug= query param
+        const url = `articles/article.html?slug=${encodeURIComponent(slug)}`;
         const snippet = (item.seo && item.seo.description)
           || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
 
@@ -505,8 +521,7 @@
               </p>
               ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
               <a href="${url}" class="mt-auto inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                Read article
-                <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                Read article <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
               </a>
             </div>
           </article>
@@ -524,11 +539,10 @@
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        const url = `/research/${slug}.html`;
-
+        // FIX: correct single-research template URL with ?slug= query param
+        const url = `research/research-item.html?slug=${encodeURIComponent(slug)}`;
         const snippet = (item.seo && item.seo.description)
           || (item.abstract ? item.abstract.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
-
         const hasPdf = !!item.pdfBase64;
 
         return `
@@ -544,15 +558,13 @@
               ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
               <div class="mt-auto flex items-center justify-between gap-3">
                 <a href="${url}" class="inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                  View details
-                  <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                  View details <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                 </a>
                 ${hasPdf ? `
                   <a href="${item.pdfBase64}" download="${(item.title || 'Enlil-Research').replace(/[^a-z0-9]+/gi,'-')}.pdf"
                      class="inline-flex items-center text-xs text-slate-600 hover:text-slate-800">
                     <i class="fa-solid fa-file-pdf mr-1 text-rose-500"></i> Download PDF
-                  </a>
-                ` : ''}
+                  </a>` : ''}
               </div>
             </div>
           </article>
@@ -570,8 +582,8 @@
         const year = item.year || '';
         const sponsor = item.sponsor || '';
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        const url = `/projects/${slug}.html`;
-
+        // FIX: correct single-project template URL with ?slug= query param
+        const url = `projects/project.html?slug=${encodeURIComponent(slug)}`;
         const snippet = (item.seo && item.seo.description)
           || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
 
@@ -586,8 +598,7 @@
               </p>
               ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
               <a href="${url}" class="mt-auto inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                View project
-                <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                View project <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
               </a>
             </div>
           </article>
@@ -603,15 +614,12 @@
       container.innerHTML = data.map(item => `
         <div class="flex flex-col items-center text-center gap-3">
           ${item.logo ? `<img src="${item.logo}" alt="${item.name}" class="h-16 w-auto object-contain">` : ''}
-          <div>
-            <p class="text-sm font-medium text-slate-800">${item.name || ''}</p>
-            
-          </div>
+          <p class="text-sm font-medium text-slate-800">${item.name || ''}</p>
         </div>
       `).join('') || '<p class="text-sm text-gray-500 w-full">Partners will be displayed here.</p>';
     }
 
-    // Contact form -> API
+    // Contact form submission
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('contactForm');
       const statusEl = document.getElementById('contactStatus');
@@ -637,9 +645,7 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
             });
-
             if (!res.ok) throw new Error('Non-200 response');
-
             statusEl.textContent = 'Thank you. Your message has been sent to the Enlil Center team.';
             statusEl.classList.remove('text-gray-600');
             statusEl.classList.add('text-emerald-700');
