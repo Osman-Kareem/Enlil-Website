@@ -275,8 +275,7 @@
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo?.slug, item.title);
-        // FIX: correct single-article URL — points to the template with ?slug= param
-        const url = `articles/article.html?slug=${encodeURIComponent(slug)}`;
+        const url = `/articles/${slug}`;
 
         const snippet = item.seo?.description ||
           (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
