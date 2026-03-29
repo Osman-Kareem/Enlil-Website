@@ -792,16 +792,31 @@
         const canvas = currentCropper.getCroppedCanvas({ width: config.maxWidth });
         let base64 = canvas.toDataURL('image/jpeg', 0.92);
         base64 = await compressImage(base64, currentMaxKB);
-        window[`cropped_${currentInputId}`] = base64;
+    
         if (currentCropper) currentCropper.destroy();
         currentCropper = null;
         document.getElementById('cropModal').classList.add('hidden');
+    
+        // Show preview immediately (base64 is fine just for display)
         const previewEl = document.getElementById(currentInputId + "Preview");
         const imgEl = document.getElementById(currentInputId + "PreviewImg");
         if (previewEl && imgEl) { imgEl.src = base64; previewEl.classList.remove('hidden'); }
-        updateArticlePreview(); updateResearchPreview(); updateProjectPreview();
-        alert('✅ Image cropped & compressed!');
+    
+        // ↓ THIS IS THE ONLY PART THAT CHANGED
+        const savedId = currentInputId;
         currentInputId = null;
+        try {
+            const filename = `${savedId}-${Date.now()}.jpg`;
+            const publicUrl = await uploadImageToR2(base64, filename);
+            window[`cropped_${savedId}`] = publicUrl; // saves https:// URL instead of base64
+            alert('✅ Image uploaded to R2!');
+        } catch (err) {
+            window[`cropped_${savedId}`] = base64; // fallback: keep base64 if R2 fails
+            alert('⚠️ R2 upload failed, using base64 as fallback: ' + err.message);
+        }
+        // ↑ END OF CHANGE
+    
+        updateArticlePreview(); updateResearchPreview(); updateProjectPreview();
     }
 
     async function compressImage(base64, maxKB) {
@@ -838,15 +853,14 @@
         renderAll();
         populateAuthorSelects();
     }
-
+   
     async function saveToJSON(key, data) {
         try {
             await fetch(`${API_BASE}/data/${key}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' ,
-                            'X-Admin-Token': ADMIN_TOKEN 
+                headers: { 'Content-Type': 'application/json',
+                           'X-Admin-Token': ADMIN_TOKEN 
                          },
-                
                 body: JSON.stringify(data)
             });
         } catch (e) {
@@ -854,7 +868,26 @@
             alert("Could not save — check console / network");
         }
     }
+    
+    // ← ADD THE NEW FUNCTION RIGHT HERE
+    async function uploadImageToR2(base64DataUrl, filename) {
+        const res = await fetch(base64DataUrl);
+        const blob = await res.blob();
+    
+        const response = await fetch(`${API_BASE}/upload-image`, {
+            method: 'POST',
+            headers: {
+                'X-Admin-Token': ADMIN_TOKEN,
+                'X-Filename': filename,
+                'Content-Type': blob.type
+            },
+            body: blob
+        });
 
+    if (!response.ok) throw new Error('Image upload failed');
+    const { url } = await response.json();
+    return url;
+}
     // RENDER LISTS
     function renderAll() {
         renderAuthors(); renderArticles(); renderResearch(); renderProjects(); renderPartners();
