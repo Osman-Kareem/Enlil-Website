@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script>
+    // Redirect /projects/some-slug to /projects/project-item.html?slug=some-slug
+    const slug = window.location.pathname.split('/').pop();
+    window.location.replace('/articles/article.html?slug=' + slug);
+  </script>
+</head>
+<body></body>
+</html>
