@@ -504,8 +504,7 @@
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        // FIX: correct single-article template URL with ?slug= query param
-        const url = `articles/article.html?slug=${encodeURIComponent(slug)}`;
+        const url = `/articles/${slug}`;
         const snippet = (item.seo && item.seo.description)
           || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
 
@@ -539,8 +538,7 @@
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        // FIX: correct single-research template URL with ?slug= query param
-        const url = `research/research-item.html?slug=${encodeURIComponent(slug)}`;
+        const url = `/research/${slug}`;
         const snippet = (item.seo && item.seo.description)
           || (item.abstract ? item.abstract.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
         const hasPdf = !!item.pdfBase64;
@@ -582,8 +580,7 @@
         const year = item.year || '';
         const sponsor = item.sponsor || '';
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        // FIX: correct single-project template URL with ?slug= query param
-        const url = `projects/project-item.html?slug=${encodeURIComponent(slug)}`;
+        const url = `/projects/${slug}`;
         const snippet = (item.seo && item.seo.description)
           || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
 
