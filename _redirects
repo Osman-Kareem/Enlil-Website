@@ -1,0 +1,3 @@
+/projects/:slug  /project.html  200
+/articles/:slug  /article.html  200
+/research/:slug  /research-item.html  200
