@@ -13,12 +13,11 @@ export default {
         articles: '/articles/article.html',
         research: '/research/research-item.html'
       };
-      return Response.redirect(
-        `https://enlilcenter.org${templates[section]}?slug=${encodeURIComponent(slug)}`, 302
-      );
+      const redirectUrl = `https://enlilcenter.org${templates[section]}?slug=${encodeURIComponent(slug)}`;
+      return Response.redirect(redirectUrl, 302);
     }
 
-    // Everything else — serve static file
-    return env.ASSETS.fetch(request);
+    // Everything else — fetch directly
+    return fetch(request);
   }
 };
