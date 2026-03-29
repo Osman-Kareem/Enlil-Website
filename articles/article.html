@@ -419,9 +419,8 @@
 
         const finalSlug = safeSlug(article.seo?.slug, article.title);
 
-        // FIX: use replaceState to show clean URL without breaking back-button navigation
-        const cleanUrl = `/articles/${finalSlug}`;
-        window.history.replaceState({}, '', cleanUrl);
+        
+      
 
         // Populate hero
         document.getElementById('heroTitle').textContent = article.title || 'Article';
