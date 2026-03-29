@@ -418,9 +418,7 @@
         }
 
         const finalSlug = safeSlug(report.seo?.slug, report.title);
-
-        // Clean URL in browser bar
-        window.history.replaceState({}, '', `/research/${finalSlug}`);
+       
 
         // Hero + breadcrumb
         document.getElementById('heroTitle').textContent = report.title || 'Research Report';
