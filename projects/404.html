@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script>
+    const slug = window.location.pathname.split('/').filter(Boolean).pop();
+    if (slug && slug !== 'project-item' && slug !== '404') {
+      window.location.replace('/projects/project-item.html?slug=' + encodeURIComponent(slug));
+    }
+  </script>
+</head>
+<body></body>
+</html>
