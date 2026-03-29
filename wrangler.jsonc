@@ -6,8 +6,10 @@
     "enabled": true
   },
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS"
   },
+  "main": "_worker.js",
   "compatibility_flags": [
     "nodejs_compat"
   ]
