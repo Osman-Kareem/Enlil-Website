@@ -260,7 +260,7 @@
         const sponsor = item.sponsor || '';
         const slug = safeSlug(item.seo?.slug, item.title);
         // FIX: correct single-project URL with ?slug= query param
-        const url = `projects/project-item.html?slug=${encodeURIComponent(slug)}`;
+         const url = `/projects/${slug}`;
 
         const snippet =
           item.seo?.description ||
