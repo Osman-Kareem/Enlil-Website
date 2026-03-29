@@ -289,8 +289,7 @@
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo?.slug, item.title);
-        // FIX: correct single-research template URL with ?slug= query param
-        const url = `research/research-item.html?slug=${encodeURIComponent(slug)}`;
+        const url = `/research/${slug}`;
 
         const snippet =
           item.seo?.description ||
