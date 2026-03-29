@@ -377,8 +377,7 @@
 
         const finalSlug = safeSlug(project.seo?.slug, project.title);
 
-        // Clean URL in browser bar
-        window.history.replaceState({}, '', `/projects/${finalSlug}`);
+
 
         // Hero + breadcrumb
         document.getElementById('heroTitle').textContent = project.title || 'Project';
