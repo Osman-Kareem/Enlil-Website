@@ -587,18 +587,20 @@
         const snippet = (item.seo && item.seo.description)
           || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
 
-        return `
-          <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full border border-gray-100">
-            <div class="p-6 flex flex-col flex-1">
-              <a href="${url}" class="hover:text-emerald-700">
-                <h3 class="font-semibold text-xl mb-2">${item.title || ''}</h3>
+        return `<article class="group bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+            ${item.cover ? `<a href="${url}" aria-label="${item.title}">
+              <img src="${item.cover}" alt="${item.title}" class="w-full h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+            </a>` : ''}
+            <div class="p-7 flex flex-col flex-1">
+              <a href="${url}" class="hover:text-emerald-700 mb-3 block">
+                <h3 class="font-semibold text-xl md:text-2xl leading-tight line-clamp-2 group-hover:text-emerald-700 transition-colors">${item.title}</h3>
               </a>
-              <p class="text-xs text-gray-500 mb-3">
-                ${sponsor ? sponsor : ''}${year ? ` · ${year}` : ''}
-              </p>
-              ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
-              <a href="${url}" class="mt-auto inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                View project <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+              <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-3">
+                ${sponsor ? `<span>${sponsor}</span>` : ''}${year ? `<span>${year}</span>` : ''}
+              </div>
+              ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 flex-1">${snippet}</p>` : ''}
+              <a href="${url}" class="mt-4 inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+                View project <i class="fa-solid fa-arrow-right text-xs"></i>
               </a>
             </div>
           </article>
@@ -610,15 +612,18 @@
       const data = await fetchJson(API_BASE + '/data/partners');
       const container = document.getElementById('partnersContainer');
       if (!container) return;
-
+    
       container.innerHTML = data.map(item => `
         <div class="flex flex-col items-center text-center gap-3">
-          ${item.logo ? `<img src="${item.logo}" alt="${item.name}" class="h-16 w-auto object-contain">` : ''}
+          ${item.logo ? `
+            <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" aria-label="${item.name || 'Partner'}">
+              <img src="${item.logo}" alt="${item.name || ''}" class="h-24 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer">
+            </a>
+          ` : ''}
           <p class="text-sm font-medium text-slate-800">${item.name || ''}</p>
         </div>
       `).join('') || '<p class="text-sm text-gray-500 w-full">Partners will be displayed here.</p>';
     }
-
     // Contact form submission
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('contactForm');
