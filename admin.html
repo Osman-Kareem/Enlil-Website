@@ -97,6 +97,30 @@
 
     /* ── Last saved ── */
     .last-saved { font-size: 0.72rem; color: #9ca3af; margin-top: 0.35rem; text-align: right; }
+
+        /* ── Quill 2.0 list fix ── */
+    .ql-editor ul, .ql-editor ol {
+        padding-left: 1.5rem !important;
+        margin: 0.5rem 0 0.75rem !important;
+    }
+    .ql-editor ul > li {
+        list-style-type: disc !important;
+        padding-left: 0 !important;
+    }
+    .ql-editor ol > li {
+        list-style-type: decimal !important;
+        padding-left: 0 !important;
+    }
+    .ql-editor li::before,
+    .ql-editor li[data-list]::before {
+        content: none !important;
+        display: none !important;
+    }
+    .preview-body ul { list-style-type: disc !important; padding-left: 1.5rem !important; }
+    .preview-body ol { list-style-type: decimal !important; padding-left: 1.5rem !important; }
+    .preview-body li { list-style-type: inherit !important; padding-left: 0 !important; }
+    .preview-body li::before,
+    .preview-body li[data-list]::before { content: none !important; display: none !important; }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -1914,23 +1938,34 @@ function resetPartnerForm(){
 }
 
 // ─── PREVIEW HELPERS ─────────────────────────────────────────────────────────
-function transformImagesWithCaptions(quill){
-  if(!quill)return'';
-  const clone=quill.root.cloneNode(true);
-  const imgs=clone.querySelectorAll('img');
-  imgs.forEach(img=>{
-    const next=img.closest('p')?.nextElementSibling;
-    if(next&&next.textContent.startsWith('Caption:')){
-      const cap=document.createElement('figcaption');
-      cap.className='text-xs text-center text-gray-500 mt-1 mb-4';
-      cap.textContent=next.textContent.replace('Caption:','').trim();
-            const fig=document.createElement('figure');
-      img.closest('p')?.parentNode.insertBefore(fig,img.closest('p'));
-      fig.appendChild(img.closest('p'));
-      fig.appendChild(cap);
-    }
-  });
-  return clone.innerHTML;
+function transformImagesWithCaptions(quill) {
+    if (!quill) return '';
+    const clone = quill.root.cloneNode(true);
+    const blocks = Array.from(clone.children); // stable snapshot before mutations
+    const toRemove = new Set();
+    blocks.forEach((block, idx) => {
+        if (toRemove.has(block)) return;
+        const img = block.querySelector('img');
+        if (!img) return;
+        const nextBlock = blocks[idx + 1];
+        if (!nextBlock || toRemove.has(nextBlock)) return;
+        const raw = (nextBlock.textContent || '').trim();
+        if (!raw.toLowerCase().startsWith('caption:')) return;
+        const captionText = raw.slice(8).trim();
+        const figure = document.createElement('figure');
+        figure.style.cssText = 'margin:1.25rem auto;text-align:center';
+        const imgClone = img.cloneNode(true);
+        imgClone.style.margin = '0 auto';
+        figure.appendChild(imgClone);
+        const figcap = document.createElement('figcaption');
+        figcap.textContent = captionText;
+        figcap.style.cssText = 'font-size:0.8rem;color:#6b7280;margin-top:0.35rem;font-style:italic;line-height:1.5';
+        figure.appendChild(figcap);
+        clone.replaceChild(figure, block);
+        toRemove.add(nextBlock);
+    });
+    toRemove.forEach(el => { if (el.parentNode) el.parentNode.removeChild(el); });
+    return clone.innerHTML;
 }
 
 function buildMetaPreviewHtml(url,title,desc){
