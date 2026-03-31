@@ -36,10 +36,12 @@
     .ql-editor p  { margin: 0 0 0.75rem; }
 
     /* ── Fix bullet & numbered lists ── */
-    .ql-editor ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin: 0.5rem 0 !important; }
-    .ql-editor ol { list-style-type: decimal !important; padding-left: 1.5rem !important; margin: 0.5rem 0 !important; }
-    .ql-editor ul li, .ql-editor ol li { list-style-type: inherit !important; padding-left: 0 !important; }
-    .ql-editor ul li::before, .ql-editor ol li::before { content: none !important; }
+    .ql-editor ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin: 0.5rem 0 0.75rem !important; }
+    .ql-editor ol { list-style-type: decimal !important; padding-left: 1.5rem !important; margin: 0.5rem 0 0.75rem !important; }
+    .ql-editor ul > li { list-style-type: disc !important; padding-left: 0 !important; }
+    .ql-editor ol > li { list-style-type: decimal !important; padding-left: 0 !important; }
+    .ql-editor li::before,
+    .ql-editor li[data-list]::before { content: none !important; display: none !important; }
     .preview-body ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin: 0.5rem 0 !important; }
     .preview-body ol { list-style-type: decimal !important; padding-left: 1.5rem !important; margin: 0.5rem 0 !important; }
     .preview-body ul li, .preview-body ol li { list-style-type: inherit !important; }
