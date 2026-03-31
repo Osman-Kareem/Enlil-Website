@@ -352,7 +352,36 @@
         });
       }
     }
-
+    function transformImagesWithCaptions(html) {
+      if (!html) return html;
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = html;
+      const blocks = Array.from(wrapper.children);
+      const toRemove = new Set();
+      blocks.forEach((block, idx) => {
+        if (toRemove.has(block)) return;
+        const img = block.querySelector('img');
+        if (!img) return;
+        const nextBlock = blocks[idx + 1];
+        if (!nextBlock || toRemove.has(nextBlock)) return;
+        const raw = (nextBlock.textContent || '').trim();
+        if (!raw.toLowerCase().startsWith('caption:')) return;
+        const captionText = raw.slice(8).trim();
+        const figure = document.createElement('figure');
+        figure.style.cssText = 'margin:1.5rem auto;text-align:center';
+        const imgClone = img.cloneNode(true);
+        imgClone.style.margin = '0 auto';
+        figure.appendChild(imgClone);
+        const figcap = document.createElement('figcaption');
+        figcap.textContent = captionText;
+        figcap.style.cssText = 'font-size:0.8rem;color:#6b7280;margin-top:0.35rem;font-style:italic;line-height:1.5';
+        figure.appendChild(figcap);
+        wrapper.replaceChild(figure, block);
+        toRemove.add(nextBlock);
+      });
+      toRemove.forEach(el => { if (el.parentNode) el.parentNode.removeChild(el); });
+      return wrapper.innerHTML;
+    }
     async function loadProject() {
       const slugFromUrl = getSlugFromUrl();
       document.getElementById('projectBody').innerHTML =
@@ -435,8 +464,8 @@
           document.getElementById('coverWrapper').classList.remove('hidden');
         }
 
-        // Body content
-        document.getElementById('projectBody').innerHTML = DOMPurify.sanitize(project.content || '');
+        // RENDER Body content
+        document.getElementById('projectBody').innerHTML = DOMPurify.sanitize(transformImagesWithCaptions(project.content));
 
         // SEO + share
         updateMetaAndSchema(project, finalSlug);
