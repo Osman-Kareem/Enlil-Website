@@ -437,11 +437,7 @@
           const slug = safeSlug(item.seo?.slug, item.title, 'research');
           // FIX: correct URL template — was /research/research-item.html (broken)
           url = `../research/research-item.html?slug=${encodeURIComponent(slug)}`;
-        } else if (type === 'project') {
-          const slug = safeSlug(item.seo?.slug, item.title, 'project');
-          // FIX: correct URL template — was /projects/project.html (wrong filename)
-          url = `../projects/project-item.html?slug=${encodeURIComponent(slug)}`;
-        }
+        } 
 
         const snippet = (item.seo?.description ||
           (item.content || item.abstract || '')
@@ -474,15 +470,13 @@
         const [authorsRes, articlesRes, researchRes, projectsRes] = await Promise.all([
           fetch(`${API_BASE}/data/authors`),
           fetch(`${API_BASE}/data/articles`),
-          fetch(`${API_BASE}/data/research`),
-          fetch(`${API_BASE}/data/projects`)
+          fetch(`${API_BASE}/data/research`)
         ]);
 
         if (!authorsRes.ok) throw new Error('Authors fetch failed');
         const authors  = await authorsRes.json();
         const articles = articlesRes.ok  ? await articlesRes.json()  : [];
         const research = researchRes.ok  ? await researchRes.json()  : [];
-        const projects = projectsRes.ok  ? await projectsRes.json()  : [];
 
         let author = null;
         for (const a of authors) {
@@ -547,16 +541,13 @@
         const fullName = author.name || '';
         const authoredArticles = articles.filter(a => contributesTo(fullName, a));
         const authoredResearch  = research.filter(r => contributesTo(fullName, r));
-        const authoredProjects  = projects.filter(p => contributesTo(fullName, p));
-
+        
         // Sort by date desc
         authoredArticles.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
         authoredResearch.sort((a, b)  => (b.date || '').localeCompare(a.date || ''));
-        authoredProjects.sort((a, b)  => String(b.year || '').localeCompare(String(a.year || '')));
 
         renderList(document.getElementById('articlesList'),  authoredArticles, 'article');
         renderList(document.getElementById('researchList'),  authoredResearch,  'research');
-        renderList(document.getElementById('projectsList'),  authoredProjects,  'project');
 
       } catch (e) {
         console.error('Author page load error', e);
