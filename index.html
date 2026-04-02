@@ -434,6 +434,7 @@
 
   <script>
     const API_BASE = 'https://enlil-cms-api.osmanalikareem.workers.dev';
+    const HOME_LIMIT = 3;
 
     function toggleMobileMenu() {
       const menu = document.getElementById('mobileMenu');
@@ -502,7 +503,7 @@
       const container = document.getElementById('articlesContainer');
       if (!container) return;
 
-      container.innerHTML = data.slice(0, 6).map(item => {
+      container.innerHTML = data.slice(0, HOME_LIMIT).map(item => {
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
@@ -512,7 +513,7 @@
 
         return `
           <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full">
-            ${item.cover ? `<a href="${url}"><img src="${item.cover}" alt="${item.title}" class="w-full h-52 object-cover"></a>` : ''}
+            ${item.cover ? `<a href="${url}"><img src="${item.cover}" alt="${item.title}" class="w-full h-52 object-cover" loading="lazy" decoding="async"></a>` : ''}
             <div class="p-6 flex flex-col flex-1">
               <a href="${url}" class="hover:text-emerald-700">
                 <h3 class="font-semibold text-xl mb-2">${item.title || ''}</h3>
@@ -536,7 +537,7 @@
       const container = document.getElementById('researchContainer');
       if (!container) return;
 
-      container.innerHTML = data.slice(0, 6).map(item => {
+      container.innerHTML = data.slice(0, HOME_LIMIT).map(item => {
         const authorLine = buildAuthorLine(item);
         const date = formatDate(item.date);
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
@@ -547,7 +548,7 @@
 
         return `
           <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full">
-            ${item.cover ? `<a href="${url}"><img src="${item.cover}" alt="${item.title}" class="w-full h-52 object-cover"></a>` : ''}
+            ${item.cover ? `<a href="${url}"><img src="${item.cover}" alt="${item.title}" class="w-full h-52 object-cover" loading="lazy" decoding="async"></a>` : ''}
             <div class="p-6 flex flex-col flex-1">
               <a href="${url}" class="hover:text-emerald-700">
                 <h3 class="font-semibold text-xl mb-2">${item.title || ''}</h3>
@@ -578,7 +579,7 @@
       const container = document.getElementById('projectsContainer');
       if (!container) return;
 
-      container.innerHTML = data.slice(0, 6).map(item => {
+      container.innerHTML = data.slice(0, HOME_LIMIT).map(item => {
         const year = item.year || '';
         const sponsor = item.sponsor || '';
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
@@ -588,7 +589,7 @@
 
         return `<article class="group bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
             ${item.cover ? `<a href="${url}" aria-label="${item.title}">
-              <img src="${item.cover}" alt="${item.title}" class="w-full h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+              <img src="${item.cover}" alt="${item.title}" class="w-full h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async">
             </a>` : ''}
             <div class="p-7 flex flex-col flex-1">
               <a href="${url}" class="hover:text-emerald-700 mb-3 block">
@@ -612,12 +613,12 @@
       const container = document.getElementById('partnersContainer');
       if (!container) return;
     
-      container.innerHTML = data.map(item => `
+      container.innerHTML = data.slice(0, 8) .map(item => `
         <div class="flex flex-col items-center text-center gap-3">
           ${item.logo ? `
             <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" aria-label="${item.name || 'Partner'}">
-              <img src="${item.logo}" alt="${item.name || ''}" class="h-28 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer">
-            </a>
+              <img src="${item.logo}" alt="${item.name || ''}" class="h-28 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer" loading="lazy" decoding="async">            
+              </a>
           ` : ''}
           <p class="text-sm font-medium text-slate-800">${item.name || ''}</p>
         </div>
@@ -664,12 +665,54 @@
       }
     });
 
-    window.addEventListener('load', () => {
-      loadArticles();
-      loadResearch();
-      loadProjects();
-      loadPartners();
+    document.addEventListener('DOMContentLoaded', async () => {
+      const form = document.getElementById('contactForm');
+      const statusEl = document.getElementById('contactStatus');
+    
+      if (form) {
+        form.addEventListener('submit', async e => {
+          e.preventDefault();
+          statusEl.classList.remove('hidden');
+          statusEl.classList.remove('text-red-600');
+          statusEl.classList.add('text-gray-600');
+          statusEl.textContent = 'Sending your message…';
+    
+          const payload = {
+            name: document.getElementById('contactName').value.trim(),
+            email: document.getElementById('contactEmail').value.trim(),
+            subject: document.getElementById('contactSubject').value.trim() || 'Enlil Center website contact',
+            message: document.getElementById('contactMessage').value.trim()
+          };
+    
+          try {
+            const res = await fetch(API_BASE + '/contact', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Non-200 response');
+            statusEl.textContent = 'Thank you. Your message has been sent to the Enlil Center team.';
+            statusEl.classList.remove('text-gray-600');
+            statusEl.classList.add('text-emerald-700');
+            form.reset();
+          } catch (err) {
+            console.error('Contact failed', err);
+            statusEl.textContent = 'We could not send your message. Please email info@enlilcenter.org directly.';
+            statusEl.classList.remove('text-gray-600');
+            statusEl.classList.add('text-red-600');
+          }
+        });
+      }
+    
+      await Promise.all([
+        loadArticles(),
+        loadResearch(),
+        loadProjects()
+      ]);
+    
+      setTimeout(loadPartners, 150);
     });
+
   </script>
 </body>
 </html>
