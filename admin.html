@@ -1136,14 +1136,14 @@ async function applyCrop(){
     pendingInlineResolve(base64,alt);
     pendingInlineResolve=null;
   } else {
-    window['cropped_'+currentInputId]=base64;
+    window['cropped'+currentInputId]=base64;
     // show preview
     const previewEl=document.getElementById(currentInputId+'Preview')||
                     document.getElementById(currentInputId.replace('Cover','CoverPreview'));
     const imgEl=document.getElementById(currentInputId+'PreviewImg')||
                document.getElementById(currentInputId.replace('Cover','PreviewImg'));
     if(previewEl&&imgEl){imgEl.src=base64;previewEl.classList.remove('hidden');}
-    if(alt) window['alt_'+currentInputId]=alt;
+    if(alt) window['alt'+currentInputId]=alt;
     updateArticlePreview();updateResearchPreview();updateProjectPreview();
   }
 
