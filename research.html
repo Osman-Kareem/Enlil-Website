@@ -297,7 +297,7 @@
           item.seo?.description ||
           (item.abstract ? item.abstract.replace(/<[^>]+>/g, '').slice(0, 180) + '…' : '');
 
-        const hasPdf = !!item.pdfBase64;
+        const hasPdf = !!(item.pdfUrl || item.pdfBase64 || item.pdf);
 
         return `
           <article class="group bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full border border-gray-100 hover:border-emerald-200">
@@ -323,14 +323,11 @@
                   View full report
                   <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
-                ${hasPdf ? `
-                  <a href="${item.pdfBase64}"
-                     download="${(item.title || 'Enlil-Research').replace(/[^a-z0-9]+/gi,'-')}.pdf"
-                     class="inline-flex items-center text-xs text-slate-600 hover:text-slate-800">
-                    <i class="fa-solid fa-file-pdf mr-1 text-rose-500"></i>
-                    Download PDF
-                  </a>
-                ` : ''}
+                ${hasPdf ? `<a href="${item.pdfUrl || item.pdfBase64 || item.pdf || '#'}"
+                    ${(item.pdfUrl || item.pdf) ? 'target="_blank" rel="noopener noreferrer"' : `download="${(item.title || 'Enlil-Research').replace(/[^a-z0-9]+/gi, '-')}.pdf"`}
+                    class="inline-flex items-center text-xs text-slate-600 hover:text-slate-800">
+                    <i class="fa-solid fa-file-pdf mr-1 text-rose-500"></i> PDF
+                  </a>` : ''}
               </div>
             </div>
           </article>
