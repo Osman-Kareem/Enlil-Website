@@ -1137,6 +1137,8 @@ async function applyCrop(){
     pendingInlineResolve=null;
   } else {
     window['cropped'+currentInputId]=base64;
+    window['cropped'+currentInputId] = base64;
+    console.log('✅ CROP SAVED:', 'cropped'+currentInputId, '→', base64.slice(0,50));
     // show preview
     const previewEl=document.getElementById(currentInputId+'Preview')||
                     document.getElementById(currentInputId.replace('Cover','CoverPreview'));
@@ -1651,6 +1653,9 @@ document.getElementById('researchForm')?.addEventListener('submit', async (e) =>
   submitBtn.textContent = 'Saving…';
 
   try {
+    console.log('📦 SUBMIT - currentInputId was:', currentInputId);
+    console.log('📦 SUBMIT - croppedresearchCover:', window['croppedresearchCover']?.slice(0,50));
+    console.log('📦 SUBMIT - ALL cropped keys:', Object.keys(window).filter(k => k.toLowerCase().includes('cropped')));
     const idx   = document.getElementById('researchEditIndex').value;
     const title = document.getElementById('researchTitle').value.trim();
     const slug  = document.getElementById('researchSlug').value.trim() || toSlug(title);
