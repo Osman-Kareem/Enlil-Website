@@ -509,10 +509,20 @@
         });
 
         // PDF download button
-        if (report.pdfBase64) {
+        // PDF download button — supports new pdfUrl (R2) and old pdfBase64 (legacy)
+        const pdfHref = report.pdfUrl || report.pdfBase64 || report.pdf || '';
+        if (pdfHref) {
           const btn = document.getElementById('pdfDownloadBtn');
-          btn.href = report.pdfBase64;
-          btn.download = `${(report.title || 'Enlil-Research').replace(/[^a-z0-9]+/gi, '-')}.pdf`;
+          btn.href = pdfHref;
+        
+          // Only set download attribute for Base64 — R2 URLs serve directly in browser
+          if (!pdfHref.startsWith('http')) {
+            btn.download = (report.title || 'Enlil-Research').replace(/[^a-z0-9]+/gi, '-') + '.pdf';
+          } else {
+            btn.setAttribute('target', '_blank');
+            btn.setAttribute('rel', 'noopener noreferrer');
+          }
+        
           document.getElementById('pdfWrapper').classList.remove('hidden');
         }
 
