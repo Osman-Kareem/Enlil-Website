@@ -509,7 +509,7 @@
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
         const url = `/articles/${slug}`;
         const snippet = (item.seo && item.seo.description)
-          || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
+          || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 110) + '…' : '');
 
         return `
           <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full">
@@ -543,8 +543,8 @@
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
         const url = `/research/${slug}`;
         const snippet = (item.seo && item.seo.description)
-          || (item.abstract ? item.abstract.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
-        const hasPdf = !!item.pdfBase64;
+          || (item.abstract ? item.abstract.replace(/<[^>]+>/g, '').slice(0, 110) + '…' : '');
+    
 
         return `
           <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full">
@@ -561,11 +561,6 @@
                 <a href="${url}" class="inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
                   View details <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                 </a>
-                ${hasPdf ? `
-                  <a href="${item.pdfBase64}" download="${(item.title || 'Enlil-Research').replace(/[^a-z0-9]+/gi,'-')}.pdf"
-                     class="inline-flex items-center text-xs text-slate-600 hover:text-slate-800">
-                    <i class="fa-solid fa-file-pdf mr-1 text-rose-500"></i> Download PDF
-                  </a>` : ''}
               </div>
             </div>
           </article>
@@ -585,7 +580,7 @@
         const slug = safeSlug(item.seo && item.seo.slug, item.title);
         const url = `/projects/${slug}`;
         const snippet = (item.seo && item.seo.description)
-          || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
+          || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 110) + '…' : '');
 
         return `<article class="group bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
             ${item.cover ? `<a href="${url}" aria-label="${item.title}">
@@ -613,11 +608,11 @@
       const container = document.getElementById('partnersContainer');
       if (!container) return;
     
-      container.innerHTML = data.slice(0, 8) .map(item => `
+      container.innerHTML = data.slice(0, 6) .map(item => `
         <div class="flex flex-col items-center text-center gap-3">
           ${item.logo ? `
             <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" aria-label="${item.name || 'Partner'}">
-              <img src="${item.logo}" alt="${item.name || ''}" class="h-28 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer" loading="lazy" decoding="async">            
+              <img src="${item.logo}" alt="${item.name || ''}" class="h-28 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer" loading="lazy" decoding="async">
               </a>
           ` : ''}
           <p class="text-sm font-medium text-slate-800">${item.name || ''}</p>
@@ -666,53 +661,52 @@
     });
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const form = document.getElementById('contactForm');
-      const statusEl = document.getElementById('contactStatus');
-    
-      if (form) {
-        form.addEventListener('submit', async e => {
-          e.preventDefault();
-          statusEl.classList.remove('hidden');
-          statusEl.classList.remove('text-red-600');
-          statusEl.classList.add('text-gray-600');
-          statusEl.textContent = 'Sending your message…';
-    
-          const payload = {
-            name: document.getElementById('contactName').value.trim(),
-            email: document.getElementById('contactEmail').value.trim(),
-            subject: document.getElementById('contactSubject').value.trim() || 'Enlil Center website contact',
-            message: document.getElementById('contactMessage').value.trim()
-          };
-    
-          try {
-            const res = await fetch(API_BASE + '/contact', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error('Non-200 response');
-            statusEl.textContent = 'Thank you. Your message has been sent to the Enlil Center team.';
-            statusEl.classList.remove('text-gray-600');
-            statusEl.classList.add('text-emerald-700');
-            form.reset();
-          } catch (err) {
-            console.error('Contact failed', err);
-            statusEl.textContent = 'We could not send your message. Please email info@enlilcenter.org directly.';
-            statusEl.classList.remove('text-gray-600');
-            statusEl.classList.add('text-red-600');
-          }
-        });
-      }
-    
-      await Promise.all([
-        loadArticles(),
-        loadResearch(),
-        loadProjects()
-      ]);
-    
-      setTimeout(loadPartners, 150);
-    });
-
+        const form = document.getElementById('contactForm');
+        const statusEl = document.getElementById('contactStatus');
+      
+        if (form) {
+          form.addEventListener('submit', async e => {
+            e.preventDefault();
+            statusEl.classList.remove('hidden');
+            statusEl.classList.remove('text-red-600');
+            statusEl.classList.add('text-gray-600');
+            statusEl.textContent = 'Sending your message…';
+      
+            const payload = {
+              name: document.getElementById('contactName').value.trim(),
+              email: document.getElementById('contactEmail').value.trim(),
+              subject: document.getElementById('contactSubject').value.trim() || 'Enlil Center website contact',
+              message: document.getElementById('contactMessage').value.trim()
+            };
+      
+            try {
+              const res = await fetch(API_BASE + '/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+              if (!res.ok) throw new Error('Non-200 response');
+              statusEl.textContent = 'Thank you. Your message has been sent to the Enlil Center team.';
+              statusEl.classList.remove('text-gray-600');
+              statusEl.classList.add('text-emerald-700');
+              form.reset();
+            } catch (err) {
+              console.error('Contact failed', err);
+              statusEl.textContent = 'We could not send your message. Please email info@enlilcenter.org directly.';
+              statusEl.classList.remove('text-gray-600');
+              statusEl.classList.add('text-red-600');
+            }
+          });
+        }
+      
+        await Promise.all([
+          loadArticles(),
+          loadProjects()
+        ]);
+      
+        setTimeout(loadResearch, 150);
+        setTimeout(loadPartners, 400);
+      });
   </script>
 </body>
 </html>
