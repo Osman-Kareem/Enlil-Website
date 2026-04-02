@@ -1865,7 +1865,7 @@ function editItem(type,index){
     if(quillResearch)quillResearch.root.innerHTML=item.content||'';
     normalizeQuillImages(quillResearch);
     if(item.cover){
-      window['cropped_researchCover']=item.cover;
+      window['croppedresearchCover']=item.cover;
       const p=document.getElementById('researchCoverPreview');
       const i=document.getElementById('researchPreviewImg');
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
@@ -1957,7 +1957,7 @@ function resetResearchForm(){
   document.getElementById('researchForm').reset();
   document.getElementById('researchEditIndex').value='';
   document.getElementById('researchSubmitButton').textContent='Save Research';
-  delete window['cropped_researchCover'];
+  delete window['croppedresearchCover'];
   const p=document.getElementById('researchCoverPreview'); if(p)p.classList.add('hidden');
   if(quillResearch)quillResearch.root.innerHTML='';
   clearDynamicAuthorRows('researchAuthorsContainer');
@@ -2066,7 +2066,7 @@ function updateResearchPreview(){
   const leadRole=resolveLeadRole('researchLeadRole','researchLeadRoleCustom');
   const [leadAuthor,coAuthors]=collectAuthorsFromContainer('researchAuthorsContainer',leadName,leadRole);
   const authorLine=buildAuthorLine(leadAuthor,coAuthors);
-  const cover=window['cropped_researchCover'];
+  const cover=window['croppedresearchCover'];
   const bodyHtml=transformImagesWithCaptions(quillResearch);
   const slug=document.getElementById('researchSlug')?.value.trim()||'research-slug';
   const desc=document.getElementById('researchSeoDescription')?.value.trim()||'Enlil Center Iraq — climate change research, policy and capacity building.';
