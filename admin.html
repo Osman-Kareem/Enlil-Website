@@ -1611,7 +1611,7 @@ document.getElementById('authorForm')?.addEventListener('submit',async e=>{
     role:document.getElementById('authorRole').value.trim(),
     email:document.getElementById('authorEmail').value.trim(),
     bio,links,
-    photo:window['cropped_authorPhoto']||''
+    photo:window['croppedauthorPhoto']||''
   };
   if(idx!=='') authors[parseInt(idx)]=item;
   else authors.push(item);
@@ -1636,7 +1636,7 @@ document.getElementById('articleForm')?.addEventListener('submit',async e=>{
     title:document.getElementById('articleTitle').value.trim(),
     date:document.getElementById('articleDate').value||new Date().toISOString().split('T')[0],
     leadAuthor, authors:coAuthors, content,
-    cover:window['cropped_articleCover']||'',
+    cover:window['croppedArticleCover']||'',
     slug:document.getElementById('articleSlug').value.trim(),
     seoDescription:document.getElementById('articleSeoDescription').value.trim(),
     seoKeywords:document.getElementById('articleSeoKeywords').value.trim(),
@@ -1752,7 +1752,7 @@ document.getElementById('projectForm')?.addEventListener('submit',async e=>{
     status:document.getElementById('projectStatus').value,
     location:document.getElementById('projectLocation').value.trim(),
     content,
-    cover:window['cropped_projectCover']||'',
+    cover:window['croppedprojectCover']||'',
     slug:document.getElementById('projectSlug').value.trim(),
     seoDescription:document.getElementById('projectSeoDescription').value.trim(),
     seoKeywords:document.getElementById('projectSeoKeywords').value.trim(),
@@ -1775,7 +1775,7 @@ document.getElementById('partnerForm')?.addEventListener('submit',async e=>{
   const item={
     name:document.getElementById('partnerName').value.trim(),
     url:document.getElementById('partnerUrl').value.trim(),
-    logo:window['cropped_partnerLogo']||''
+    logo: window['croppedpartnerLogo'] || (idx !== '' ? partners[parseInt(idx)]?.logo : ''),
   };
   if(idx!=='') partners[parseInt(idx)]=item;
   else partners.push(item);
@@ -1814,7 +1814,7 @@ function editItem(type,index){
     document.getElementById('authorEmail').value=item.email||'';
     if(quillBio)quillBio.root.innerHTML=item.bio||'';
     if(item.photo){
-      window['cropped_authorPhoto']=item.photo;
+      window['croppedauthorPhoto']=item.photo;
       const prev=document.getElementById('authorPhotoPreview');
       const img=document.getElementById('authorPhotoPreviewImg');
       if(prev&&img){img.src=item.photo;prev.classList.remove('hidden');}
@@ -1843,7 +1843,7 @@ function editItem(type,index){
     if(quillArticle)quillArticle.root.innerHTML=item.content||'';
     normalizeQuillImages(quillArticle);
     if(item.cover){
-      window['cropped_articleCover']=item.cover;
+      window['croppedArticleCover']=item.cover;
       const p=document.getElementById('articleCoverPreview');
       const i=document.getElementById('articlePreviewImg');
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
@@ -1904,7 +1904,7 @@ function editItem(type,index){
     if(quillProject)quillProject.root.innerHTML=item.content||'';
     normalizeQuillImages(quillProject);
     if(item.cover){
-      window['cropped_projectCover']=item.cover;
+      window['croppedprojectCover']=item.cover;
       const p=document.getElementById('projectCoverPreview');
       const i=document.getElementById('projectCoverPreviewImg');
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
@@ -1943,7 +1943,7 @@ function resetAuthorForm(){
   document.getElementById('authorForm').reset();
   document.getElementById('authorEditIndex').value='';
   document.getElementById('authorSubmitButton').textContent='Save Author';
-  delete window['cropped_authorPhoto'];
+  delete window['croppedauthorPhoto'];
   const p=document.getElementById('authorPhotoPreview'); if(p)p.classList.add('hidden');
   if(quillBio)quillBio.root.innerHTML='';
   document.getElementById('authorLinksContainer').innerHTML='';
@@ -1953,7 +1953,7 @@ function resetArticleForm(){
   document.getElementById('articleForm').reset();
   document.getElementById('articleEditIndex').value='';
   document.getElementById('articleSubmitButton').textContent='Save Article';
-  delete window['cropped_articleCover'];
+  delete window['croppedArticleCover'];
   const p=document.getElementById('articleCoverPreview'); if(p)p.classList.add('hidden');
   if(quillArticle)quillArticle.root.innerHTML='';
   clearDynamicAuthorRows('articleAuthorsContainer');
@@ -1987,7 +1987,7 @@ function resetProjectForm(){
   document.getElementById('projectForm').reset();
   document.getElementById('projectEditIndex').value='';
   document.getElementById('projectSubmitButton').textContent='Save Project';
-  delete window['cropped_projectCover'];
+  delete window['croppedprojectCover'];
   const p=document.getElementById('projectCoverPreview'); if(p)p.classList.add('hidden');
   if(quillProject)quillProject.root.innerHTML='';
   document.getElementById('projectSlug').value='';
@@ -2002,7 +2002,7 @@ function resetPartnerForm(){
   document.getElementById('partnerForm').reset();
   document.getElementById('partnerEditIndex').value='';
   document.getElementById('partnerSubmitButton').textContent='Save Partner';
-  delete window['cropped_partnerLogo'];
+  delete window['croppedpartnerLogo'];
   const p=document.getElementById('partnerLogoPreview'); if(p)p.classList.add('hidden');
 }
 
@@ -2051,7 +2051,7 @@ function updateArticlePreview(){
   const leadRole=resolveLeadRole('articleLeadRole','articleLeadRoleCustom');
   const [leadAuthor,coAuthors]=collectAuthorsFromContainer('articleAuthorsContainer',leadName,leadRole);
   const authorLine=buildAuthorLine(leadAuthor,coAuthors);
-  const cover=window['cropped_articleCover'];
+  const cover=window['croppedArticleCover'];
   const bodyHtml=transformImagesWithCaptions(quillArticle);
   const slug=document.getElementById('articleSlug')?.value.trim()||'article-slug';
   const desc=document.getElementById('articleSeoDescription')?.value.trim()||'Enlil Center Iraq — climate change research, policy and capacity building.';
@@ -2061,7 +2061,7 @@ function updateArticlePreview(){
   const date=document.getElementById('articleDate')?.value||new Date().toISOString().split('T')[0];
   target.innerHTML=`
     <article class="max-w-2xl mx-auto">
-      ${cover?`<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm" alt="${window['alt_articleCover']||title}"></figure>`:''}
+      ${cover?`<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm" alt="${window['altarticleCover']||title}"></figure>`:''}
       <header class="mb-4">
         <h1 class="text-2xl font-semibold mb-2">${title}</h1>
         ${authorLine?`<p class="text-sm text-gray-500">By ${authorLine}</p>`:''}
@@ -2088,7 +2088,7 @@ function updateResearchPreview(){
   const date=document.getElementById('researchDate')?.value||new Date().toISOString().split('T')[0];
   target.innerHTML=`
     <article class="max-w-2xl mx-auto">
-      ${cover?`<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm" alt="${window['alt_researchCover']||title}"></figure>`:''}
+      ${cover?`<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm" alt="${window['altresearchCover']||title}"></figure>`:''}
       <header class="mb-4">
         <h1 class="text-2xl font-semibold mb-2">${title}</h1>
         ${authorLine?`<p class="text-sm text-gray-500">By ${authorLine}</p>`:''}
@@ -2101,7 +2101,7 @@ function updateResearchPreview(){
 
 function updateProjectPreview(){
   const title=document.getElementById('projectTitle')?.value||'Untitled project';
-  const cover=window['cropped_projectCover'];
+  const cover=window['croppedprojectCover'];
   const bodyHtml=transformImagesWithCaptions(quillProject);
   const slug=document.getElementById('projectSlug')?.value.trim()||'project-slug';
   const desc=document.getElementById('projectSeoDescription')?.value.trim()||'Enlil Center Iraq — climate change research, policy and capacity building.';
@@ -2113,7 +2113,7 @@ function updateProjectPreview(){
   const status=document.getElementById('projectStatus')?.value||'';
   target.innerHTML=`
     <article class="max-w-2xl mx-auto">
-      ${cover?`<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm" alt="${window['alt_projectCover']||title}"></figure>`:''}
+      ${cover?`<figure class="mb-6"><img src="${cover}" class="w-full rounded-3xl object-cover shadow-sm" alt="${window['altprojectCover']||title}"></figure>`:''}
       <header class="mb-4">
         <h1 class="text-2xl font-semibold mb-2">${title}</h1>
         <div class="flex flex-wrap gap-2 mt-1">
