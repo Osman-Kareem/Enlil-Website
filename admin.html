@@ -1643,33 +1643,88 @@ document.getElementById('articleForm')?.addEventListener('submit',async e=>{
 });
 
 // RESEARCH
-document.getElementById('researchForm')?.addEventListener('submit',async e=>{
+document.getElementById('researchForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if(!validateRequired([{id:'researchTitle'}]))return;
-  const idx=document.getElementById('researchEditIndex').value;
-  const leadName=document.getElementById('researchLeadAuthor').value;
-  const leadRole=resolveLeadRole('researchLeadRole','researchLeadRoleCustom');
-  const [leadAuthor,coAuthors]=collectAuthorsFromContainer('researchAuthorsContainer',leadName,leadRole);
-  const content=quillResearch?DOMPurify.sanitize(quillResearch.root.innerHTML):'';
-  const item={
-    title:document.getElementById('researchTitle').value.trim(),
-    date:document.getElementById('researchDate').value||new Date().toISOString().split('T')[0],
-    leadAuthor, authors:coAuthors, content,
-    cover:window['cropped_researchCover']||'',
-    pdf:window['researchPDFData']||'',
-    pdfThumb:window['researchPDFThumbData']||'',
-    slug:document.getElementById('researchSlug').value.trim(),
-    seoDescription:document.getElementById('researchSeoDescription').value.trim(),
-    seoKeywords:document.getElementById('researchSeoKeywords').value.trim(),
-    status:document.getElementById('researchStatus')?.value||'published'
-  };
-  if(idx!=='') research[parseInt(idx)]=item;
-  else research.push(item);
-  await saveToJSON('research',research);
-  renderResearch(); resetResearchForm();
-  updateLastSaved('research'); updateBadges();
-  hasUnsavedChanges=false;
-  showToast('Research saved ✓');
+
+  const submitBtn = document.getElementById('researchSubmitButton');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Saving…';
+
+  try {
+    const idx   = document.getElementById('researchEditIndex').value;
+    const title = document.getElementById('researchTitle').value.trim();
+    const slug  = document.getElementById('researchSlug').value.trim() || toSlug(title);
+
+    // Upload PDF to R2 if a new file was selected
+    let pdfUrl  = '';
+    let pdfKey  = '';
+    if (window.researchPDFFile) {
+      submitBtn.textContent = 'Uploading PDF…';
+      const upload = await uploadPdfToR2(window.researchPDFFile, slug);
+      pdfUrl = upload.url;
+      pdfKey = upload.key;
+      window.researchPDFFile = null; // clear after upload
+    } else if (idx !== '' && research[parseInt(idx)]?.pdfUrl) {
+      // Keep existing URL if editing and no new file selected
+      pdfUrl = research[parseInt(idx)].pdfUrl;
+      pdfKey = research[parseInt(idx)].pdfKey || '';
+    }
+
+    // Build lead author
+    const leadSel    = document.getElementById('researchLeadAuthor').value;
+    const leadRole   = document.getElementById('researchLeadRole').value;
+    const leadCustom = document.getElementById('researchLeadRoleCustom').value.trim();
+    const leadAuthor = leadSel ? {
+      name: leadSel,
+      role: leadRole === 'Other' ? leadCustom : leadRole
+    } : null;
+
+    // Build co-authors
+    const coAuthors = [];
+    document.querySelectorAll('#researchAuthorsContainer .author-row').forEach(row => {
+      const name = row.querySelector('.author-name-select')?.value;
+      const role = row.querySelector('.author-role-select')?.value;
+      const custom = row.querySelector('.author-role-custom')?.value?.trim();
+      if (name) coAuthors.push({ name, role: role === 'Other' ? custom : role });
+    });
+
+    const item = {
+      status:      document.getElementById('researchStatus').value || 'published',
+      title,
+      slug,
+      date:        document.getElementById('researchDate').value || new Date().toISOString().split('T')[0],
+      leadAuthor,
+      authors:     coAuthors,
+      cover:       window.croppedresearchCover || (idx !== '' ? research[parseInt(idx)]?.cover : ''),
+      pdfUrl,
+      pdfKey,
+      pdfThumb:    window.researchPDFThumb || (idx !== '' ? research[parseInt(idx)]?.pdfThumb : ''),
+      content:     quillResearch.root.innerHTML,
+      seo: {
+        slug,
+        description: document.getElementById('researchSeoDescription').value.trim(),
+        keywords:    document.getElementById('researchSeoKeywords').value.trim()
+      }
+    };
+
+    if (idx !== '') {
+      research[parseInt(idx)] = item;
+    } else {
+      research.unshift(item);
+    }
+
+    await saveToJSON('research', research);
+    showToast('Research saved ✓');
+    resetResearchForm();
+    renderResearch();
+
+  } catch (err) {
+    console.error(err);
+    showToast('Error: ' + err.message);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Save Research';
+  }
 });
 
 // PROJECTS
@@ -1912,6 +1967,8 @@ function resetResearchForm(){
   document.getElementById('researchStatus').value='published';
   setStatusUI('research','published');
   updateCharCounter('researchSeoDescription','researchSeoDescCounter');
+  window.researchPDFFile  = null;
+  window.researchPDFThumb = null;
 }
 
 function resetProjectForm(){
@@ -2059,29 +2116,53 @@ function updateProjectPreview(){
 }
 
 // ─── PDF HANDLER ──────────────────────────────────────────────────────────────
-document.getElementById('researchPDF')?.addEventListener('change',async e=>{
-  const file=e.target.files[0]; if(!file)return;
-  const reader=new FileReader();
-  reader.onload=async ev=>{
-    window['researchPDFData']=ev.target.result;
-    try{
-      pdfjsLib.GlobalWorkerOptions.workerSrc=
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      const pdf=await pdfjsLib.getDocument({data:atob(ev.target.result.split(',')[1])}).promise;
-      const page=await pdf.getPage(1);
-      const vp=page.getViewport({scale:1.5});
-      const canvas=document.createElement('canvas');
-      canvas.width=vp.width; canvas.height=vp.height;
-      await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
-      const thumb=canvas.toDataURL('image/jpeg',0.85);
-      window['researchPDFThumbData']=thumb;
-      const prev=document.getElementById('researchPDFPreview');
-      const img=document.getElementById('researchPDFThumb');
-      if(prev&&img){img.src=thumb; prev.classList.remove('hidden');}
-    }catch(err){console.warn('PDF thumbnail error',err);}
-  };
-  reader.readAsDataURL(file);
+document.getElementById('researchPDF')?.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // Store the File object for upload later — do NOT read as Base64
+  window.researchPDFFile = file;
+
+  // Generate thumbnail preview from first page only
+  try {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf  = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const page = await pdf.getPage(1);
+    const vp   = page.getViewport({ scale: 1.5 });
+    const canvas = document.createElement('canvas');
+    canvas.width  = vp.width;
+    canvas.height = vp.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    const thumb = canvas.toDataURL('image/jpeg', 0.85);
+    window.researchPDFThumb = thumb;
+    document.getElementById('researchPDFThumb').src = thumb;
+    document.getElementById('researchPDFPreview').classList.remove('hidden');
+  } catch (err) {
+    console.warn('PDF thumbnail error:', err);
+  }
 });
+
+  async function uploadPdfToR2(file, slug) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'research');
+    formData.append('slug', slug);
+  
+    const res = await fetch(`${API_BASE}/upload/pdf`, {
+      method: 'POST',
+      headers: { 'X-Admin-Token': ADMIN_TOKEN },
+      body: formData
+    });
+  
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'PDF upload failed');
+    }
+
+  return await res.json(); // returns { success, key, url }
+}
 
 // ─── LEAD ROLE CUSTOM SHOW/HIDE ───────────────────────────────────────────────
 ['articleLeadRole','researchLeadRole'].forEach(id=>{
