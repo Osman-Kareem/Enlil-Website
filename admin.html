@@ -1636,7 +1636,7 @@ document.getElementById('articleForm')?.addEventListener('submit',async e=>{
     title:document.getElementById('articleTitle').value.trim(),
     date:document.getElementById('articleDate').value||new Date().toISOString().split('T')[0],
     leadAuthor, authors:coAuthors, content,
-    cover:window['croppedArticleCover']||'',
+    cover:window['croppedarticleCover']||'',
     slug:document.getElementById('articleSlug').value.trim(),
     seoDescription:document.getElementById('articleSeoDescription').value.trim(),
     seoKeywords:document.getElementById('articleSeoKeywords').value.trim(),
@@ -1843,7 +1843,7 @@ function editItem(type,index){
     if(quillArticle)quillArticle.root.innerHTML=item.content||'';
     normalizeQuillImages(quillArticle);
     if(item.cover){
-      window['croppedArticleCover']=item.cover;
+      window['croppedarticleCover']=item.cover;
       const p=document.getElementById('articleCoverPreview');
       const i=document.getElementById('articlePreviewImg');
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
@@ -1953,7 +1953,7 @@ function resetArticleForm(){
   document.getElementById('articleForm').reset();
   document.getElementById('articleEditIndex').value='';
   document.getElementById('articleSubmitButton').textContent='Save Article';
-  delete window['croppedArticleCover'];
+  delete window['croppedarticleCover'];
   const p=document.getElementById('articleCoverPreview'); if(p)p.classList.add('hidden');
   if(quillArticle)quillArticle.root.innerHTML='';
   clearDynamicAuthorRows('articleAuthorsContainer');
@@ -2051,7 +2051,7 @@ function updateArticlePreview(){
   const leadRole=resolveLeadRole('articleLeadRole','articleLeadRoleCustom');
   const [leadAuthor,coAuthors]=collectAuthorsFromContainer('articleAuthorsContainer',leadName,leadRole);
   const authorLine=buildAuthorLine(leadAuthor,coAuthors);
-  const cover=window['croppedArticleCover'];
+  const cover=window['croppedarticleCover'];
   const bodyHtml=transformImagesWithCaptions(quillArticle);
   const slug=document.getElementById('articleSlug')?.value.trim()||'article-slug';
   const desc=document.getElementById('articleSeoDescription')?.value.trim()||'Enlil Center Iraq — climate change research, policy and capacity building.';
