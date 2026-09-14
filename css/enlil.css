@@ -112,7 +112,7 @@ button { font: inherit; cursor: pointer; }
 .card .meta a:hover { text-decoration: underline; }
 .badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-head); font-weight: 700; font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; border-radius: 2px; background: var(--green-tint); color: var(--green); }
 .badge.pdf { background: #FBE9E9; color: #9F1D1D; }
-.badge.amber { background: #FBEBD3; color: var(--amber-deep); }
+.badge.amber { background: #FBEBD3; color: var(--amber-text); }
 
 /* ── Mission band ────────────────────────────────────────────────────────── */
 .band { background: var(--green); color: #fff; padding: 64px 0; }
