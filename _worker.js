@@ -357,7 +357,15 @@ export default {
     // caller is a verified Enlil admin. Lets admin.html fetch the CMS write token at
     // runtime instead of shipping it in a public repo.
     if (path === '/admin/token' && request.method === 'GET') {
-      return new Response(JSON.stringify({ token: env.ADMIN_TOKEN || null }), {
+      // Also expose who Access signed in and when (from the Access JWT it attaches), so the
+      // CMS can show the account and force a fresh sign-in when a tab is reopened later.
+      let email = null, iat = null, exp = null;
+      try {
+        const jwt = request.headers.get('Cf-Access-Jwt-Assertion') || '';
+        const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        email = payload.email || null; iat = payload.iat || null; exp = payload.exp || null;
+      } catch (e) { /* no assertion header — leave nulls */ }
+      return new Response(JSON.stringify({ token: env.ADMIN_TOKEN || null, email, iat, exp }), {
         headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
       });
     }

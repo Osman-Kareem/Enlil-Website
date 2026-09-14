@@ -13,6 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enlil Center - Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;700;800&family=Public+Sans:wght@400;500&display=swap">
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -165,26 +166,14 @@
   <span id="toastUndo" class="hidden">Undo</span>
 </div>
 
-<!-- LOGIN SCREEN -->
-<div id="loginScreen" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-[10000]">
-  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md mx-4 p-10">
-    <div class="flex justify-center mb-6">
-      <i class="fa-solid fa-leaf text-5xl text-emerald-600"></i>
-    </div>
-    <h2 class="text-3xl font-semibold text-center mb-2">Enlil Center Admin</h2>
-    <p class="text-center text-gray-500 mb-8">Enter your credentials</p>
-    <label class="block text-sm font-medium mb-1" for="loginUsername">Username</label>
-    <input type="text" id="loginUsername" placeholder="admin"
-           class="w-full px-5 py-3 border border-gray-300 rounded-2xl mb-4 text-lg">
-    <label class="block text-sm font-medium mb-1" for="loginPassword">Password</label>
-    <input type="password" id="loginPassword" placeholder="Password"
-           class="w-full px-5 py-3 border border-gray-300 rounded-2xl mb-6 text-lg">
-    <div id="lockCountdown" class="text-center text-amber-600 text-sm font-medium hidden mt-2"></div>
-    <button id="loginButton"
-            class="w-full bg-emerald-600 text-white py-4 rounded-3xl font-medium text-lg hover:bg-emerald-700">
-      Login
-    </button>
-    <p id="loginError" class="text-red-500 text-center mt-4 hidden">Wrong username or password</p>
+<!-- SESSION SCREEN (Cloudflare Access does the actual sign-in; this only shows session state) -->
+<div id="sessionScreen" style="position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:#08381F;font-family:'Libre Franklin',system-ui,sans-serif">
+  <div style="text-align:center;color:#fff;max-width:440px;padding:32px">
+    <img src="/image/logo-white.png" alt="Enlil Center" style="height:60px;margin:0 auto 22px;display:block">
+    <div style="font:700 11px/1 'Public Sans',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#F5B04F;margin-bottom:14px">Enlil Center · CMS</div>
+    <h2 id="sessionTitle" style="font-size:28px;font-weight:800;line-height:1.15;margin:0 0 10px">Checking your session</h2>
+    <p id="sessionMsg" style="font-family:'Public Sans',system-ui,sans-serif;color:#D7E7DD;font-size:15px;line-height:1.55;margin:0 0 26px">One moment.</p>
+    <a id="sessionLink" href="/admin" style="display:none;background:#D97F0B;color:#fff;font-weight:700;padding:12px 24px;border-radius:999px;text-decoration:none">Sign in again</a>
   </div>
 </div>
 
@@ -230,8 +219,9 @@
         <i class="fa-solid fa-inbox text-emerald-500"></i> Inbox
         <span id="badge7" class="tab-badge hidden">0</span>
       </button>
-      <button onclick="logout()" class="w-full text-left px-6 py-4 rounded-2xl hover:bg-red-50 flex items-center gap-3 text-lg text-red-600 mt-4">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      <div class="mt-4 px-6 py-3 text-sm text-gray-500 border-t border-gray-100">Signed in as<br><span id="sessionEmail" class="font-medium text-gray-800 break-all">…</span><br><span class="text-xs text-gray-400">Auto sign-out after 30 min idle</span></div>
+      <button onclick="logout()" class="w-full text-left px-6 py-4 rounded-2xl hover:bg-red-50 flex items-center gap-3 text-lg text-red-600">
+        <i class="fa-solid fa-right-from-bracket"></i> Sign out
       </button>
     </nav>
   </div>
@@ -1257,9 +1247,6 @@
 <script>
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
 let ADMIN_TOKEN = null;
-fetch('/admin/token').then(r=>r.json()).then(d=>{ ADMIN_TOKEN = d.token; }).catch(()=>{
-  console.error('Could not load admin token - Cloudflare Access session may have expired. Try reloading the page.');
-});
 const API_BASE    = 'https://enlil-cms-api.osmanalikareem.workers.dev';
 
 let authors=[], articles=[], research=[], projects=[], partners=[], sources=[], datasets=[];
@@ -1269,8 +1256,6 @@ let pendingInlineResolve=null;
 let undoBuffer=null, undoTimer=null;
 let hasUnsavedChanges=false;
 
-const MAX_LOGIN_ATTEMPTS = 5;
-const LOCKOUT_MS         = 3*60*1000;
 let isLoggedIn = false;
 
 const IMAGE_CONFIG = {
@@ -1287,59 +1272,68 @@ const AUTHOR_ROLE_OPTIONS = ['','Lead author','Principal investigator','Correspo
 
 const ENLIL_CORE_KEYWORDS = 'Enlil Center,Enlil Center Iraq,Enlil Center for Environment and Sustainable Development,climate change research Iraq,environmental think tank Iraq,climate adaptation Iraq,Iraq climate resilience,climate policy Iraq,sustainable development institute Iraq,policy research center Iraq,think tank Iraq,Baghdad think tank,water resources management Iraq,renewable energy policy Iraq,capacity building Iraq';
 
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
-async function hashPassword(p){
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+// ─── SESSION ─────────────────────────────────────────────────────────────────
+// Sign-in itself is Cloudflare Access (one-time email PIN) in front of /admin*. This layer
+// adds what Access alone does not: a fresh sign-in whenever the tab was closed, automatic
+// sign-out after 30 minutes without activity, and a Sign out button that really ends the
+// Access session instead of just hiding the page.
+const ACCESS_LOGOUT  = 'https://enlilcenter.cloudflareaccess.com/cdn-cgi/access/logout?returnTo=' + encodeURIComponent('https://enlilcenter.org/admin');
+const IDLE_MS        = 30*60*1000;   // sign out after this long without mouse/keyboard activity
+const FRESH_LOGIN_MS = 3*60*1000;    // an Access login older than this is not "the sign-in you just did"
+let SESSION = null, idleTimer = null;
+
+function sessionScreen(title, msg, showLink){
+  const s=document.getElementById('sessionScreen');
+  document.getElementById('sessionTitle').textContent=title;
+  document.getElementById('sessionMsg').textContent=msg;
+  document.getElementById('sessionLink').style.display=showLink?'inline-block':'none';
+  s.style.display='flex';
 }
 
-async function attemptLogin(){
-  // Cloudflare Access already authenticated this session before this page
-  // could even load - there is no separate password to check here anymore.
-  localStorage.removeItem('loginAttempts');
-  localStorage.removeItem('loginLockUntil');
-  isLoggedIn=true;
-  sessionStorage.setItem('enlilAdminLoggedIn','true');
-  document.getElementById('loginScreen').classList.add('hidden');
-  await loadFromFiles();
-}
-
-function handleFailedAttempt(){
-  let attempts=parseInt(localStorage.getItem('loginAttempts')||'0')+1;
-  localStorage.setItem('loginAttempts',attempts);
-  if(attempts>=MAX_LOGIN_ATTEMPTS){
-    const lock=Date.now()+LOCKOUT_MS;
-    localStorage.setItem('loginLockUntil',lock);
-    showLoginError(`Too many failed attempts. Login locked for ${Math.ceil(LOCKOUT_MS/60000)} minutes.`);
-  } else {
-    showLoginError(`Wrong username or password — ${MAX_LOGIN_ATTEMPTS-attempts} attempt${MAX_LOGIN_ATTEMPTS-attempts!==1?'s':''} left`);
-  }
-}
-
-function showLoginError(msg){
-  const e=document.getElementById('loginError');
-  e.textContent=msg; e.classList.remove('hidden');
-  setTimeout(()=>{if(e.textContent===msg)e.classList.add('hidden');},6000);
-}
-
-function updateLockCountdown(){
-  const el=document.getElementById('lockCountdown');
-  const lockUntil=localStorage.getItem('loginLockUntil');
-  if(!lockUntil||Date.now()>=parseInt(lockUntil)){el.classList.add('hidden');return;}
-  el.classList.remove('hidden');
-  const rem=Math.ceil((parseInt(lockUntil)-Date.now())/1000);
-  const m=Math.floor(rem/60),s=rem%60;
-  el.textContent=`Locked – try again in ${m}:${s<10?'0':''}${s}`;
-  setTimeout(updateLockCountdown,1000);
+function endSession(reason){
+  isLoggedIn=false; ADMIN_TOKEN=null; clearTimeout(idleTimer);
+  try{ sessionStorage.removeItem('enlilAdminSession'); sessionStorage.removeItem('enlilAdminLastActive'); }catch(e){}
+  const copy={
+    idle:   ['Session expired','No activity for 30 minutes, so you were signed out. Taking you to the Enlil sign-in page…'],
+    closed: ['Sign in required','This tab was closed or the session is no longer fresh. Taking you to the Enlil sign-in page…'],
+    logout: ['Signed out','Taking you to the Enlil sign-in page…'],
+  }[reason]||['Signed out','Taking you to the Enlil sign-in page…'];
+  sessionScreen(copy[0],copy[1],true);
+  setTimeout(()=>{ location.replace(ACCESS_LOGOUT); },900);
 }
 
 function logout(){
-  if(!confirm('Logout and return to login screen?'))return;
-  isLoggedIn=false;
-  sessionStorage.removeItem('enlilAdminLoggedIn');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  authors=[];articles=[];research=[];projects=[];partners=[];sources=[];datasets=[];
-  clearAllLists();
+  if(!confirm('Sign out of the Enlil CMS? Unsaved changes will be lost.'))return;
+  endSession('logout');
+}
+
+function touchActivity(){
+  if(!isLoggedIn)return;
+  clearTimeout(idleTimer); idleTimer=setTimeout(()=>endSession('idle'),IDLE_MS);
+  try{ sessionStorage.setItem('enlilAdminLastActive',String(Date.now())); }catch(e){}
+}
+['mousemove','keydown','mousedown','scroll','touchstart'].forEach(ev=>document.addEventListener(ev,touchActivity,{passive:true}));
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState!=='visible'||!isLoggedIn)return;
+  const last=+sessionStorage.getItem('enlilAdminLastActive')||0;
+  if(Date.now()-last>IDLE_MS)endSession('idle');   // laptop was asleep / tab in background past the limit
+});
+
+async function startSession(){
+  let d=null;
+  try{ const r=await fetch('/admin/token',{cache:'no-store',credentials:'same-origin'}); if(r.ok) d=await r.json(); }catch(e){}
+  if(!d||!d.token){ endSession('closed'); return; }                      // Access session missing or expired
+  const issuedAgo=d.iat?Date.now()-d.iat*1000:Infinity;
+  const tabSession=sessionStorage.getItem('enlilAdminSession');
+  if(!tabSession&&issuedAgo>FRESH_LOGIN_MS){ endSession('closed'); return; }   // new tab on an old Access cookie
+  const last=+sessionStorage.getItem('enlilAdminLastActive')||Date.now();
+  if(tabSession&&Date.now()-last>IDLE_MS){ endSession('idle'); return; }
+  try{ sessionStorage.setItem('enlilAdminSession',String(d.iat||Date.now())); }catch(e){}
+  ADMIN_TOKEN=d.token; SESSION=d; isLoggedIn=true;
+  const el=document.getElementById('sessionEmail'); if(el)el.textContent=d.email||'Enlil admin';
+  document.getElementById('sessionScreen').style.display='none';
+  touchActivity();
+  await loadFromFiles();
 }
 
 function clearAllLists(){
@@ -1721,7 +1715,7 @@ document.addEventListener('keydown',e=>{
 
 // ─── UNSAVED CHANGES WARNING ──────────────────────────────────────────────────
 window.addEventListener('beforeunload',e=>{
-  if(hasUnsavedChanges){
+  if(hasUnsavedChanges&&isLoggedIn){
     e.preventDefault();
     e.returnValue='';
   }
@@ -3167,18 +3161,6 @@ function validateForm(rules){
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-document.getElementById('loginButton')?.addEventListener('click',attemptLogin);
-document.getElementById('loginPassword')?.addEventListener('keydown',e=>{
-  if(e.key==='Enter')attemptLogin();
-});
-
-// Cloudflare Access gates /admin* at the edge - anyone who can load this
-// page is already an authenticated Enlil admin, so grant access immediately.
-isLoggedIn=true;
-sessionStorage.setItem('enlilAdminLoggedIn','true');
-document.getElementById('loginScreen').classList.add('hidden');
-
-updateLockCountdown();
 initPillarChips();
 ['article','research','project'].forEach(t=>{ setupAttachmentInput(t); setupCitationPicker(t); setupDatasetPicker(t); renderAttachmentList(t); renderCitationChips(t); });
 setupSourceFileInput();
@@ -3187,7 +3169,7 @@ setupDatasetFileInput(); setupDatasetSourcePicker();
 window.addEventListener('DOMContentLoaded',()=>{
   initEditors();
   switchTab(0);
-  if(isLoggedIn) loadFromFiles();
+  startSession();
 });
 </script>
 </body>
