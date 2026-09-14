@@ -1,32 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Basic SEO -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enlil Center | Climate, Environment & Sustainable Development in Iraq</title>
-  <meta name="description" content="Enlil Center for Environment and Sustainable Development is an independent think tank in Iraq producing evidence-based research, policy analysis and climate solutions.">
+  <title>Enlil Center | Independent Research on Iraq's Climate, Water, Energy, Economy and Governance</title>
+  <meta name="description" content="Enlil Center is an independent, non-profit think tank in Baghdad producing evidence-based research, policy analysis and open data on Iraq's climate, water, energy, economy and governance.">
 
-  <!-- Canonical -->
   <link rel="canonical" href="https://enlilcenter.org/">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
-  <meta property="og:title" content="Enlil Center | Climate, Environment & Sustainable Development in Iraq">
-  <meta property="og:description" content="Independent research and policy analysis on Iraq's climate, water, energy and sustainable development.">
+  <meta property="og:title" content="Enlil Center | Independent Research on Iraq's Climate, Water, Energy, Economy and Governance">
+  <meta property="og:description" content="Evidence-based research, policy analysis and open data on Iraq — from an independent think tank in Baghdad.">
   <meta property="og:url" content="https://enlilcenter.org/">
   <meta property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
-
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Enlil Center | Climate, Environment & Sustainable Development in Iraq">
-  <meta name="twitter:description" content="Independent think tank generating climate and environmental evidence for Iraq.">
+  <meta name="twitter:title" content="Enlil Center | Independent Research on Iraq">
+  <meta name="twitter:description" content="Evidence-based research, policy analysis and open data on Iraq's climate, water, energy, economy and governance.">
   <meta name="twitter:image" content="https://enlilcenter.org/image/og-hero.jpg">
 
-  <!-- JSON-LD Organization schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -35,700 +29,508 @@
     "alternateName": "Enlil Center",
     "url": "https://enlilcenter.org/",
     "logo": "https://enlilcenter.org/image/logo.png",
-    "description": "Independent, non-profit think tank in Iraq working on climate change, environmental policy and sustainable development.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "IQ",
-      "addressLocality": "Baghdad"
-    },
+    "description": "Independent, non-profit think tank in Iraq producing evidence-based research, policy analysis and open data on climate, water, energy, economy and governance.",
+    "address": { "@type": "PostalAddress", "addressCountry": "IQ", "addressLocality": "Baghdad" },
     "email": "info@enlilcenter.org",
-    "knowsAbout": [
-      "Climate change in Iraq",
-      "Water resource management",
-      "Energy policy",
-      "Economic development",
-      "Sustainable development",
-      "Environmental governance"
-    ],
-    "sameAs": [
-      "https://web.facebook.com/enlilcenteriq/",
-      "https://x.com/enlilcenter",
-      "https://www.linkedin.com/company/enlilcenter/",
-      "https://www.instagram.com/enlilcenter/"
-    ]
+    "knowsAbout": ["Climate change in Iraq", "Water resource management", "Energy policy", "Economic development", "Sustainable development", "Environmental governance", "Iraq data and statistics"],
+    "sameAs": ["https://web.facebook.com/enlilcenteriq/", "https://x.com/enlilcenter", "https://www.linkedin.com/company/enlilcenter/", "https://www.instagram.com/enlilcenter/"]
   }
   </script>
-
-  <!-- JSON-LD WebSite schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Enlil Center",
     "url": "https://enlilcenter.org/",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Enlil Center for Environment and Sustainable Development"
-    }
+    "publisher": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development" }
   }
   </script>
 
-  <!-- Tailwind & Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/enlil.css">
+  <link rel="preload" as="image" href="/image/hero-1920.jpg" media="(min-width: 900px)">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+  <script src="/js/enlil-data.js" defer></script>
+  <script src="/js/enlil-site.js" defer></script>
 
   <style>
-    body { font-family: 'Inter', system-ui, sans-serif; }
-    .hero-bg {
-      background:
-        linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
-        url('image/bg.jpeg') center/cover no-repeat;
-    }
-    @media (max-width: 640px) {
-      .hero-bg h2 { font-size: 2.25rem; line-height: 1.15; }
-    }
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .legal-section { display: none; }
-    .legal-section:target { display: block; }
+    /* ── Lead story ─────────────────────────────────────────────────────── */
+    .lead { position: relative; min-height: 560px; display: flex; align-items: flex-end; color: #fff; background: var(--green-deep); isolation: isolate; }
+    .lead .photo { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+    .lead .photo img { width: 100%; height: 100%; object-fit: cover; }
+    .lead .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(6,20,13,.94) 0%, rgba(6,20,13,.55) 45%, rgba(6,20,13,.15) 100%); }
+    .lead .content { padding: 72px 0 48px; max-width: 760px; }
+    .lead .kicker { background: rgba(0,0,0,.35); display: inline-block; padding: 5px 10px; border-radius: 2px; }
+    .lead h1 { color: #fff; font-size: clamp(2rem, 4.6vw, 3.6rem); margin-top: 14px; }
+    .lead .dek { color: #E4EAE5; font-size: 1.12rem; margin-top: 16px; max-width: 58ch; }
+    .lead .meta { color: #B7CBBE; font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-top: 18px; }
+    .lead .meta a { color: #fff; }
+    .lead .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+    .lead .photo-credit { position: absolute; right: 24px; bottom: 14px; font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.55); }
+
+    /* ── Three-up strip ─────────────────────────────────────────────────── */
+    .sub-strip { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); }
+    .sub-card { display: flex; gap: 14px; padding: 22px 22px 22px 0; border-right: 1px solid var(--line); margin-right: 22px; }
+    .sub-card:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+    .sub-card .thumb { width: 84px; height: 84px; flex-shrink: 0; border-radius: 2px; overflow: hidden; background: linear-gradient(135deg, var(--green-tint), var(--line)); }
+    .sub-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .sub-card h3 { font-size: 1rem; line-height: 1.3; margin-top: 4px; }
+    .sub-card h3 a:hover { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+    .sub-card .kicker { font-size: .62rem; }
+    @media (max-width: 860px) { .sub-strip { grid-template-columns: 1fr; } .sub-card { border-right: 0; margin-right: 0; padding-right: 0; border-bottom: 1px solid var(--line); } .sub-card:last-child { border-bottom: 0; } }
+
+    /* ── About ──────────────────────────────────────────────────────────── */
+    .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 56px; align-items: start; }
+    .about-grid h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); margin-top: 10px; }
+    .about-grid .lede { font-size: 1.12rem; line-height: 1.65; color: var(--ink); margin-top: 18px; max-width: 58ch; }
+    .about-grid .body { margin-top: 14px; color: var(--ink-soft); max-width: 60ch; }
+    .about-grid .body p + p { margin-top: 12px; }
+    .quote { border-left: 4px solid var(--amber); padding: 6px 0 6px 22px; font-family: var(--font-head); font-weight: 600; font-size: 1.3rem; line-height: 1.4; }
+    .principles { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+    .principles li { display: flex; gap: 12px; font-size: .95rem; color: var(--ink-soft); }
+    .principles li i { color: var(--green); margin-top: 4px; }
+    .principles li b { display: block; color: var(--ink); font-family: var(--font-head); font-weight: 700; font-size: .95rem; }
+    @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; } }
+
+    /* ── Data teaser ────────────────────────────────────────────────────── */
+    .data-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .data-card:hover { border-color: var(--green); }
+    .data-card h3 { font-size: 1rem; line-height: 1.3; }
+    .data-card .val { font-family: var(--font-head); font-weight: 900; font-size: 1.7rem; line-height: 1; font-variant-numeric: tabular-nums; }
+    .data-card .val small { font-family: var(--font-body); font-weight: 500; font-size: .78rem; color: var(--ink-mute); margin-left: 6px; }
+    .data-card .spark { height: 56px; }
+    .data-card .src { font-size: .7rem; color: var(--ink-mute); display: flex; justify-content: space-between; gap: 8px; }
+
+    /* ── Partners ───────────────────────────────────────────────────────── */
+    .partners { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+    .partner { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 120px; text-align: center; }
+    .partner img { max-height: 56px; width: auto; object-fit: contain; filter: grayscale(1); opacity: .8; transition: filter .2s, opacity .2s; }
+    .partner:hover img { filter: none; opacity: 1; }
+    .partner span { font-size: .72rem; font-weight: 600; color: var(--ink-soft); }
+    @media (max-width: 960px) { .partners { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .partners { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ── Contact ────────────────────────────────────────────────────────── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+    .contact-grid h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+    .field label { font-family: var(--font-head); font-weight: 700; font-size: .74rem; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
+    .field input, .field textarea { font: inherit; padding: 13px 14px; border: 1.5px solid var(--line); border-radius: 2px; background: #fff; color: var(--ink); }
+    .field input:focus, .field textarea:focus { outline: 0; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
+    .hp { position: absolute; left: -9999px; }
+    .contact-side h3 { font-size: 1rem; margin-bottom: 8px; }
+    .contact-side .block + .block { margin-top: 28px; }
+    .contact-side a { color: var(--green); font-weight: 600; }
+    .map { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-top: 8px; }
+    .map iframe { display: block; width: 100%; height: 240px; border: 0; filter: grayscale(.4); }
+    .social-row { display: flex; gap: 10px; }
+    .social-row a { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--ink-soft); }
+    .social-row a:hover { border-color: var(--green); color: var(--green); }
+    @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+
+    .legal { padding: 48px 0; border-top: 1px solid var(--line); }
+    .legal h2 { font-size: 1.4rem; margin-bottom: 14px; }
+    .legal p { color: var(--ink-soft); font-size: .95rem; max-width: 70ch; }
+    .legal p + p { margin-top: 10px; }
+    .empty { color: var(--ink-mute); font-size: .9rem; }
   </style>
 </head>
-<body class="bg-gray-50 text-slate-900">
+<body>
 
-  <!-- Navbar -->
-  <nav class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
-      <a href="#top" class="flex items-center gap-3">
-        <img src="image/logo.png" alt="Enlil Center logo" class="h-10 w-auto">
-        <span class="text-2xl font-semibold tracking-tight">
-          Enlil Center | Environment &amp; Sustainable Development
-        </span>
+  <!-- enlil:header -->
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="/">
+        <img src="/image/logo-white.png" alt="Enlil Center" width="36" height="36">
+        <span><span class="name">ENLIL CENTER</span><span class="tag">Environment &amp; Sustainable Development · Iraq</span></span>
       </a>
-
-      <!-- Desktop Menu -->
-      <div class="hidden md:flex gap-8 text-sm font-medium">
-        <a href="#about" class="hover:text-emerald-600">About</a>
-        <a href="articles.html" class="hover:text-emerald-600">Articles</a>
-        <a href="research.html" class="hover:text-emerald-600">Research</a>
-        <a href="projects.html" class="hover:text-emerald-600">Projects</a>
-        <a href="sources.html" class="hover:text-emerald-600">Sources</a>
-        <a href="#partners" class="hover:text-emerald-600">Partners</a>
-        <a href="#contact" class="hover:text-emerald-600">Contact</a>
-      </div>
-
-      <!-- Mobile Hamburger -->
-      <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-slate-700" aria-label="Toggle navigation">
-        <i class="fa-solid fa-bars" id="hamburger-icon"></i>
-      </button>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/#about">About</a>
+        <a href="/research">Research</a>
+        <a href="/articles">Articles</a>
+        <a href="/projects">Projects</a>
+        <a href="/data">Data</a>
+        <a href="/sources">Sources</a>
+      </nav>
+      <a class="cta" href="/#contact">Work with us</a>
+      <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
     </div>
+    <nav id="mobileMenu" class="mobile-nav" aria-label="Mobile navigation">
+      <a href="/#about" onclick="toggleMobileMenu()">About</a>
+      <a href="/research">Research</a>
+      <a href="/articles">Articles</a>
+      <a href="/projects">Projects</a>
+      <a href="/data">Data</a>
+      <a href="/sources">Sources</a>
+      <a href="/#contact" onclick="toggleMobileMenu()">Work with us</a>
+    </nav>
+  </header>
+  <!-- /enlil:header -->
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-5 py-4">
-      <div class="flex flex-col gap-4 text-base">
-        <a href="#about" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">About</a>
-        <a href="articles.html" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Articles</a>
-        <a href="research.html" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Research</a>
-        <a href="projects.html" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Projects</a>
-        <a href="sources.html" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Sources</a>
-        <a href="#partners" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Partners</a>
-        <a href="#contact" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Contact</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section id="top" class="hero-bg min-h-[80vh] md:h-screen flex items-center text-white">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-      <h1 class="text-5xl md:text-6xl font-semibold leading-tight mb-6">
-        Addressing Iraq's Environmental Challenges<br>Through Independent Research
-      </h1>
-      <p class="text-xl md:text-2xl max-w-2xl mx-auto mb-10 opacity-90">
-        Enlil Center is an independent, non-profit think tank generating climate and environmental evidence to support sustainable development in Iraq.
-      </p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#articles"
-           class="inline-block bg-white text-emerald-700 font-medium px-8 py-4 rounded-lg text-lg hover:bg-emerald-50 hover:text-emerald-800 transition">
-          View Latest Research &amp; News
-        </a>
-        <a href="#contact"
-           class="inline-flex items-center gap-2 border border-white/70 text-white font-medium px-6 py-3 rounded-lg text-sm hover:bg-white/10 transition">
-          Talk to our team
-          <i class="fa-solid fa-arrow-right text-xs"></i>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- About -->
-  <section id="about" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid md:grid-cols-2 gap-16 items-start">
-        <div>
-          <h2 class="text-4xl font-semibold mb-6">Who We Are</h2>
-          <p class="text-lg leading-relaxed text-gray-700 mb-4">
-            The Enlil Center for Environment and Sustainable Development is a non-profit, independent think tank based in Iraq.
-            We conduct applied research, provide policy analysis, and promote evidence-based approaches to environmental governance, climate resilience, and sustainable development.
-          </p>
-          <p class="text-lg leading-relaxed text-gray-700 mb-4">
-            Our work focuses on climate change, water and energy security, environmental health, and the social and economic impacts of environmental degradation.
-          </p>
-          <p class="text-lg leading-relaxed text-gray-700">
-            We partner with Iraqi institutions, civil society, and international organizations to translate research into practical, locally anchored solutions.
-          </p>
-        </div>
-        <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100">
-          <p class="italic text-gray-600 mb-4">
-            "Our mission is to bridge rigorous scientific research with practical, locally relevant solutions for a more resilient, prosperous Iraq."
-          </p>
-          <ul class="text-sm text-gray-600 space-y-2">
-            <li><i class="fa-solid fa-check text-emerald-600 mr-2"></i>Independent, non-partisan research and analysis</li>
-            <li><i class="fa-solid fa-check text-emerald-600 mr-2"></i>Focus on climate, water, energy and environmental governance</li>
-            <li><i class="fa-solid fa-check text-emerald-600 mr-2"></i>Capacity building and policy engagement with Iraqi stakeholders</li>
-          </ul>
+  <!-- Lead story: latest article, photo-led. Static fallback shows until the API responds. -->
+  <section class="lead" id="top" aria-label="Lead story">
+    <div class="photo"><img id="leadPhoto" src="/image/hero-1920.jpg" srcset="/image/hero-1200.jpg 1200w, /image/hero-1920.jpg 1920w" sizes="100vw" alt="" fetchpriority="high"></div>
+    <div class="wrap">
+      <div class="content">
+        <span class="kicker" id="leadKicker">Enlil Center</span>
+        <h1 id="leadTitle">Independent research for Iraq's climate, water, energy, economy and governance</h1>
+        <p class="dek" id="leadDek">Evidence-based analysis and open data from a non-profit think tank in Baghdad.</p>
+        <p class="meta" id="leadMeta"></p>
+        <div class="actions" id="leadActions">
+          <a class="btn btn-amber" href="/research">Read our research</a>
+          <a class="btn btn-outline-light" href="/data">Explore the Data Hub</a>
         </div>
       </div>
     </div>
+    <span class="photo-credit" id="leadCredit"></span>
   </section>
 
-  <!-- Articles & News -->
-  <section id="articles" class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex items-end justify-between gap-4 mb-10">
-        <h2 class="text-4xl font-semibold">Latest Articles &amp; News</h2>
-        <p class="text-sm text-gray-500 max-w-md">
-          Commentaries and short analysis pieces on climate, environment, policy and sustainable development issues in Iraq.
-        </p>
+  <!-- Three-up secondary strip -->
+  <div class="wrap">
+    <div class="sub-strip" id="subStrip" hidden></div>
+  </div>
+
+  <!-- Mission band -->
+  <section class="band" id="about-band">
+    <div class="wrap grid">
+      <div>
+        <span class="kicker">Who we are</span>
+        <h2>Iraq's questions deserve Iraqi evidence.</h2>
+        <p>Enlil Center is an independent, non-profit think tank in Baghdad. We produce research, policy analysis and open data across five pillars — climate, water, energy, economy and governance — so decisions about Iraq's future rest on facts, not assumptions.</p>
+        <p style="margin-top:22px"><a class="btn btn-amber" href="#about">About Enlil</a></p>
       </div>
-      <div id="articlesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-      <!-- FIX: "View all" link to articles listing page -->
-      <div class="text-center mt-10">
-        <a href="articles.html" class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800">
-          View all articles &amp; news <i class="fa-solid fa-arrow-right text-xs"></i>
-        </a>
+      <div class="stats">
+        <div class="stat"><b id="statPubs">—</b><span>Publications</span></div>
+        <div class="stat"><b id="statData">—</b><span>Open datasets</span></div>
+        <div class="stat"><b id="statPartners">—</b><span>Partners</span></div>
       </div>
     </div>
   </section>
 
-  <!-- Research & Reports -->
-  <section id="research" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex items-end justify-between gap-4 mb-10">
-        <h2 class="text-4xl font-semibold">Research &amp; Reports</h2>
-        <p class="text-sm text-gray-500 max-w-md">
-          In-depth research outputs, working papers and reports on Iraq's climate transition, water resources and environmental governance.
-        </p>
+  <!-- Five pillars -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">Research pillars</span><h2>Five questions, one country</h2></div>
+        <p class="right">Every article, report and dataset is tagged to at least one pillar, so you can follow a subject across everything we publish.</p>
       </div>
-      <div id="researchContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-      <!-- FIX: "View all" link to research listing page -->
-      <div class="text-center mt-10">
-        <a href="research.html" class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800">
-          View all research &amp; reports <i class="fa-solid fa-arrow-right text-xs"></i>
-        </a>
+      <div class="pillars">
+        <a class="pillar" href="/data?pillar=Climate"><span class="n">01</span><h3>Climate</h3><p>Heat, drought, dust and the adaptation Iraq cannot postpone.</p></a>
+        <a class="pillar" href="/data?pillar=Water"><span class="n">02</span><h3>Water</h3><p>The Tigris–Euphrates basin, upstream dams and a shrinking share per person.</p></a>
+        <a class="pillar" href="/data?pillar=Energy"><span class="n">03</span><h3>Energy</h3><p>Oil dependence, the electricity gap and the case for renewables.</p></a>
+        <a class="pillar" href="/data?pillar=Economy"><span class="n">04</span><h3>Economy</h3><p>Diversification, jobs and the public finances behind every reform.</p></a>
+        <a class="pillar" href="/data?pillar=Governance"><span class="n">05</span><h3>Governance</h3><p>Institutions, accountability and the rules that turn plans into outcomes.</p></a>
       </div>
+    </div>
+  </section>
+
+  <!-- Latest articles -->
+  <section class="section tint" id="articles">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">Analysis</span><h2>Latest articles &amp; commentary</h2></div>
+        <a class="more-link" href="/articles">All articles <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="card-grid" id="articlesContainer"><p class="empty">Loading…</p></div>
+    </div>
+  </section>
+
+  <!-- Research -->
+  <section class="section" id="research">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">Research</span><h2>Reports &amp; working papers</h2></div>
+        <a class="more-link" href="/research">All research <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="card-grid" id="researchContainer"><p class="empty">Loading…</p></div>
+    </div>
+  </section>
+
+  <!-- Data Hub teaser -->
+  <section class="section tint" id="data">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">Iraq Data Hub</span><h2>The numbers, charted and downloadable</h2></div>
+        <a class="more-link" href="/data">Open the Data Hub <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="card-grid" id="dataContainer"><p class="empty">Loading…</p></div>
     </div>
   </section>
 
   <!-- Projects -->
-  <section id="projects" class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex items-end justify-between gap-4 mb-10">
-        <h2 class="text-4xl font-semibold">Our Projects</h2>
-        <p class="text-sm text-gray-500 max-w-md">
-          Funded initiatives and partnerships implementing climate and environmental solutions on the ground.
-        </p>
+  <section class="section" id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">On the ground</span><h2>Projects</h2></div>
+        <a class="more-link" href="/projects">All projects <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-      <div id="projectsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-      <!-- FIX: "View all" link to projects listing page -->
-      <div class="text-center mt-10">
-        <a href="projects.html" class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800">
-          View all projects <i class="fa-solid fa-arrow-right text-xs"></i>
-        </a>
+      <div class="card-grid" id="projectsContainer"><p class="empty">Loading…</p></div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section tint" id="about">
+    <div class="wrap about-grid">
+      <div>
+        <span class="kicker">About Enlil Center</span>
+        <h2>An independent think tank, built in Baghdad</h2>
+        <p class="lede">The Enlil Center for Environment and Sustainable Development is a non-profit, non-partisan research institution. We started with climate and environment; today our work spans the five pillars that decide whether Iraq's next decade is resilient or reactive.</p>
+        <div class="body">
+          <p>We conduct applied research, publish policy analysis, maintain an open data hub, and convene Iraqi institutions, civil society and international partners around evidence. Our aim is simple: that the people shaping Iraq's future — in ministries, parliament, universities, businesses and newsrooms — can reach for Iraqi evidence first.</p>
+          <p>We are named for Enlil, the Mesopotamian god of wind and storms, whose temple stood at Nippur in what is now Iraq — a reminder that this land has weathered change for six thousand years.</p>
+        </div>
+      </div>
+      <div>
+        <p class="quote">"Bridging rigorous research with practical, locally anchored solutions for a more resilient, prosperous Iraq."</p>
+        <ul class="principles">
+          <li><i class="fa-solid fa-scale-balanced"></i><span><b>Independent and non-partisan</b>We publish what the evidence supports, and say where it is thin.</span></li>
+          <li><i class="fa-solid fa-database"></i><span><b>Open by default</b>Our data is downloadable and every figure carries its source.</span></li>
+          <li><i class="fa-solid fa-people-group"></i><span><b>Rooted in Iraq</b>Research designed with, and for, the institutions that will use it.</span></li>
+        </ul>
       </div>
     </div>
   </section>
 
   <!-- Partners -->
-  <section id="partners" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex items-end justify-between gap-4 mb-10">
-        <h2 class="text-4xl font-semibold">Our Strategic Partners</h2>
-        <p class="text-sm text-gray-500 max-w-md">
-          Organizations that support our mission through funding, collaboration and long-term strategic partnerships.
-        </p>
+  <section class="section" id="partners">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">Partners</span><h2>Who we work with</h2></div>
+        <p class="right">Organisations that support our mission through funding, collaboration and long-term partnership.</p>
       </div>
-      <div id="partnersContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 items-center justify-items-center"></div>
+      <div class="partners" id="partnersContainer"></div>
     </div>
   </section>
 
   <!-- Contact -->
-  <section id="contact" class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid md:grid-cols-2 gap-12 items-start">
+  <section class="section tint" id="contact">
+    <div class="wrap contact-grid">
+      <div>
+        <span class="kicker">Contact</span>
+        <h2>Work with us</h2>
+        <p class="muted" style="margin-top:10px;max-width:50ch">Research collaboration, data requests, media enquiries, partnerships — the Enlil team in Baghdad reads every message.</p>
+        <form id="contactForm" novalidate>
+          <div class="field"><label for="contactName">Name</label><input id="contactName" type="text" required autocomplete="name"></div>
+          <div class="field"><label for="contactEmail">Email</label><input id="contactEmail" type="email" required autocomplete="email"></div>
+          <div class="field"><label for="contactSubject">Subject</label><input id="contactSubject" type="text"></div>
+          <div class="field"><label for="contactMessage">Message</label><textarea id="contactMessage" rows="5" required></textarea></div>
+          <div class="hp" aria-hidden="true"><label for="contactWebsite">Website</label><input id="contactWebsite" type="text" tabindex="-1" autocomplete="off"></div>
+          <p class="muted" style="font-size:.78rem;margin-top:12px">By sending this form you agree that Enlil Center may store your message to reply to you.</p>
+          <p style="margin-top:16px"><button type="submit" class="btn btn-green">Send message</button></p>
+          <p id="contactStatus" class="muted" style="font-size:.9rem;margin-top:10px" aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="contact-side">
+        <div class="block">
+          <h3>Enlil Center</h3>
+          <p class="muted">Baghdad, Iraq</p>
+          <p class="muted"><a href="mailto:info@enlilcenter.org">info@enlilcenter.org</a></p>
+        </div>
+        <div class="block map">
+          <iframe title="Enlil Center – Baghdad, Iraq" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.793196673835!2d44.361488!3d33.312805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1557837f7f4e8e7f%3A0x6a1c1e1e9b7f9ccb!2sBaghdad!5e0!3m2!1sen!2siq!4v1700000000000"></iframe>
+        </div>
+        <div class="block">
+          <h3>Follow our work</h3>
+          <div class="social-row">
+            <a href="https://x.com/enlilcenter" target="_blank" rel="noopener" aria-label="Enlil Center on X"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/company/enlilcenter/" target="_blank" rel="noopener" aria-label="Enlil Center on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/enlilcenter/" target="_blank" rel="noopener" aria-label="Enlil Center on Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener" aria-label="Enlil Center on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Legal (shown only when linked to) -->
+  <section id="privacy" class="legal-section legal"><div class="wrap">
+    <h2>Privacy Policy</h2>
+    <p>Enlil Center for Environment and Sustainable Development ("Enlil Center", "we", "our") is committed to protecting the privacy of visitors to our website and partners who engage with our work.</p>
+    <p>We only collect personal data that you voluntarily provide, such as your name, email address and organisation when you contact us via the website. We use this information solely to respond to your enquiries and manage our relationships.</p>
+    <p>We do not sell your personal data and only share it with trusted service providers where necessary to operate this website, under appropriate safeguards. You may request access, correction or deletion of your personal data at any time by emailing <a href="mailto:info@enlilcenter.org">info@enlilcenter.org</a>.</p>
+    <p>We may update this policy from time to time. The latest version will always be available on this page and is effective from the date of publication.</p>
+  </div></section>
+  <section id="terms" class="legal-section legal"><div class="wrap">
+    <h2>Terms of Use</h2>
+    <p>By accessing or using this website, you agree to these Terms of Use. The content on this site is provided for informational and educational purposes only and does not constitute legal, financial or other professional advice.</p>
+    <p>Unless otherwise indicated, Enlil Center owns the rights to the text, graphics and other materials on this website. You may share or quote our content for non-commercial purposes with attribution. Datasets in the Data Hub are republished from their stated sources; the underlying figures remain the work of their publishers.</p>
+    <p>While we strive for accuracy, we do not guarantee that all information on this site is complete or up to date, and we are not liable for any loss or damage arising from its use. External links are provided for convenience and do not imply endorsement.</p>
+  </div></section>
+  <section id="cookies" class="legal-section legal"><div class="wrap">
+    <h2>Cookies &amp; Data</h2>
+    <p>This website may use limited cookies or similar technologies to improve performance and understand how visitors use our pages. Where possible, we use anonymised analytics that do not identify individual users.</p>
+    <p>You can control or disable cookies through your browser settings. If we introduce additional analytics or tracking tools, this notice will be updated to describe what is used and how you can manage your preferences.</p>
+  </div></section>
+
+  <!-- enlil:footer -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="top">
         <div>
-          <h2 class="text-4xl font-semibold mb-4">Contact Us</h2>
-          <p class="text-sm text-gray-600 mb-6">
-            For media, partnerships, research collaboration or general inquiries, please get in touch with the Enlil Center team in Baghdad.
-          </p>
-
-          <form id="contactForm" class="space-y-4">
-            <div>
-              <label for="contactName" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-              <input id="contactName" type="text" required
-                     class="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none text-sm">
-            </div>
-            <div>
-              <label for="contactEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input id="contactEmail" type="email" required
-                     class="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none text-sm">
-            </div>
-            <div>
-              <label for="contactSubject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-              <input id="contactSubject" type="text"
-                     class="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none text-sm">
-            </div>
-            <div>
-              <label for="contactMessage" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-              <textarea id="contactMessage" rows="4" required
-                        class="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none text-sm"></textarea>
-            </div>
-            <p class="text-xs text-gray-500">
-              By submitting this form, you agree that Enlil Center may store and process your data to respond to your inquiry.
-            </p>
-            <button type="submit"
-                    class="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition">
-              Send message
-            </button>
-            <p id="contactStatus" class="text-xs mt-2 text-gray-600 hidden"></p>
-          </form>
+          <a class="brand" href="/"><img src="/image/logo-white.png" alt=""><b>ENLIL CENTER</b></a>
+          <p class="about">Independent, non-profit research on Iraq's climate, water, energy, economy and governance. Based in Baghdad.</p>
+          <div class="social">
+            <a href="https://x.com/enlilcenter" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/company/enlilcenter/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/enlilcenter/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          </div>
         </div>
-
-        <div class="space-y-6">
-          <div>
-            <h3 class="text-lg font-semibold mb-2">Enlil Center – Baghdad, Iraq</h3>
-            <p class="text-sm text-gray-600 mb-2">Baghdad, Iraq</p>
-            <p class="text-sm text-gray-600">
-              Email: <a href="mailto:info@enlilcenter.org" class="text-emerald-700 hover:text-emerald-800">info@enlilcenter.org</a><br>
-            </p>
-          </div>
-
-          <div class="overflow-hidden rounded-2xl border border-gray-200 shadow-sm">
-            <iframe
-              title="Enlil Center – Baghdad, Iraq"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.793196673835!2d44.361488!3d33.312805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1557837f7f4e8e7f%3A0x6a1c1e1e9b7f9ccb!2sBaghdad!5e0!3m2!1sen!2siq!4v1700000000000"
-              width="100%" height="260" style="border:0;" allowfullscreen="" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"></iframe>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-semibold mb-3 text-gray-800">Connect with us</h3>
-            <div class="flex flex-wrap gap-3">
-              <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener"
-                 class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition"
-                 aria-label="Enlil Center on Facebook">
-                <i class="fa-brands fa-facebook-f"></i>
-              </a>
-              <a href="https://x.com/enlilcenter" target="_blank" rel="noopener"
-                 class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-black hover:bg-black hover:text-white transition"
-                 aria-label="Enlil Center on X (Twitter)">
-                <i class="fa-brands fa-x-twitter"></i>
-              </a>
-              <a href="https://www.linkedin.com/company/enlilcenter/" target="_blank" rel="noopener"
-                 class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[#0A66C2] hover:bg-[#0A66C2] hover:text-white transition"
-                 aria-label="Enlil Center on LinkedIn">
-                <i class="fa-brands fa-linkedin-in"></i>
-              </a>
-              <a href="https://www.instagram.com/enlilcenter/" target="_blank" rel="noopener"
-                 class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[#E1306C] hover:bg-[#E1306C] hover:text-white transition"
-                 aria-label="Enlil Center on Instagram">
-                <i class="fa-brands fa-instagram"></i>
-              </a>
-            </div>
-          </div>
+        <div>
+          <h4>Publications</h4>
+          <ul><li><a href="/research">Research &amp; reports</a></li><li><a href="/articles">Articles &amp; commentary</a></li><li><a href="/projects">Projects</a></li></ul>
+        </div>
+        <div>
+          <h4>Data</h4>
+          <ul><li><a href="/data">Iraq Data Hub</a></li><li><a href="/sources">Sources library</a></li><li><a href="/sitemap.xml">Sitemap</a></li></ul>
+        </div>
+        <div>
+          <h4>Enlil Center</h4>
+          <ul><li><a href="/#about">About</a></li><li><a href="/#partners">Partners</a></li><li><a href="/#contact">Contact</a></li><li><a href="mailto:info@enlilcenter.org">info@enlilcenter.org</a></li></ul>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Legal sections (hidden unless targeted) -->
-  <section id="privacy" class="legal-section py-16 bg-white border-t border-gray-100">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="text-2xl font-semibold mb-4">Privacy Policy</h2>
-      <p class="text-sm text-gray-700 mb-3">
-        Enlil Center for Environment and Sustainable Development ("Enlil Center", "we", "our") is committed to protecting the privacy of visitors to our website and partners who engage with our work.
-      </p>
-      <p class="text-sm text-gray-700 mb-3">
-        We only collect personal data that you voluntarily provide, such as your name, email address and organization when you subscribe to updates or contact us via the website.
-        We use this information solely to respond to your inquiries, manage our relationships, and, where you opt in, send relevant updates about our research and activities.
-      </p>
-      <p class="text-sm text-gray-700 mb-3">
-        We do not sell your personal data and only share it with trusted service providers where necessary to operate this website or deliver our services, under appropriate safeguards.
-        You may request access, correction or deletion of your personal data at any time by emailing <a href="mailto:info@enlilcenter.org" class="text-emerald-700 hover:text-emerald-800">info@enlilcenter.org</a>.
-      </p>
-      <p class="text-sm text-gray-700">
-        We may update this policy from time to time to reflect legal or operational changes. The latest version will always be available on this page and is effective from the date of publication.
-      </p>
-    </div>
-  </section>
-
-  <section id="terms" class="legal-section py-16 bg-gray-50 border-t border-gray-100">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="text-2xl font-semibold mb-4">Terms of Use</h2>
-      <p class="text-sm text-gray-700 mb-3">
-        By accessing or using this website, you agree to these Terms of Use. The content on this site is provided for informational and educational purposes only and does not constitute legal, financial or other professional advice.
-      </p>
-      <p class="text-sm text-gray-700 mb-3">
-        Unless otherwise indicated, Enlil Center owns the rights to the text, graphics and other materials on this website. You may share or quote our content for non-commercial purposes with appropriate attribution. Any reproduction or distribution for commercial use requires prior written permission.
-      </p>
-      <p class="text-sm text-gray-700 mb-3">
-        While we strive for accuracy, we do not guarantee that all information on this site is complete or up to date, and we are not liable for any loss or damage arising from its use. External links are provided for convenience and do not imply endorsement.
-      </p>
-      <p class="text-sm text-gray-700">
-        We may modify these Terms of Use at any time by updating this page. Your continued use of the site after changes are posted constitutes acceptance of the revised terms.
-      </p>
-    </div>
-  </section>
-
-  <section id="cookies" class="legal-section py-16 bg-white border-t border-gray-100">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="text-2xl font-semibold mb-4">Cookies &amp; Data</h2>
-      <p class="text-sm text-gray-700 mb-3">
-        This website may use limited cookies or similar technologies to improve performance and understand how visitors use our pages. Where possible, we use anonymized analytics that do not identify individual users.
-      </p>
-      <p class="text-sm text-gray-700 mb-3">
-        You can control or disable cookies through your browser settings, but some features of the site may not function correctly as a result. By continuing to browse this site, you consent to the use of cookies as described here.
-      </p>
-      <p class="text-sm text-gray-700">
-        If we introduce additional analytics or tracking tools in the future, this notice will be updated to describe what is used and how you can manage your preferences.
-      </p>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-400 pt-10 pb-6">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col gap-6 text-sm">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-        <p>&copy; 2026 Enlil Center for Environment and Sustainable Development. All rights reserved.</p>
-        <div class="flex flex-col md:flex-row items-center gap-3">
-          <span class="text-xs text-gray-500">Follow Enlil Center</span>
-          <div class="flex gap-2">
-            <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener"
-               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#1877F2] hover:bg-white hover:text-[#1877F2] transition"
-               aria-label="Facebook">
-              <i class="fa-brands fa-facebook-f text-sm"></i>
-            </a>
-            <a href="https://x.com/enlilcenter" target="_blank" rel="noopener"
-               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white hover:text-black transition"
-               aria-label="X">
-              <i class="fa-brands fa-x-twitter text-sm"></i>
-            </a>
-            <a href="https://www.linkedin.com/company/enlilcenter/" target="_blank" rel="noopener"
-               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#0A66C2] hover:bg-white hover:text-[#0A66C2] transition"
-               aria-label="LinkedIn">
-              <i class="fa-brands fa-linkedin-in text-sm"></i>
-            </a>
-            <a href="https://www.instagram.com/enlilcenter/" target="_blank" rel="noopener"
-               class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#E1306C] hover:bg-white hover:text-[#E1306C] transition"
-               aria-label="Instagram">
-              <i class="fa-brands fa-instagram text-sm"></i>
-            </a>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500">
-          Built in Iraq · <a href="#top" class="text-emerald-400 hover:text-emerald-300">Back to top</a>
-        </p>
-      </div>
-
-      <div class="flex flex-wrap items-center justify-center md:justify-between gap-3 text-xs text-gray-500 border-t border-gray-800 pt-4">
-        <div class="flex flex-wrap gap-4">
-          <a href="#privacy" class="hover:text-emerald-400">Privacy Policy</a>
-          <a href="#terms" class="hover:text-emerald-400">Terms of Use</a>
-          <a href="#cookies" class="hover:text-emerald-400">Cookies &amp; Data</a>
-          <a href="#contact" class="hover:text-emerald-400">Contact</a>
-        </div>
-        <span>Last updated: March 2026</span>
+      <div class="bottom">
+        <span>&copy; 2026 Enlil Center for Environment and Sustainable Development. Baghdad, Iraq.</span>
+        <div class="links"><a href="/#privacy">Privacy</a><a href="/#terms">Terms</a><a href="/#cookies">Cookies</a></div>
       </div>
     </div>
   </footer>
+  <!-- /enlil:footer -->
 
   <script>
     const API_BASE = 'https://enlil-cms-api.osmanalikareem.workers.dev';
-    const HOME_LIMIT = 3;
+    const PILLARS = ['Climate', 'Water', 'Energy', 'Economy', 'Governance'];
 
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const icon = document.getElementById('hamburger-icon');
-      menu.classList.toggle('hidden');
-      icon.classList.toggle('fa-bars');
-      icon.classList.toggle('fa-xmark');
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const strip = html => String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    function fmtDate(iso) { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); }
+    function slugOf(item, fb) { const s = item.seo && item.seo.slug || item.slug; if (s && s.trim()) return s.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-'); return (item.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || fb; }
+    function authorSlug(n) { return (n || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+    function authorName(item) { return (item.leadAuthor && item.leadAuthor.name) || item.author || 'Enlil Center'; }
+    function authorLink(item) { const n = authorName(item); if (n === 'Enlil Center') return n; return `<a href="/authors/author.html?slug=${encodeURIComponent(authorSlug(n))}">${esc(n)}</a>`; }
+    function kickerOf(item, fallback) { const p = (item.pillars || []).find(x => PILLARS.includes(x)); return p || fallback; }
+    function published(item) { const s = String(item.status || item.publishStatus || 'published').toLowerCase(); return s !== 'draft' && s !== 'unpublished'; }
+    function snippet(item, n) { return item.seo && item.seo.description || item.seoDescription || item.description || (strip(item.abstract || item.content).slice(0, n || 150) + '…'); }
+    function readMins(item) { const w = strip(item.content).split(' ').length; return w > 80 ? Math.max(1, Math.round(w / 220)) + ' min read' : ''; }
+
+    async function get(key) {
+      try { const r = await fetch(`${API_BASE}/data/${key}`); if (!r.ok) return []; const j = await r.json(); return Array.isArray(j) ? j : []; }
+      catch (e) { console.error(key, e); return []; }
     }
 
-    function formatDate(iso) {
-      if (!iso) return '';
-      const d = new Date(iso);
-      if (isNaN(d.getTime())) return iso;
-      return d.toLocaleDateString('en-GB', {
-        year: 'numeric', month: 'short', day: 'numeric'
-      });
+    function card(item, section, kickerFallback, extraBadge) {
+      const url = `/${section}/${slugOf(item, section)}`;
+      const date = fmtDate(item.date || (item.year ? `${item.year}-01-01` : ''));
+      const meta = section === 'projects'
+        ? [item.sponsor, item.year].filter(Boolean).map(esc).join(' · ')
+        : [authorLink(item), date].filter(Boolean).join(' · ');
+      return `
+        <article class="card">
+          <a class="thumb" href="${url}" aria-label="${esc(item.title)}">${item.cover ? `<img src="${esc(item.cover)}" alt="" loading="lazy" decoding="async">` : ''}</a>
+          <div style="display:flex;gap:8px;align-items:center"><span class="kicker">${esc(kickerOf(item, kickerFallback))}</span>${extraBadge || ''}</div>
+          <h3><a href="${url}">${esc(item.title)}</a></h3>
+          <p>${esc(snippet(item))}</p>
+          <div class="meta">${meta}</div>
+        </article>`;
     }
 
-    function safeSlug(slug, fallbackTitle) {
-      if (slug && slug.trim()) return slug.trim();
-      return (fallbackTitle || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-        || 'item';
-    }
+    function renderLead(articles) {
+      if (!articles.length) return;
+      const a = articles[0];
+      const url = `/articles/${slugOf(a, 'article')}`;
+      document.getElementById('leadKicker').textContent = kickerOf(a, 'Latest analysis');
+      document.getElementById('leadTitle').innerHTML = `<a href="${url}">${esc(a.title)}</a>`;
+      document.getElementById('leadDek').textContent = snippet(a, 200);
+      document.getElementById('leadMeta').innerHTML = [authorLink(a), fmtDate(a.date), readMins(a)].filter(Boolean).join(' · ');
+      document.getElementById('leadActions').innerHTML = `<a class="btn btn-amber" href="${url}">Read the article</a><a class="btn btn-outline-light" href="/data">Explore the Data Hub</a>`;
+      // The lead keeps the site photograph: article covers carry their own typography and would fight the headline.
 
-    // FIX: authorSlug helper for author profile links
-    function authorSlug(name) {
-      return (name || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    }
-
-    // FIX: author name is now a clickable link to the author profile page
-    function buildAuthorLine(item) {
-      if (item.leadAuthor && item.leadAuthor.name) {
-        const lead = item.leadAuthor.name;
-        const slug = authorSlug(lead);
-        const extra = Array.isArray(item.authors) ? item.authors.length : 0;
-        const link = `<a href="authors/author.html?slug=${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${lead}</a>`;
-        return extra ? `${link} + ${extra} more` : link;
-      }
-      if (item.author) {
-        const slug = authorSlug(item.author);
-        return `<a href="authors/author.html?slug=${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${item.author}</a>`;
-      }
-      return 'Enlil Center';
-    }
-
-    async function fetchJson(path) {
-      try {
-        const res = await fetch(path);
-        if (!res.ok) return [];
-        return await res.json();
-      } catch (e) {
-        console.error('Failed to load', path, e);
-        return [];
+      const strip3 = articles.slice(1, 4);
+      const el = document.getElementById('subStrip');
+      if (strip3.length) {
+        el.hidden = false;
+        el.innerHTML = strip3.map(x => `
+          <div class="sub-card">
+            <a class="thumb" href="/articles/${slugOf(x, 'article')}" aria-label="${esc(x.title)}">${x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy">` : ''}</a>
+            <div><span class="kicker">${esc(kickerOf(x, 'Analysis'))}</span><h3><a href="/articles/${slugOf(x, 'article')}">${esc(x.title)}</a></h3></div>
+          </div>`).join('');
       }
     }
 
-    async function loadArticles() {
-      const data = await fetchJson(API_BASE + '/data/articles');
-      data.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-      const container = document.getElementById('articlesContainer');
-      if (!container) return;
-
-      container.innerHTML = data.slice(0, HOME_LIMIT).map(item => {
-        const authorLine = buildAuthorLine(item);
-        const date = formatDate(item.date);
-        const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        const url = `/articles/${slug}`;
-        const snippet = (item.seo && item.seo.description)
-          || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 110) + '…' : '');
-
-        return `
-          <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full">
-            ${item.cover ? `<a href="${url}"><img src="${item.cover}" alt="${item.title}" class="w-full h-52 object-cover" loading="lazy" decoding="async"></a>` : ''}
-            <div class="p-6 flex flex-col flex-1">
-              <a href="${url}" class="hover:text-emerald-700">
-                <h3 class="font-semibold text-xl mb-2">${item.title || ''}</h3>
-              </a>
-              <p class="text-xs text-gray-500 mb-3">
-                ${authorLine ? `By ${authorLine}` : ''}${date ? ` · ${date}` : ''}
-              </p>
-              ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
-              <a href="${url}" class="mt-auto inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                Read article <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
-              </a>
-            </div>
-          </article>
-        `;
-      }).join('') || '<p class="text-sm text-gray-500">No articles published yet.</p>';
+    function renderData(datasets) {
+      const box = document.getElementById('dataContainer');
+      const pick = datasets.slice(0, 3);
+      if (!pick.length) { box.innerHTML = '<p class="empty">Datasets are being added.</p>'; return; }
+      box.innerHTML = pick.map((d, i) => {
+        const st = window.EnlilData ? EnlilData.stats(d, 0) : null;
+        const url = `/data/${(window.EnlilData ? EnlilData.safeSlug(d.slug, d.title) : d.slug)}`;
+        return `<a class="data-card" href="${url}">
+          <span class="kicker">${esc((d.pillars || [])[0] || 'Data')}</span>
+          <h3>${esc(d.title)}</h3>
+          ${st ? `<span class="val">${EnlilData.fmt(st.latest.value, st.decimals)}<small>${esc(d.unit || '')} · ${esc(st.latest.period)}</small></span>` : ''}
+          <div class="spark"><canvas data-i="${i}"></canvas></div>
+          <span class="src"><span>${esc((d.source && d.source.publisher) || 'Enlil Center')}</span><span>${st ? esc(st.span) : ''}</span></span>
+        </a>`;
+      }).join('');
+      const draw = () => box.querySelectorAll('canvas[data-i]').forEach(c => EnlilData.chart(c, pick[+c.dataset.i], { mini: true, only: [0] }));
+      if (window.Chart && window.EnlilData) draw(); else window.addEventListener('load', draw, { once: true });
     }
 
-    async function loadResearch() {
-      const data = await fetchJson(API_BASE + '/data/research');
-      data.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-      const container = document.getElementById('researchContainer');
-      if (!container) return;
-
-      container.innerHTML = data.slice(0, HOME_LIMIT).map(item => {
-        const authorLine = buildAuthorLine(item);
-        const date = formatDate(item.date);
-        const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        const url = `/research/${slug}`;
-        const snippet = (item.seo && item.seo.description)
-          || (item.abstract ? item.abstract.replace(/<[^>]+>/g, '').slice(0, 110) + '…' : '');
-    
-
-        return `
-          <article class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col h-full">
-            ${item.cover ? `<a href="${url}"><img src="${item.cover}" alt="${item.title}" class="w-full h-52 object-cover" loading="lazy" decoding="async"></a>` : ''}
-            <div class="p-6 flex flex-col flex-1">
-              <a href="${url}" class="hover:text-emerald-700">
-                <h3 class="font-semibold text-xl mb-2">${item.title || ''}</h3>
-              </a>
-              <p class="text-xs text-gray-500 mb-3">
-                ${authorLine ? `By ${authorLine}` : ''}${date ? ` · ${date}` : ''}
-              </p>
-              ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 mb-4">${snippet}</p>` : ''}
-              <div class="mt-auto flex items-center justify-between gap-3">
-                <a href="${url}" class="inline-flex items-center text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                  View details <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
-                </a>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('') || '<p class="text-sm text-gray-500">No research outputs published yet.</p>';
+    function renderPartners(partners) {
+      const box = document.getElementById('partnersContainer');
+      box.innerHTML = partners.map(p => `
+        <a class="partner" href="${esc(p.url || '#')}" ${p.url ? 'target="_blank" rel="noopener"' : ''}>
+          ${p.logo ? `<img src="${esc(p.logo)}" alt="${esc(p.name || '')}">` : ''}<span>${esc(p.name || '')}</span>
+        </a>`).join('') || '<p class="empty">Partners will be listed here.</p>';
     }
 
-    async function loadProjects() {
-      const data = await fetchJson(API_BASE + '/data/projects');
-      data.sort((a, b) => String(b.year || '').localeCompare(String(a.year || '')));
-      const container = document.getElementById('projectsContainer');
-      if (!container) return;
+    async function init() {
+      const [articles, research, projects, partners, datasets] = await Promise.all(['articles', 'research', 'projects', 'partners', 'datasets'].map(get));
+      const arts = articles.filter(published).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+      const res = research.filter(published).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+      const proj = projects.filter(published).sort((a, b) => String(b.year || '').localeCompare(String(a.year || '')));
+      const data = datasets.filter(published);
 
-      container.innerHTML = data.slice(0, HOME_LIMIT).map(item => {
-        const year = item.year || '';
-        const sponsor = item.sponsor || '';
-        const slug = safeSlug(item.seo && item.seo.slug, item.title);
-        const url = `/projects/${slug}`;
-        const snippet = (item.seo && item.seo.description)
-          || (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 110) + '…' : '');
-
-        return `<article class="group bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-            ${item.cover ? `<a href="${url}" aria-label="${item.title}">
-              <img src="${item.cover}" alt="${item.title}" class="w-full h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async">
-            </a>` : ''}
-            <div class="p-7 flex flex-col flex-1">
-              <a href="${url}" class="hover:text-emerald-700 mb-3 block">
-                <h3 class="font-semibold text-xl md:text-2xl leading-tight line-clamp-2 group-hover:text-emerald-700 transition-colors">${item.title}</h3>
-              </a>
-              <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-3">
-                ${sponsor ? `<span>${sponsor}</span>` : ''}${year ? `<span>${year}</span>` : ''}
-              </div>
-              ${snippet ? `<p class="text-sm text-gray-600 line-clamp-3 flex-1">${snippet}</p>` : ''}
-              <a href="${url}" class="mt-4 inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                View project <i class="fa-solid fa-arrow-right text-xs"></i>
-              </a>
-            </div>
-          </article>
-        `;
-      }).join('') || '<p class="text-sm text-gray-500">No projects published yet.</p>';
+      renderLead(arts);
+      const rest = arts.length > 4 ? arts.slice(4, 7) : arts.slice(0, 3);
+      document.getElementById('articlesContainer').innerHTML = rest.map(a => card(a, 'articles', 'Analysis')).join('') || '<p class="empty">No articles yet.</p>';
+      document.getElementById('researchContainer').innerHTML = res.slice(0, 3).map(r => card(r, 'research', 'Report', (r.pdfUrl || r.pdfBase64 || r.pdf) ? '<span class="badge pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>' : '')).join('') || '<p class="empty">No research published yet.</p>';
+      document.getElementById('projectsContainer').innerHTML = proj.slice(0, 3).map(p => card(p, 'projects', 'Project', p.status && p.status !== 'published' ? `<span class="badge amber">${esc(p.status)}</span>` : '')).join('') || '<p class="empty">No projects yet.</p>';
+      renderData(data);
+      renderPartners(partners);
+      document.getElementById('statPubs').textContent = arts.length + res.length;
+      document.getElementById('statData').textContent = data.length;
+      document.getElementById('statPartners').textContent = partners.length;
     }
 
-    async function loadPartners() {
-      const data = await fetchJson(API_BASE + '/data/partners');
-      const container = document.getElementById('partnersContainer');
-      if (!container) return;
-    
-      container.innerHTML = data.map(item => `
-        <div class="flex flex-col items-center text-center gap-3">
-          ${item.logo ? `
-            <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" aria-label="${item.name || 'Partner'}">
-              <img src="${item.logo}" alt="${item.name || ''}" class="h-28 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer">
-              </a>
-          ` : ''}
-          <p class="text-sm font-medium text-slate-800">${item.name || ''}</p>
-        </div>
-      `).join('') || '<p class="text-sm text-gray-500 w-full">Partners will be displayed here.</p>';
-    }
-    // Contact form submission
     document.addEventListener('DOMContentLoaded', () => {
+      init();
       const form = document.getElementById('contactForm');
-      const statusEl = document.getElementById('contactStatus');
-
-      if (form) {
-        form.addEventListener('submit', async e => {
-          e.preventDefault();
-          statusEl.classList.remove('hidden');
-          statusEl.classList.remove('text-red-600');
-          statusEl.classList.add('text-gray-600');
-          statusEl.textContent = 'Sending your message…';
-
-          const payload = {
-            name: document.getElementById('contactName').value.trim(),
-            email: document.getElementById('contactEmail').value.trim(),
-            subject: document.getElementById('contactSubject').value.trim() || 'Enlil Center website contact',
-            message: document.getElementById('contactMessage').value.trim()
-          };
-
-          try {
-            const res = await fetch(API_BASE + '/contact', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error('Non-200 response');
-            statusEl.textContent = 'Thank you. Your message has been sent to the Enlil Center team.';
-            statusEl.classList.remove('text-gray-600');
-            statusEl.classList.add('text-emerald-700');
-            form.reset();
-          } catch (err) {
-            console.error('Contact failed', err);
-            statusEl.textContent = 'We could not send your message. Please email info@enlilcenter.org directly.';
-            statusEl.classList.remove('text-gray-600');
-            statusEl.classList.add('text-red-600');
-          }
-        });
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        const form = document.getElementById('contactForm');
-        const statusEl = document.getElementById('contactStatus');
-      
-        if (form) {
-          form.addEventListener('submit', async e => {
-            e.preventDefault();
-            statusEl.classList.remove('hidden');
-            statusEl.classList.remove('text-red-600');
-            statusEl.classList.add('text-gray-600');
-            statusEl.textContent = 'Sending your message…';
-      
-            const payload = {
-              name: document.getElementById('contactName').value.trim(),
-              email: document.getElementById('contactEmail').value.trim(),
-              subject: document.getElementById('contactSubject').value.trim() || 'Enlil Center website contact',
-              message: document.getElementById('contactMessage').value.trim()
-            };
-      
-            try {
-              const res = await fetch(API_BASE + '/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-              });
-              if (!res.ok) throw new Error('Non-200 response');
-              statusEl.textContent = 'Thank you. Your message has been sent to the Enlil Center team.';
-              statusEl.classList.remove('text-gray-600');
-              statusEl.classList.add('text-emerald-700');
-              form.reset();
-            } catch (err) {
-              console.error('Contact failed', err);
-              statusEl.textContent = 'We could not send your message. Please email info@enlilcenter.org directly.';
-              statusEl.classList.remove('text-gray-600');
-              statusEl.classList.add('text-red-600');
-            }
-          });
+      const status = document.getElementById('contactStatus');
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const payload = {
+          name: form.contactName.value.trim(), email: form.contactEmail.value.trim(),
+          subject: form.contactSubject.value.trim() || 'Enlil Center website contact',
+          message: form.contactMessage.value.trim(), website: form.contactWebsite.value
+        };
+        if (!payload.name || !payload.message || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(payload.email)) { status.textContent = 'Please add your name, a valid email and a message.'; return; }
+        status.textContent = 'Sending…';
+        try {
+          const r = await fetch(`${API_BASE}/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok) throw new Error(j.error || 'Failed');
+          status.textContent = 'Sent — thank you. We reply from info@enlilcenter.org.';
+          form.reset();
+        } catch (err) {
+          status.textContent = (err.message && err.message !== 'Failed') ? err.message : 'We could not send your message. Please email info@enlilcenter.org directly.';
         }
-      
-        await Promise.all([
-          loadArticles(),
-          loadProjects()
-        ]);
-      
-        setTimeout(loadResearch, 150);
-        setTimeout(loadPartners, 400);
       });
+    });
   </script>
 </body>
 </html>

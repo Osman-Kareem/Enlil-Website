@@ -18,4 +18,6 @@ Endpoints:
 | `POST /upload-image` | `X-Admin-Token` | Raw image body → R2 `IMAGES_BUCKET`; `X-Filename` sets the key |
 | `POST /upload/file` | `X-Admin-Token` | multipart `file`/`folder`/`slug` → R2 `FILES_BUCKET` (PDF, DOC/X, XLS/X, CSV, PPT/X, ≤25 MB) |
 | `POST /upload/pdf` | `X-Admin-Token` | Same as above, PDF only (kept for older admin code) |
+| `POST /contact` | public (honeypot + 5/hour per IP) | Contact-form submissions → KV `messages` inbox |
+| `GET /data/messages` | `X-Admin-Token` | Read the contact inbox (admin-only key) |
 | `GET /admin/token` | Cloudflare Access | Returns the current admin token to an Access-authenticated browser |

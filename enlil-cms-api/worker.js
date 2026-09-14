@@ -14,7 +14,8 @@ const ALLOWED_ORIGINS = [
   'https://enlilcenter.pages.dev'
 ];
 
-const ALLOWED_KEYS = ['authors', 'articles', 'research', 'projects', 'partners', 'sources', 'datasets'];
+const ALLOWED_KEYS = ['authors', 'articles', 'research', 'projects', 'partners', 'sources', 'datasets', 'messages'];
+const ADMIN_ONLY_KEYS = ['messages'];
 
 const TEMPLATES = {
   projects: '/projects/project-item.html',
@@ -75,6 +76,33 @@ export default {
       return json({ token: env.ADMIN_TOKEN || null });
     }
 
+    // ── Contact form → KV inbox (public POST, admin-only read) ─────────────
+    if (path === '/contact' && request.method === 'POST') {
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const clean = (v, max) => String(v || '').trim().slice(0, max);
+      const msg = {
+        name: clean(body.name, 120), email: clean(body.email, 200),
+        subject: clean(body.subject, 200), message: clean(body.message, 4000),
+        receivedAt: new Date().toISOString(),
+        ip: request.headers.get('CF-Connecting-IP') || '', country: request.headers.get('CF-IPCountry') || ''
+      };
+      if (body.website) return json({ ok: true });                       // honeypot field: bots fill it, humans never see it
+      if (!msg.name || !msg.message || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(msg.email)) {
+        return json({ error: 'Please give your name, a valid email and a message.' }, 400);
+      }
+      const rlKey = `ratelimit:contact:${msg.ip}`;
+      const recent = parseInt(await env.CMS_DATA.get(rlKey) || '0', 10);
+      if (recent >= 5) return json({ error: 'Too many messages from this connection — please try again in an hour.' }, 429);
+      await env.CMS_DATA.put(rlKey, String(recent + 1), { expirationTtl: 3600 });
+      let inbox = [];
+      try { inbox = JSON.parse(await env.CMS_DATA.get('messages') || '[]'); } catch { inbox = []; }
+      if (!Array.isArray(inbox)) inbox = [];
+      inbox.unshift({ ...msg, id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, read: false });
+      await env.CMS_DATA.put('messages', JSON.stringify(inbox.slice(0, 500)));
+      return json({ ok: true });
+    }
+
     // ── R2 document uploads ─────────────────────────────────────────────────
     if (path === '/upload/pdf' && request.method === 'POST') {
       return handleFileUpload(request, env, json, isAdmin, ['pdf']);
@@ -111,6 +139,7 @@ export default {
     }
 
     if (request.method === 'GET') {
+      if (ADMIN_ONLY_KEYS.includes(key) && !isAdmin()) return json({ error: 'Unauthorized' }, 401);
       const value = await env.CMS_DATA.get(key);
       return new Response(value || '[]', {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
