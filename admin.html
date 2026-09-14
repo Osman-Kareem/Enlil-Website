@@ -1628,8 +1628,11 @@ document.getElementById('articleForm')?.addEventListener('submit',async e=>{
     leadAuthor, authors:coAuthors, content,
     cover:window['croppedarticleCover']||'',
     slug:document.getElementById('articleSlug').value.trim(),
-    seoDescription:document.getElementById('articleSeoDescription').value.trim(),
-    seoKeywords:document.getElementById('articleSeoKeywords').value.trim(),
+    seo:{
+      slug:document.getElementById('articleSlug').value.trim(),
+      description:document.getElementById('articleSeoDescription').value.trim(),
+      keywords:document.getElementById('articleSeoKeywords').value.trim()
+    },
     status:document.getElementById('articleStatus')?.value||'published'
   };
   if(idx!=='') articles[parseInt(idx)]=item;
@@ -1744,8 +1747,11 @@ document.getElementById('projectForm')?.addEventListener('submit',async e=>{
     content,
     cover:window['croppedprojectCover']||'',
     slug:document.getElementById('projectSlug').value.trim(),
-    seoDescription:document.getElementById('projectSeoDescription').value.trim(),
-    seoKeywords:document.getElementById('projectSeoKeywords').value.trim(),
+    seo:{
+      slug:document.getElementById('projectSlug').value.trim(),
+      description:document.getElementById('projectSeoDescription').value.trim(),
+      keywords:document.getElementById('projectSeoKeywords').value.trim()
+    },
     publishStatus:document.getElementById('projectStatus2')?.value||'published'
   };
   if(idx!=='') projects[parseInt(idx)]=item;
@@ -1839,8 +1845,8 @@ function editItem(type,index){
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
     }
     document.getElementById('articleSlug').value=item.slug||'';
-    document.getElementById('articleSeoDescription').value=item.seoDescription||'';
-    document.getElementById('articleSeoKeywords').value=item.seoKeywords||'';
+    document.getElementById('articleSeoDescription').value=item.seo?.description||item.seoDescription||'';
+    document.getElementById('articleSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('article',item.status||'published');
     document.getElementById('articleStatus').value=item.status||'published';
     document.getElementById('articleSubmitButton').textContent='Update Article';
@@ -1873,8 +1879,8 @@ function editItem(type,index){
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
     }
     document.getElementById('researchSlug').value=item.slug||'';
-    document.getElementById('researchSeoDescription').value=item.seoDescription||'';
-    document.getElementById('researchSeoKeywords').value=item.seoKeywords||'';
+    document.getElementById('researchSeoDescription').value=item.seo?.description||item.seoDescription||'';
+    document.getElementById('researchSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('research',item.status||'published');
     document.getElementById('researchStatus').value=item.status||'published';
     document.getElementById('researchSubmitButton').textContent='Update Research';
@@ -1900,8 +1906,8 @@ function editItem(type,index){
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
     }
     document.getElementById('projectSlug').value=item.slug||'';
-    document.getElementById('projectSeoDescription').value=item.seoDescription||'';
-    document.getElementById('projectSeoKeywords').value=item.seoKeywords||'';
+    document.getElementById('projectSeoDescription').value=item.seo?.description||item.seoDescription||'';
+    document.getElementById('projectSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('project',item.publishStatus||'published');
     if(document.getElementById('projectStatus2'))
       document.getElementById('projectStatus2').value=item.publishStatus||'published';

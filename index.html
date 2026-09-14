@@ -42,12 +42,34 @@
       "addressLocality": "Baghdad"
     },
     "email": "info@enlilcenter.org",
+    "knowsAbout": [
+      "Climate change in Iraq",
+      "Water resource management",
+      "Energy policy",
+      "Economic development",
+      "Sustainable development",
+      "Environmental governance"
+    ],
     "sameAs": [
       "https://web.facebook.com/enlilcenteriq/",
       "https://x.com/enlilcenter",
       "https://www.linkedin.com/company/enlilcenter/",
       "https://www.instagram.com/enlilcenter/"
     ]
+  }
+  </script>
+
+  <!-- JSON-LD WebSite schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Enlil Center",
+    "url": "https://enlilcenter.org/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Enlil Center for Environment and Sustainable Development"
+    }
   }
   </script>
 
@@ -119,9 +141,9 @@
   <!-- Hero -->
   <section id="top" class="hero-bg min-h-[80vh] md:h-screen flex items-center text-white">
     <div class="max-w-4xl mx-auto px-6 text-center">
-      <h2 class="text-5xl md:text-6xl font-semibold leading-tight mb-6">
+      <h1 class="text-5xl md:text-6xl font-semibold leading-tight mb-6">
         Addressing Iraq's Environmental Challenges<br>Through Independent Research
-      </h2>
+      </h1>
       <p class="text-xl md:text-2xl max-w-2xl mx-auto mb-10 opacity-90">
         Enlil Center is an independent, non-profit think tank generating climate and environmental evidence to support sustainable development in Iraq.
       </p>
@@ -610,7 +632,7 @@
         <div class="flex flex-col items-center text-center gap-3">
           ${item.logo ? `
             <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" aria-label="${item.name || 'Partner'}">
-              <img src="${item.logo}" alt="${item.name || ''}" class="h-28 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer" loading="lazy" decoding="async">
+              <img src="${item.logo}" alt="${item.name || ''}" class="h-28 w-auto max-w-[160px] object-contain grayscale hover:grayscale-0 transition duration-300 cursor-pointer">
               </a>
           ` : ''}
           <p class="text-sm font-medium text-slate-800">${item.name || ''}</p>
