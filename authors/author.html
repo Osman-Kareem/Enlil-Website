@@ -1,88 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-
-
-
-  
-  <!-- Dynamic SEO -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enlil Center | Author Profile</title>
-  <meta name="description" content="Author profile and contributions at Enlil Center for Environment and Sustainable Development.">
-
-  <!-- Canonical (updated by JS) -->
+  <title>Enlil Center | Author</title>
+  <meta name="description" content="Profile and publications of an Enlil Center author.">
   <link id="canonicalLink" rel="canonical" href="https://enlilcenter.org/authors/">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-
-  <!-- Open Graph -->
   <meta property="og:type" content="profile">
   <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
-  <meta id="ogTitle" property="og:title" content="Enlil Center | Author Profile">
-  <meta id="ogDescription" property="og:description" content="Author profile at Enlil Center.">
+  <meta id="ogTitle" property="og:title" content="Enlil Center | Author">
+  <meta id="ogDescription" property="og:description" content="Profile and publications of an Enlil Center author.">
   <meta id="ogUrl" property="og:url" content="https://enlilcenter.org/authors/">
-  <meta id="ogImage" property="og:image" content="https://enlilcenter.org/image/logo.png">
-
-  <!-- Twitter -->
+  <meta id="ogImage" property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
   <meta name="twitter:card" content="summary">
-  <meta id="twTitle" name="twitter:title" content="Enlil Center | Author Profile">
-  <meta id="twDescription" name="twitter:description" content="Author profile at Enlil Center.">
-  <meta id="twImage" name="twitter:image" content="https://enlilcenter.org/image/logo.png">
-
-  <!-- JSON-LD ProfilePage schema (updated by JS) -->
-  <script id="ldJson" type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    "name": "Author",
-    "about": { "@type": "Person", "name": "Author" },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Enlil Center for Environment and Sustainable Development"
-    }
-  }
-  </script>
-
-  <!-- Tailwind & Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta id="twTitle" name="twitter:title" content="Enlil Center | Author">
+  <meta id="twDescription" name="twitter:description" content="Profile and publications of an Enlil Center author.">
+  <meta id="twImage" name="twitter:image" content="https://enlilcenter.org/image/og-hero.jpg">
+  <script id="ldJson" type="application/ld+json">{ "@context": "https://schema.org", "@type": "Person", "name": "Author" }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="/css/enlil.css">
-  <script src="/js/enlil-site.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+  <link rel="stylesheet" href="/css/enlil.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script src="/js/enlil-site.js" defer></script>
   <style>
-    body { font-family: var(--font-body); }
-    /* path correct — authors/author.html is one level deep */
-    .hero-bg {
-      background:
-        linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
-        url('/image/hero-1200.jpg') center/cover no-repeat;
-    }
-    .prose a {
-      color: #047857;
-      text-decoration: underline;
-      text-decoration-thickness: 1.5px;
-      text-underline-offset: 2px;
-      font-weight: 500;
-    }
-    .prose a:hover { color: #065f46; }
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    @media (max-width: 640px) {
-      .hero-bg h1 { font-size: 2.25rem; line-height: 1.15; }
-    }
+    .profile { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 32px; align-items: start; }
+    @media (max-width: 640px) { .profile { grid-template-columns: 1fr; } }
+    .avatar { width: 160px; height: 160px; border-radius: 50%; background: var(--amber); color: var(--amber-ink); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-weight: 900; font-size: 3rem; overflow: hidden; border: 4px solid rgba(255,255,255,.25); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .page-hero .role { color: #D7E7DD; font-size: 1.05rem; margin-top: 8px; }
+    .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .links a { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600; padding: 8px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 2px; color: #fff; }
+    .links a:hover { background: rgba(255,255,255,.12); }
+    .bio-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 56px; padding: 48px 0 24px; }
+    @media (max-width: 960px) { .bio-layout { grid-template-columns: 1fr; gap: 28px; } }
+    .bio { font-size: 1.08rem; line-height: 1.75; max-width: 70ch; }
+    .bio p + p { margin-top: 1em; }
+    .aside-block h2 { font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+    .facts { display: flex; flex-direction: column; gap: 10px; font-size: .9rem; }
+    .facts b { display: block; font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; }
+    .not-found { text-align: center; padding: 80px 24px; color: var(--ink-soft); }
   </style>
 </head>
-<body class="bg-gray-50 text-slate-900">
+<body>
 
   <!-- enlil:header -->
   <header class="site-header">
@@ -114,113 +77,44 @@
   </header>
   <!-- /enlil:header -->
 
-  <!-- Hero -->
-  <section class="hero-bg min-h-[40vh] flex items-center text-white">
-    <div class="max-w-4xl mx-auto px-6">
-      <nav class="text-sm mb-6" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 md:space-x-3">
-          <li class="inline-flex items-center">
-            <!-- FIX: breadcrumb uses ../ -->
-            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
-              <i class="fa-solid fa-house mr-1.5"></i>Home
-            </a>
-          </li>
-          <li>
-            <div class="flex items-center">
-              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
-              <span class="ml-1 text-sm text-white/80">Authors</span>
-            </div>
-          </li>
-          <li>
-            <div class="flex items-center">
-              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
-              <span id="breadcrumbName" class="ml-1 text-sm font-medium text-white line-clamp-1">Author</span>
-            </div>
-          </li>
-        </ol>
-      </nav>
-      <h1 id="heroName" class="text-4xl md:text-5xl font-semibold leading-tight mb-2">Author</h1>
-      <p id="heroTagline" class="text-sm md:text-base text-white/80 max-w-xl">
-        Researcher and contributor at Enlil Center.
-      </p>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><i class="fa-solid fa-chevron-right"></i><span>People</span><i class="fa-solid fa-chevron-right"></i><span id="breadcrumbName">Author</span></nav>
+      <div class="profile">
+        <div class="avatar" id="avatar"><img id="authorPhoto" src="" alt="" hidden><span id="authorInitials">E</span></div>
+        <div>
+          <span class="kicker">Enlil Center</span>
+          <h1 id="heroName">Author</h1>
+          <p class="role" id="authorRole"></p>
+          <div class="links" id="linksContainer"></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Profile -->
-  <main class="max-w-5xl mx-auto px-6 py-12 md:py-16">
-    <section class="bg-white rounded-3xl shadow-lg p-8 md:p-10 lg:p-12 mb-12 flex flex-col md:flex-row gap-8">
-      <!-- Avatar -->
-      <div class="flex-shrink-0 flex justify-center md:justify-start">
-        <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-emerald-50 flex items-center justify-center overflow-hidden border border-emerald-100">
-          <img id="authorPhoto" src="" alt="" class="w-full h-full object-cover hidden">
-          <span id="authorInitials" class="text-3xl font-semibold text-emerald-800">A</span>
-        </div>
+  <main>
+    <div class="wrap">
+      <p id="notFound" class="not-found" hidden>This author profile could not be found. <a href="/articles" style="color:var(--green);text-decoration:underline">Browse articles</a></p>
+      <div class="bio-layout" id="bioLayout">
+        <div class="bio" id="authorBio"></div>
+        <aside>
+          <div class="aside-block"><h2>Published with Enlil</h2><div class="facts" id="facts"></div></div>
+        </aside>
       </div>
-
-      <!-- Info -->
-      <div class="flex-1 space-y-4">
-        <div>
-          <h2 id="authorName" class="text-2xl md:text-3xl font-semibold mb-1">Author</h2>
-          <p id="authorRole" class="text-sm text-emerald-700 font-medium">Enlil Center contributor</p>
-        </div>
-
-        <!-- Bio -->
-        <div id="authorBio" class="prose prose-sm max-w-none text-gray-700 leading-relaxed">
-          <!-- filled by JS -->
-        </div>
-
-        <!-- Contact & social links -->
-        <div id="linksWrapper" class="pt-2">
-          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Contact &amp; profiles</h3>
-          <div id="linksContainer" class="flex flex-wrap gap-2 text-sm">
-            <!-- filled by JS -->
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contributions -->
-    <section class="space-y-10">
-
-      <!-- Articles -->
-      <div id="articlesSection">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold">Articles &amp; News</h2>
-          <!-- FIX: "View all" link uses ../ -->
-          <a href="/articles" class="text-xs text-emerald-700 hover:text-emerald-800 font-medium">
-            View all <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
-          </a>
-        </div>
-        <div id="articlesList" class="space-y-3">
-          <p class="text-sm text-gray-500">Loading articles…</p>
-        </div>
-      </div>
-
-      <!-- Research -->
-      <div id="researchSection">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold">Research &amp; Reports</h2>
-          <!-- FIX: "View all" link uses ../ -->
-          <a href="/research" class="text-xs text-emerald-700 hover:text-emerald-800 font-medium">
-            View all <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
-          </a>
-        </div>
-        <div id="researchList" class="space-y-3">
-          <p class="text-sm text-gray-500">Loading research…</p>
-        </div>
-      </div>
-
-
-    </section>
-
-    <!-- Back link -->
-    <div class="mt-12 text-center">
-      <!-- FIX: back link uses ../ -->
-      <a href="/articles" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-        <i class="fa-solid fa-arrow-left text-xs"></i>
-        Back to Articles &amp; News
-      </a>
     </div>
+
+    <section class="section tint" id="articlesSection" hidden>
+      <div class="wrap">
+        <div class="section-head"><div><span class="kicker">Analysis</span><h2>Articles</h2></div><a class="more-link" href="/articles">All articles <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="card-grid" id="articlesList"></div>
+      </div>
+    </section>
+    <section class="section" id="researchSection" hidden>
+      <div class="wrap">
+        <div class="section-head"><div><span class="kicker">Research</span><h2>Reports</h2></div><a class="more-link" href="/research">All research <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="card-grid" id="researchList"></div>
+      </div>
+    </section>
   </main>
 
   <!-- enlil:footer -->
@@ -260,283 +154,63 @@
 
   <script>
     const API_BASE = 'https://enlil-cms-api.osmanalikareem.workers.dev';
+    const PILLARS = ['Climate', 'Water', 'Energy', 'Economy', 'Governance'];
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const strip = h => String(h || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const fmtDate = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); };
+    const nameSlug = n => (n || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const slugOf = it => { const s = it.seo && it.seo.slug || it.slug; if (s && s.trim()) return s.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-'); return nameSlug(it.title) || 'item'; };
+    const published = it => { const s = String(it.status || it.publishStatus || 'published').toLowerCase(); return s !== 'draft' && s !== 'unpublished'; };
+    const slugFromUrl = () => { const u = new URL(location.href); const q = u.searchParams.get('slug'); if (q) return q.trim().toLowerCase(); const last = u.pathname.split('/').filter(Boolean).pop() || ''; return last.replace(/\.html$/i, '').toLowerCase(); };
+    const iconFor = u => { u = String(u).toLowerCase(); return u.includes('linkedin') ? 'fa-brands fa-linkedin-in' : (u.includes('twitter') || u.includes('x.com')) ? 'fa-brands fa-x-twitter' : u.includes('facebook') ? 'fa-brands fa-facebook-f' : u.includes('instagram') ? 'fa-brands fa-instagram' : u.includes('researchgate') ? 'fa-brands fa-researchgate' : u.includes('academia') ? 'fa-solid fa-graduation-cap' : u.includes('orcid') ? 'fa-brands fa-orcid' : u.includes('scholar.google') ? 'fa-solid fa-book' : 'fa-solid fa-link'; };
+    const labelFor = (l) => { const t = String(l.type || l.label || '').replace(/\s*\(.*\)\s*/, '').trim(); if (t && !/^other/i.test(t)) return t; try { return new URL(l.url).hostname.replace(/^www\./, ''); } catch { return 'Website'; } };
+    const byAuthor = (it, name) => { const n = name.toLowerCase(); return [it.leadAuthor && it.leadAuthor.name, it.author, ...(Array.isArray(it.authors) ? it.authors.map(a => a && a.name) : [])].filter(Boolean).some(x => String(x).toLowerCase() === n); };
 
-
-    function getSlugFromUrl() {
-      const url = new URL(window.location.href);
-      const q = url.searchParams.get('slug');
-      if (q) return q.trim().toLowerCase();
-      const parts = url.pathname.split('/').filter(Boolean);
-      const last = parts[parts.length - 1] || '';
-      return last.replace(/\.html$/i, '').toLowerCase();
+    function card(it, section, fb) {
+      const url = `/${section}/${slugOf(it)}`;
+      const snippet = it.seo && it.seo.description || it.seoDescription || (strip(it.abstract || it.content).slice(0, 150) + '…');
+      return `<article class="card"><a class="thumb" href="${url}" aria-label="${esc(it.title)}">${it.cover ? `<img src="${esc(it.cover)}" alt="" loading="lazy">` : ''}</a><span class="kicker">${esc((it.pillars || []).find(p => PILLARS.includes(p)) || fb)}</span><h3><a href="${url}">${esc(it.title)}</a></h3><p>${esc(snippet)}</p><div class="meta">${esc(fmtDate(it.date))}</div></article>`;
     }
 
-    function nameToSlug(name) {
-      return (name || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '') || 'author';
-    }
+    async function get(k) { try { const r = await fetch(`${API_BASE}/data/${k}`); const j = await r.json(); return Array.isArray(j) ? j : []; } catch { return []; } }
 
-    function formatDate(iso) {
-      if (!iso) return '';
-      const d = new Date(iso);
-      if (isNaN(d.getTime())) return iso;
-      return d.toLocaleDateString('en-GB', {
-        year: 'numeric', month: 'short', day: 'numeric'
-      });
-    }
+    async function load() {
+      const wanted = slugFromUrl();
+      const [authors, articles, research] = await Promise.all(['authors', 'articles', 'research'].map(get));
+      const author = authors.find(a => a && (nameSlug(a.slug || '') === wanted || nameSlug(a.name) === wanted));
+      if (!author) { document.getElementById('heroName').textContent = 'Author not found'; document.getElementById('notFound').hidden = false; document.getElementById('bioLayout').hidden = true; return; }
+      const name = author.name || 'Author', slug = nameSlug(name), url = `https://enlilcenter.org/authors/${slug}`;
+      document.title = `Enlil Center | ${name}`;
+      document.getElementById('heroName').textContent = name;
+      document.getElementById('breadcrumbName').textContent = name;
+      document.getElementById('authorRole').textContent = author.role || '';
+      document.getElementById('authorInitials').textContent = name.split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+      if (author.photo) { const img = document.getElementById('authorPhoto'); img.src = author.photo; img.alt = name; img.hidden = false; document.getElementById('authorInitials').hidden = true; }
+      const links = [];
+      if (author.email) links.push(`<a href="mailto:${esc(author.email)}"><i class="fa-solid fa-envelope"></i>${esc(author.email)}</a>`);
+      (Array.isArray(author.links) ? author.links : []).forEach(l => { if (l && l.url) links.push(`<a href="${esc(l.url)}" target="_blank" rel="noopener me"><i class="${iconFor(l.url)}"></i>${esc(labelFor(l))}</a>`); });
+      if (author.linkedin && !(author.links || []).some(l => l && /linkedin/.test(l.url))) links.push(`<a href="${esc(author.linkedin)}" target="_blank" rel="noopener me"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>`);
+      document.getElementById('linksContainer').innerHTML = links.join('');
+      const bio = document.getElementById('authorBio');
+      bio.innerHTML = /<[a-z][\s\S]*>/i.test(author.bio || '') ? DOMPurify.sanitize(author.bio) : (author.bio || '').split(/\n{2,}/).map(p => `<p>${esc(p)}</p>`).join('') || '<p>Biography coming soon.</p>';
 
-    function updateMeta(author, slug) {
-      const fullName = author.name || 'Author';
-      const desc = author.bio
-        ? author.bio.replace(/<[^>]+>/g, '').slice(0, 160)
-        : `Profile and publications of ${fullName} at Enlil Center.`;
-      const photo = author.photo || 'https://enlilcenter.org/image/logo.png';
-      const url = `https://enlilcenter.org/authors/${slug}`;
+      const arts = articles.filter(published).filter(a => byAuthor(a, name)).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+      const reps = research.filter(published).filter(r => byAuthor(r, name)).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+      document.getElementById('facts').innerHTML = `<div><b>${arts.length}</b>article${arts.length === 1 ? '' : 's'}</div><div><b>${reps.length}</b>report${reps.length === 1 ? '' : 's'}</div>`;
+      if (arts.length) { document.getElementById('articlesList').innerHTML = arts.map(a => card(a, 'articles', 'Analysis')).join(''); document.getElementById('articlesSection').hidden = false; }
+      if (reps.length) { document.getElementById('researchList').innerHTML = reps.map(r => card(r, 'research', 'Report')).join(''); document.getElementById('researchSection').hidden = false; }
 
-      document.title = `Enlil Center | ${fullName}`;
-      const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) metaDesc.content = desc;
-
+      const desc = strip(author.bio).slice(0, 160) || `${name}${author.role ? ', ' + author.role : ''} at Enlil Center.`;
+      document.querySelector('meta[name="description"]').content = desc;
       document.getElementById('canonicalLink').href = url;
-      document.getElementById('ogTitle').content = `Enlil Center | ${fullName}`;
-      document.getElementById('ogDescription').content = desc;
+      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = `Enlil Center | ${name}`);
+      ['ogDescription', 'twDescription'].forEach(id => document.getElementById(id).content = desc);
       document.getElementById('ogUrl').content = url;
-      document.getElementById('ogImage').content = photo;
-      document.getElementById('twTitle').content = `Enlil Center | ${fullName}`;
-      document.getElementById('twDescription').content = desc;
-      document.getElementById('twImage').content = photo;
-
-      const ldScript = document.getElementById('ldJson');
-      if (ldScript) {
-        ldScript.textContent = JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ProfilePage",
-          "name": fullName,
-          "about": {
-            "@type": "Person",
-            "name": fullName,
-            "description": desc,
-            "image": photo,
-            "jobTitle": author.role || ''
-          },
-          "url": url,
-          "publisher": {
-            "@type": "Organization",
-            "name": "Enlil Center for Environment and Sustainable Development",
-            "logo": { "@type": "ImageObject", "url": "https://enlilcenter.org/image/logo.png" }
-          }
-        });
-      }
+      if (author.photo) ['ogImage', 'twImage'].forEach(id => document.getElementById(id).content = author.photo);
+      document.getElementById('ldJson').textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "Person", "name": name, "jobTitle": author.role || undefined, "description": desc, "image": author.photo || undefined, "url": url,
+        "sameAs": (author.links || []).map(l => l && l.url).filter(Boolean), "affiliation": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "url": "https://enlilcenter.org" } });
     }
-
-    function renderLinks(author) {
-      const container = document.getElementById('linksContainer');
-      container.innerHTML = '';
-
-      if (author.email) {
-        container.innerHTML += `
-          <a href="mailto:${author.email}"
-             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-xs text-gray-700 hover:border-emerald-500 hover:text-emerald-700 transition">
-            <i class="fa-solid fa-envelope text-[11px]"></i>
-            <span>${author.email}</span>
-          </a>`;
-      }
-
-      if (Array.isArray(author.links)) {
-        author.links.forEach(link => {
-          if (!link || !link.url) return;
-          const label = link.label || 'Profile';
-          // FIX: detect known social platforms and use matching brand icon
-          let icon = 'fa-solid fa-link';
-          const u = link.url.toLowerCase();
-          if (u.includes('linkedin'))  icon = 'fa-brands fa-linkedin-in';
-          else if (u.includes('twitter') || u.includes('x.com')) icon = 'fa-brands fa-x-twitter';
-          else if (u.includes('facebook'))  icon = 'fa-brands fa-facebook-f';
-          else if (u.includes('instagram')) icon = 'fa-brands fa-instagram';
-          else if (u.includes('researchgate')) icon = 'fa-brands fa-researchgate';
-          else if (u.includes('academia'))    icon = 'fa-solid fa-graduation-cap';
-          else if (u.includes('orcid'))       icon = 'fa-brands fa-orcid';
-
-          container.innerHTML += `
-            <a href="${link.url}" target="_blank" rel="noopener"
-               class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-xs text-gray-700 hover:border-emerald-500 hover:text-emerald-700 transition">
-              <i class="${icon} text-[11px]"></i>
-              <span>${label}</span>
-            </a>`;
-        });
-      }
-
-      if (!container.innerHTML.trim()) {
-        document.getElementById('linksWrapper').classList.add('hidden');
-      }
-    }
-
-    function contributesTo(authorName, item) {
-      if (!authorName || !item) return false;
-      const target = authorName.toLowerCase();
-      if (item.leadAuthor?.name?.toLowerCase() === target) return true;
-      if (Array.isArray(item.authors) && item.authors.some(a => a?.name?.toLowerCase() === target)) return true;
-      if (item.author?.toLowerCase() === target) return true;
-      return false;
-    }
-
-    function safeSlug(slug, title, fallback) {
-      if (slug && slug.trim()) {
-        return slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-');
-      }
-      return (title || fallback || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '') || 'item';
-    }
-
-    function renderList(listEl, items, type) {
-      if (!items.length) {
-        listEl.innerHTML = '<p class="text-sm text-gray-500">No records yet.</p>';
-        return;
-      }
-
-      listEl.innerHTML = items.map(item => {
-        const date = formatDate(item.date || item.year);
-        let url = '#';
-
-        if (type === 'article') {
-          const slug = safeSlug(item.seo?.slug, item.title, 'article');
-          // FIX: correct URL template with ?slug= param and ../ relative path
-          url = `/articles/${encodeURIComponent(slug)}`;
-        } else if (type === 'research') {
-          const slug = safeSlug(item.seo?.slug, item.title, 'research');
-          // FIX: correct URL template — was /research/research-item.html (broken)
-          url = `/research/${encodeURIComponent(slug)}`;
-        } 
-
-        const snippet = (item.seo?.description ||
-          (item.content || item.abstract || '')
-            .replace(/<[^>]+>/g, '')
-            .slice(0, 120))
-          + (item.content || item.abstract ? '…' : '');
-
-        return `
-          <article class="border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 hover:border-emerald-300 hover:shadow-sm transition bg-white">
-            <div class="flex-1 min-w-0">
-              <a href="${url}" class="text-sm font-semibold text-slate-900 hover:text-emerald-700 leading-snug">
-                ${item.title || 'Untitled'}
-              </a>
-              ${date ? `<p class="text-xs text-gray-500 mt-0.5">${date}</p>` : ''}
-              ${snippet ? `<p class="text-xs text-gray-600 mt-1 line-clamp-2">${snippet}</p>` : ''}
-            </div>
-            <div class="flex-shrink-0">
-              <a href="${url}" class="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-800 font-medium whitespace-nowrap">
-                View <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </a>
-            </div>
-          </article>`;
-      }).join('');
-    }
-
-    async function loadAuthorPage() {
-      const slug = getSlugFromUrl();
-
-      try {
-        const [authorsRes, articlesRes, researchRes, projectsRes] = await Promise.all([
-          fetch(`${API_BASE}/data/authors`),
-          fetch(`${API_BASE}/data/articles`),
-          fetch(`${API_BASE}/data/research`)
-        ]);
-
-        if (!authorsRes.ok) throw new Error('Authors fetch failed');
-        const authors  = await authorsRes.json();
-        const articles = articlesRes.ok  ? await articlesRes.json()  : [];
-        const research = researchRes.ok  ? await researchRes.json()  : [];
-
-        let author = null;
-        for (const a of authors) {
-          if (nameToSlug(a.name) === slug) { author = a; break; }
-        }
-
-        if (!author) {
-          document.querySelector('main').innerHTML = `
-            <section class="max-w-xl mx-auto text-center py-16">
-              <h1 class="text-2xl font-semibold mb-3">Author not found</h1>
-              <p class="text-sm text-gray-500 mb-4">This author profile could not be found.</p>
-              <!-- FIX: back link uses ../ -->
-              <a href="/articles" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-                Back to Articles &amp; News
-              </a>
-            </section>`;
-          return;
-        }
-
-        const finalSlug = nameToSlug(author.name);
-        window.history.replaceState({}, '', `/authors/${finalSlug}`);
-
-        // Initials fallback avatar
-        const initials = (author.name || 'A')
-          .split(' ').filter(Boolean).slice(0, 2)
-          .map(p => p[0].toUpperCase()).join('');
-        document.getElementById('authorInitials').textContent = initials;
-
-        // Photo
-        if (author.photo) {
-          const img = document.getElementById('authorPhoto');
-          img.src = author.photo;
-          img.alt = author.name || 'Author photo';
-          img.classList.remove('hidden');
-          document.getElementById('authorInitials').classList.add('hidden');
-        }
-
-        // Text fields
-        document.getElementById('authorName').textContent = author.name || 'Author';
-        document.getElementById('heroName').textContent   = author.name || 'Author';
-        document.getElementById('breadcrumbName').textContent = author.name || 'Author';
-        document.getElementById('authorRole').textContent = author.role || 'Enlil Center contributor';
-
-        // Hero tagline — plain text excerpt of bio
-        const bioPlain = (author.bio || '').replace(/<[^>]+>/g, '');
-        document.getElementById('heroTagline').textContent =
-          bioPlain ? bioPlain.slice(0, 140) + (bioPlain.length > 140 ? '…' : '') :
-          'Researcher and contributor at Enlil Center.';
-
-        // Bio — render as HTML if it contains tags, otherwise plain text
-        const bioEl = document.getElementById('authorBio');
-        if (author.bio && /<[a-z][\s\S]*>/i.test(author.bio)) {
-          bioEl.innerHTML = author.bio;
-        } else {
-          bioEl.textContent = author.bio || 'Biography will be added soon.';
-        }
-
-        renderLinks(author);
-        updateMeta(author, finalSlug);
-
-        // Filter contributions
-        const fullName = author.name || '';
-        const authoredArticles = articles.filter(a => contributesTo(fullName, a));
-        const authoredResearch  = research.filter(r => contributesTo(fullName, r));
-        
-        // Sort by date desc
-        authoredArticles.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-        authoredResearch.sort((a, b)  => (b.date || '').localeCompare(a.date || ''));
-
-        renderList(document.getElementById('articlesList'),  authoredArticles, 'article');
-        renderList(document.getElementById('researchList'),  authoredResearch,  'research');
-
-      } catch (e) {
-        console.error('Author page load error', e);
-        document.querySelector('main').innerHTML = `
-          <section class="max-w-xl mx-auto text-center py-16">
-            <h1 class="text-2xl font-semibold mb-3">Error loading profile</h1>
-            <p class="text-sm text-red-600 mb-4">We could not load this author profile. Please try again later.</p>
-            <!-- FIX: back link uses ../ -->
-            <a href="/articles" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-              Back to Articles &amp; News
-            </a>
-          </section>`;
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', loadAuthorPage);
+    document.addEventListener('DOMContentLoaded', load);
   </script>
 </body>
 </html>

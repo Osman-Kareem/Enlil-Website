@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enlil Center | Dataset</title>
   <meta name="description" content="Iraq dataset from the Enlil Center Data Hub — charted, sourced and downloadable.">
-
   <link id="canonicalLink" rel="canonical" href="https://enlilcenter.org/data/">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
   <meta id="ogTitle" property="og:title" content="Enlil Center | Dataset">
@@ -20,41 +18,67 @@
   <meta id="twTitle" name="twitter:title" content="Enlil Center | Dataset">
   <meta id="twDescription" name="twitter:description" content="Iraq dataset from the Enlil Center Data Hub.">
   <meta id="twImage" name="twitter:image" content="https://enlilcenter.org/image/og-hero.jpg">
-
-  <script id="ldJson" type="application/ld+json">
-  { "@context": "https://schema.org", "@type": "Dataset", "name": "Dataset" }
-  </script>
-
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="ldJson" type="application/ld+json">{ "@context": "https://schema.org", "@type": "Dataset", "name": "Dataset" }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="/css/enlil.css">
-  <script src="/js/enlil-site.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/enlil.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="../js/enlil-data.js"></script>
-
+  <script src="/js/enlil-data.js"></script>
+  <script src="/js/enlil-site.js" defer></script>
   <style>
-    body { font-family: var(--font-body); }
-    .hero-bg {
-      background:
-        linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
-        url('/image/hero-1200.jpg') center/cover no-repeat;
-    }
-    @media (max-width: 640px) { .hero-bg h1 { font-size: 2rem; line-height: 1.15; } }
-    .stat-tile { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; padding: .875rem 1rem; }
-    .stat-tile .v { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-    .stat-tile .l { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: #64748b; }
-    .series-toggle { padding: .3rem .75rem; border-radius: 9999px; font-size: .75rem; font-weight: 500; border: 1.5px solid; cursor: pointer; background: #fff; }
-    .series-toggle.off { opacity: .4; }
-    table.data td, table.data th { padding: .5rem .875rem; white-space: nowrap; }
+    .ds-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; padding: 40px 24px 8px; }
+    @media (max-width: 960px) { .ds-layout { grid-template-columns: 1fr; gap: 28px; } }
+    .ds-main { min-width: 0; }
+    .description { font-size: 1.1rem; line-height: 1.65; color: var(--ink-soft); max-width: 70ch; }
+    .meta-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 24px; }
+    .chart-box { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--green); padding: 20px 22px; }
+    .chart-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .chart-tools .toggles { display: flex; flex-wrap: wrap; gap: 6px; margin-right: auto; }
+    .series-toggle { font-family: var(--font-head); font-weight: 700; font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; padding: 6px 10px; border-radius: 2px; border: 1.5px solid; background: #fff; cursor: pointer; }
+    .series-toggle.off { opacity: .35; }
+    .chart-tools .btn { padding: 9px 14px; font-size: .68rem; }
+    .chart { height: 420px; }
+    @media (max-width: 640px) { .chart { height: 300px; } }
+    .src-line { margin-top: 12px; font-size: .78rem; color: var(--ink-soft); }
+    .src-line a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+    .stat-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 22px; }
+    @media (max-width: 720px) { .stat-tiles { grid-template-columns: 1fr 1fr; } }
+    .stat-tile { background: var(--tint); border-left: 3px solid var(--green); padding: 12px 16px; }
+    .stat-tile .l { font-family: var(--font-head); font-weight: 700; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-mute); }
+    .stat-tile .v { font-family: var(--font-head); font-weight: 900; font-size: 1.5rem; line-height: 1.15; font-variant-numeric: tabular-nums; margin-top: 4px; }
+    .stat-tile .v small { font-family: var(--font-body); font-weight: 500; font-size: .76rem; color: var(--ink-mute); margin-left: 6px; }
+    .up { color: var(--green); } .down { color: #B42318; }
+    .block { margin-top: 40px; }
+    .block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); margin-bottom: 16px; }
+    .block-head h2 { font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; }
+    .block-head button { background: none; border: 0; padding: 0; color: var(--green); font: inherit; font-size: .82rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); background: #fff; }
+    table.data { border-collapse: collapse; width: 100%; font-size: .9rem; }
+    table.data th, table.data td { padding: .55rem .9rem; white-space: nowrap; border-bottom: 1px solid var(--line); }
+    table.data th { font-family: var(--font-head); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); background: var(--tint); text-align: right; }
+    table.data th:first-child, table.data td:first-child { text-align: left; font-weight: 600; }
     table.data td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
-    table.data th:not(:first-child) { text-align: right; }
-    table.data tbody tr:nth-child(even) { background: #f8fafc; }
+    .source-box { background: var(--green-tint); border-left: 4px solid var(--green); padding: 20px 24px; font-size: .95rem; line-height: 1.6; }
+    .source-box p + p { margin-top: 8px; }
+    .source-box a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; word-break: break-all; }
+    .source-box .cite { margin-top: 14px; font-size: .8rem; color: var(--ink-soft); background: #fff; }
+    .ds-aside { display: flex; flex-direction: column; gap: 28px; }
+    .aside-block h2 { font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+    .dl-card { background: var(--green); color: #fff; padding: 22px; }
+    .dl-card p { color: #D7E7DD; font-size: .88rem; margin: 8px 0 16px; }
+    .dl-card .btn { width: 100%; justify-content: center; box-sizing: border-box; }
+    .dl-card .btn + .btn { margin-top: 8px; }
+    .rel-list { display: flex; flex-direction: column; gap: 10px; }
+    .rel-list a { display: block; padding: 12px 14px; border: 1px solid var(--line); background: #fff; font-size: .9rem; font-weight: 600; line-height: 1.3; }
+    .rel-list a:hover { border-color: var(--green); color: var(--green); }
+    .rel-list small { display: block; font-weight: 500; color: var(--ink-mute); font-size: .76rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .not-found { text-align: center; padding: 80px 24px; color: var(--ink-soft); }
+    .not-found a { color: var(--green); text-decoration: underline; }
   </style>
 </head>
-<body class="bg-gray-50 text-slate-900">
+<body>
 
   <!-- enlil:header -->
   <header class="site-header">
@@ -86,81 +110,62 @@
   </header>
   <!-- /enlil:header -->
 
-  <!-- Hero / breadcrumb -->
-  <section class="hero-bg min-h-[36vh] flex items-center text-white">
-    <div class="max-w-5xl mx-auto px-6 w-full">
-      <nav class="text-sm mb-6" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 md:space-x-3">
-          <li class="inline-flex items-center"><a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white"><i class="fa-solid fa-house mr-1.5"></i>Home</a></li>
-          <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i><a href="/data" class="ml-1 text-sm text-white/80 hover:text-white">Iraq Data Hub</a></div></li>
-          <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i><span id="breadcrumbTitle" class="ml-1 text-sm font-medium text-white line-clamp-1">Dataset</span></div></li>
-        </ol>
-      </nav>
-      <p id="pillarLine" class="text-xs font-semibold tracking-wide uppercase text-emerald-300 mb-2"></p>
-      <h1 id="heroTitle" class="text-3xl md:text-5xl font-semibold leading-tight">Dataset</h1>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><i class="fa-solid fa-chevron-right"></i><a href="/data">Iraq Data Hub</a><i class="fa-solid fa-chevron-right"></i><span id="breadcrumbTitle">Dataset</span></nav>
+      <span class="kicker" id="pillarLine">Dataset</span>
+      <h1 id="heroTitle">Dataset</h1>
     </div>
   </section>
 
-  <main class="max-w-5xl mx-auto px-6 py-12 md:py-16">
-    <div id="notFound" class="hidden text-center py-16 text-sm text-gray-500">
-      This dataset could not be found. <a href="/data" class="text-emerald-700 hover:underline">Back to the Data Hub</a>
-    </div>
+  <main>
+    <p id="notFound" class="not-found" hidden>This dataset could not be found. <a href="/data">Back to the Data Hub</a></p>
 
-    <article id="dataset" class="hidden">
-      <div class="bg-white rounded-3xl shadow-lg p-6 md:p-10">
-        <p id="description" class="text-base md:text-lg text-gray-700 leading-relaxed mb-5"></p>
-        <div id="metaPills" class="flex flex-wrap gap-2 text-xs mb-8"></div>
+    <article id="dataset" class="wrap ds-layout" hidden>
+      <div class="ds-main">
+        <p class="description" id="description"></p>
+        <div class="meta-pills pills" id="metaPills"></div>
 
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-          <div id="seriesToggles" class="flex flex-wrap gap-2 mr-auto"></div>
-          <button id="btnType" class="px-4 py-2 rounded-full border border-gray-300 text-sm hover:border-emerald-500 hover:text-emerald-700"><i class="fa-solid fa-chart-column mr-1.5"></i>Bars</button>
-          <button id="btnDownload" class="px-4 py-2 rounded-full bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700"><i class="fa-solid fa-download mr-1.5"></i>Download CSV</button>
-          <button id="btnCopy" class="px-4 py-2 rounded-full border border-gray-300 text-sm hover:border-emerald-500 hover:text-emerald-700"><i class="fa-solid fa-link mr-1.5"></i>Copy link</button>
+        <div class="chart-box">
+          <div class="chart-tools">
+            <div class="toggles" id="seriesToggles"></div>
+            <button class="btn btn-outline" id="btnType"><i class="fa-solid fa-chart-column"></i> Bars</button>
+            <button class="btn btn-outline" id="btnCopy"><i class="fa-solid fa-link"></i> Copy link</button>
+          </div>
+          <div class="chart"><canvas id="mainChart" role="img" aria-label="Dataset chart"></canvas></div>
+          <p class="src-line" id="sourceLine"></p>
         </div>
-        <div class="h-80 md:h-[28rem]"><canvas id="mainChart" role="img" aria-label="Dataset chart"></canvas></div>
-        <p id="sourceLine" class="mt-4 text-xs text-gray-500"></p>
+        <div class="stat-tiles" id="statTiles"></div>
 
-        <div id="statTiles" class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8"></div>
+        <section class="block">
+          <div class="block-head"><h2>Data table</h2><button id="btnTable">Show all rows</button></div>
+          <div class="table-wrap"><table id="dataTable" class="data"><thead></thead><tbody></tbody></table></div>
+        </section>
+
+        <section class="block">
+          <div class="block-head"><h2>Source &amp; method</h2></div>
+          <div class="source-box"><div id="sourceBlock"></div><p class="cite" id="citeLine"></p></div>
+        </section>
       </div>
 
-      <!-- Data table -->
-      <section class="mt-10">
-        <div class="flex items-baseline justify-between mb-3">
-          <h2 class="text-xl font-semibold">Data table</h2>
-          <button id="btnTable" class="text-sm text-emerald-700 hover:underline">Show all rows</button>
+      <aside class="ds-aside">
+        <div class="dl-card">
+          <span class="kicker">Get the data</span>
+          <p>Download this series as CSV with its source line, or open the original data at the publisher.</p>
+          <button class="btn btn-amber" id="btnDownload"><i class="fa-solid fa-download"></i> Download CSV</button>
+          <a class="btn btn-outline-light" id="btnOriginal" href="#" target="_blank" rel="noopener" hidden>Original data <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
         </div>
-        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-x-auto">
-          <table id="dataTable" class="data w-full text-sm">
-            <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500"></thead>
-            <tbody></tbody>
-          </table>
+        <div class="aside-block"><h2>Share</h2>
+          <div class="share-row">
+            <a id="shareTwitter" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i> X</a>
+            <a id="shareLinkedIn" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</a>
+          </div>
         </div>
-      </section>
-
-      <!-- Source -->
-      <section class="mt-10 bg-emerald-50 border border-emerald-100 rounded-3xl p-6 md:p-8">
-        <h2 class="text-sm font-semibold text-emerald-800 uppercase tracking-wide mb-3">Source &amp; method</h2>
-        <div id="sourceBlock" class="text-sm text-gray-700 leading-relaxed space-y-2"></div>
-        <p id="citeLine" class="mt-4 text-xs text-gray-600"></p>
-      </section>
-
-      <!-- Related -->
-      <section id="relatedWrap" class="hidden mt-10">
-        <h2 class="text-xl font-semibold mb-4">Related datasets</h2>
-        <div id="related" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-      </section>
-
-      <!-- Share -->
-      <div class="mt-10 pt-8 border-t border-gray-200 flex flex-wrap items-center gap-4">
-        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Share this dataset</span>
-        <a id="shareTwitter" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-black text-white hover:bg-gray-800 transition"><i class="fa-brands fa-x-twitter"></i> Share on X</a>
-        <a id="shareLinkedIn" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-[#0A66C2] text-white hover:bg-blue-700 transition"><i class="fa-brands fa-linkedin-in"></i> Share on LinkedIn</a>
-      </div>
+        <div class="aside-block" id="relatedWrap" hidden><h2>Related datasets</h2><div class="rel-list" id="related"></div></div>
+      </aside>
     </article>
 
-    <div class="mt-10 text-center">
-      <a href="/data" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium"><i class="fa-solid fa-arrow-left text-xs"></i> Back to the Data Hub</a>
-    </div>
+    <p style="text-align:center;padding:32px 0 56px"><a class="more-link" href="/data"><i class="fa-solid fa-arrow-left"></i> Back to the Data Hub</a></p>
   </main>
 
   <!-- enlil:footer -->
@@ -201,127 +206,75 @@
   <script>
     const API_BASE = 'https://enlil-cms-api.osmanalikareem.workers.dev';
     const { esc, safeSlug, fmt, fmtDate, series, stats, chart, download, isPublished, PILLARS, PALETTE } = EnlilData;
-
-    let ds = null, all = [];
-    let bars = false, showAll = false;
+    let ds = null, all = [], bars = false, showAll = false;
     const hidden = new Set();
 
-    function slugFromUrl() {
-      const url = new URL(location.href);
-      const q = url.searchParams.get('slug');
-      if (q) return q.trim().toLowerCase();
-      const last = url.pathname.split('/').filter(Boolean).pop() || '';
-      return last.replace(/\.html$/i, '').toLowerCase();
-    }
+    function slugFromUrl() { const u = new URL(location.href); const q = u.searchParams.get('slug'); if (q) return q.trim().toLowerCase(); const last = u.pathname.split('/').filter(Boolean).pop() || ''; return last.replace(/\.html$/i, '').toLowerCase(); }
 
     async function load() {
       const wanted = slugFromUrl();
-      try {
-        const r = await fetch(`${API_BASE}/data/datasets`);
-        if (!r.ok) throw new Error(r.status);
-        const j = await r.json();
-        all = (Array.isArray(j) ? j : []).filter(d => d && d.title && isPublished(d));
-      } catch (e) { console.error(e); }
+      try { const r = await fetch(`${API_BASE}/data/datasets`); if (!r.ok) throw new Error(r.status); const j = await r.json(); all = (Array.isArray(j) ? j : []).filter(d => d && d.title && isPublished(d)); } catch (e) { console.error(e); }
       ds = all.find(d => safeSlug(d.slug, d.title) === wanted) || null;
-      if (!ds) {
-        document.getElementById('heroTitle').textContent = 'Dataset not found';
-        document.getElementById('notFound').classList.remove('hidden');
-        return;
-      }
+      if (!ds) { document.getElementById('heroTitle').textContent = 'Dataset not found'; document.getElementById('notFound').hidden = false; document.getElementById('dataset').hidden = true; return; }
       render();
     }
 
     function render() {
-      const slug = safeSlug(ds.slug, ds.title);
-      const url = `https://enlilcenter.org/data/${slug}`;
+      const slug = safeSlug(ds.slug, ds.title), url = `https://enlilcenter.org/data/${slug}`;
       const pillars = (ds.pillars || []).filter(p => PILLARS.includes(p));
-      document.getElementById('dataset').classList.remove('hidden');
+      document.getElementById('dataset').hidden = false;
       document.getElementById('heroTitle').textContent = ds.title;
       document.getElementById('breadcrumbTitle').textContent = ds.title;
-      document.getElementById('pillarLine').textContent = pillars.join(' · ');
+      document.getElementById('pillarLine').textContent = pillars.join(' · ') || 'Dataset';
       document.getElementById('description').textContent = ds.description || '';
 
-      const s = series(ds);
-      const st = stats(ds, 0);
+      const s = series(ds), st = stats(ds, 0);
       const pills = [];
       if (ds.unit) pills.push(['fa-ruler', `Unit: ${ds.unit}`]);
       if (ds.frequency) pills.push(['fa-calendar', ds.frequency[0].toUpperCase() + ds.frequency.slice(1)]);
       if (st) pills.push(['fa-clock-rotate-left', `${st.span} · ${st.count} data points`]);
       if (s.sets.length > 1) pills.push(['fa-layer-group', `${s.sets.length} series`]);
       if (ds.retrievedAt) pills.push(['fa-cloud-arrow-down', `Retrieved ${fmtDate(ds.retrievedAt)}`]);
-      document.getElementById('metaPills').innerHTML = pills.map(([i, t]) =>
-        `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-700"><i class="fa-solid ${i} text-[11px]"></i>${esc(t)}</span>`).join('') +
-        pillars.map(p => `<a href="../data.html?pillar=${encodeURIComponent(p)}" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-100 hover:bg-emerald-100">${esc(p)}</a>`).join('');
+      document.getElementById('metaPills').innerHTML = pills.map(([i, t]) => `<span class="pill"><i class="fa-solid ${i}"></i>${esc(t)}</span>`).join('') + pillars.map(p => `<a class="pill on" href="/data?pillar=${encodeURIComponent(p)}">${esc(p)}</a>`).join('');
 
-      // Series toggles (only when there is more than one series)
       const tg = document.getElementById('seriesToggles');
-      tg.innerHTML = s.sets.length > 1 ? s.sets.map((set, i) =>
-        `<button type="button" class="series-toggle ${hidden.has(i) ? 'off' : ''}" data-i="${i}" style="border-color:${PALETTE[i % PALETTE.length]};color:${PALETTE[i % PALETTE.length]}">${esc(set.label)}</button>`).join('') : '';
-      tg.querySelectorAll('button').forEach(b => b.onclick = () => {
-        const i = +b.dataset.i; hidden.has(i) ? hidden.delete(i) : hidden.add(i);
-        if (hidden.size === s.sets.length) hidden.delete(i);
-        render();
-      });
-      document.getElementById('btnType').innerHTML = bars ? '<i class="fa-solid fa-chart-line mr-1.5"></i>Line' : '<i class="fa-solid fa-chart-column mr-1.5"></i>Bars';
+      tg.innerHTML = s.sets.length > 1 ? s.sets.map((set, i) => `<button type="button" class="series-toggle ${hidden.has(i) ? 'off' : ''}" data-i="${i}" style="border-color:${PALETTE[i % PALETTE.length]};color:${PALETTE[i % PALETTE.length]}">${esc(set.label)}</button>`).join('') : '';
+      tg.querySelectorAll('button').forEach(b => b.onclick = () => { const i = +b.dataset.i; hidden.has(i) ? hidden.delete(i) : hidden.add(i); if (hidden.size === s.sets.length) hidden.delete(i); render(); });
+      document.getElementById('btnType').innerHTML = bars ? '<i class="fa-solid fa-chart-line"></i> Line' : '<i class="fa-solid fa-chart-column"></i> Bars';
+      chart(document.getElementById('mainChart'), ds, { type: bars ? 'bar' : (ds.chartType || 'line'), only: s.sets.map((_, i) => i).filter(i => !hidden.has(i)) });
 
-      chart(document.getElementById('mainChart'), ds, {
-        type: bars ? 'bar' : (ds.chartType || 'line'),
-        only: s.sets.map((_, i) => i).filter(i => !hidden.has(i))
-      });
-
-      // Source line under chart + full source block
-      const src = ds.source || {};
-      const srcName = src.publisher || src.title || '';
-      document.getElementById('sourceLine').innerHTML = srcName
-        ? `Source: ${src.url ? `<a href="${esc(src.url)}" target="_blank" rel="noopener" class="text-emerald-700 hover:underline">${esc(srcName)}</a>` : esc(srcName)}${src.title && src.publisher ? ` — ${esc(src.title)}` : ''}. Chart: Enlil Center.`
-        : 'Chart: Enlil Center.';
+      const src = ds.source || {}, srcName = src.publisher || src.title || '';
+      document.getElementById('sourceLine').innerHTML = srcName ? `Source: ${src.url ? `<a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(srcName)}</a>` : esc(srcName)}${src.title && src.publisher ? ` — ${esc(src.title)}` : ''}. Chart: Enlil Center.` : 'Chart: Enlil Center.';
       const blk = [];
       if (srcName) blk.push(`<p><strong>Publisher:</strong> ${esc(src.publisher || '')}${src.title ? ` — <em>${esc(src.title)}</em>` : ''}</p>`);
-      if (src.url) blk.push(`<p><strong>Original data:</strong> <a href="${esc(src.url)}" target="_blank" rel="noopener" class="text-emerald-700 hover:underline break-all">${esc(src.url)}</a></p>`);
+      if (src.url) blk.push(`<p><strong>Original data:</strong> <a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.url)}</a></p>`);
       if (ds.retrievedAt) blk.push(`<p><strong>Retrieved by Enlil:</strong> ${esc(fmtDate(ds.retrievedAt))}</p>`);
       if (ds.notes) blk.push(`<p><strong>Notes:</strong> ${esc(ds.notes)}</p>`);
-      if (ds.file && /^https?:/.test(ds.file.url || '')) blk.push(`<p><a href="${esc(ds.file.url)}" target="_blank" rel="noopener" class="text-emerald-700 hover:underline"><i class="fa-solid fa-download text-xs"></i> Original file as received (${esc(String(ds.file.ext || '').toUpperCase())})</a></p>`);
-      if (src.slug) blk.push(`<p><a href="/sources#${encodeURIComponent(src.slug)}" class="text-emerald-700 hover:underline">View this source in the Enlil sources library →</a></p>`);
+      if (ds.file && /^https?:/.test(ds.file.url || '')) blk.push(`<p><a href="${esc(ds.file.url)}" target="_blank" rel="noopener"><i class="fa-solid fa-download"></i> Original file as received (${esc(String(ds.file.ext || '').toUpperCase())})</a></p>`);
+      if (src.slug) blk.push(`<p><a href="/sources#${encodeURIComponent(src.slug)}">View this source in the Enlil sources library →</a></p>`);
       document.getElementById('sourceBlock').innerHTML = blk.join('') || '<p>Compiled by Enlil Center.</p>';
       document.getElementById('citeLine').innerHTML = `<strong>Cite as:</strong> ${esc(srcName || 'Enlil Center')}${srcName ? ', via' : ''} Enlil Center Data Hub, “${esc(ds.title)}”, ${esc(url)} (accessed ${esc(fmtDate(new Date().toISOString()))}).`;
+      const orig = document.getElementById('btnOriginal'); if (src.url) { orig.href = src.url; orig.hidden = false; }
 
-      // Stats
       const tiles = [];
       if (st) {
-        tiles.push({ l: `Latest (${esc(st.latest.period)})`, v: `${fmt(st.latest.value, st.decimals)}<span class="text-sm font-normal text-gray-500 ml-1">${esc(ds.unit || '')}</span>` });
-        if (st.changePct !== null) {
-          const up = st.changeAbs >= 0;
-          tiles.push({ l: `Change vs ${esc(st.prev.period)}`, v: `<span class="${up ? 'text-emerald-700' : 'text-rose-700'}">${up ? '▲' : '▼'} ${fmt(Math.abs(st.changePct), 1)}%</span>` });
-        }
+        tiles.push({ l: `Latest · ${esc(st.latest.period)}`, v: `${fmt(st.latest.value, st.decimals)}<small>${esc(ds.unit || '')}</small>` });
+        if (st.changePct !== null) { const up = st.changeAbs >= 0; tiles.push({ l: `Change vs ${esc(st.prev.period)}`, v: `<span class="${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${fmt(Math.abs(st.changePct), 1)}%</span>` }); }
         tiles.push({ l: 'Lowest', v: fmt(st.min, st.decimals) });
         tiles.push({ l: 'Highest', v: fmt(st.max, st.decimals) });
       }
       document.getElementById('statTiles').innerHTML = tiles.map(t => `<div class="stat-tile"><div class="l">${t.l}</div><div class="v">${t.v}</div></div>`).join('');
 
-      // Table
       const decimals = st ? st.decimals : 2;
-      const thead = document.querySelector('#dataTable thead');
-      const tbody = document.querySelector('#dataTable tbody');
-      thead.innerHTML = `<tr><th class="text-left">${esc(s.periodLabel)}</th>${s.sets.map(x => `<th>${esc(x.label)}${ds.unit ? ` <span class="normal-case font-normal">(${esc(ds.unit)})</span>` : ''}</th>`).join('')}</tr>`;
-      const idx = s.labels.map((_, i) => i).reverse();
-      const rows = showAll ? idx : idx.slice(0, 12);
-      tbody.innerHTML = rows.map(i => `<tr><td class="font-medium">${esc(s.labels[i])}</td>${s.sets.map(x => `<td>${fmt(x.data[i], decimals)}</td>`).join('')}</tr>`).join('');
-      const btnT = document.getElementById('btnTable');
-      btnT.textContent = showAll ? 'Show fewer rows' : `Show all ${s.labels.length} rows`;
-      btnT.classList.toggle('hidden', s.labels.length <= 12);
+      document.querySelector('#dataTable thead').innerHTML = `<tr><th>${esc(s.periodLabel)}</th>${s.sets.map(x => `<th>${esc(x.label)}${ds.unit ? ` <span style="text-transform:none;letter-spacing:0">(${esc(ds.unit)})</span>` : ''}</th>`).join('')}</tr>`;
+      const idx = s.labels.map((_, i) => i).reverse(), rows = showAll ? idx : idx.slice(0, 12);
+      document.querySelector('#dataTable tbody').innerHTML = rows.map(i => `<tr><td>${esc(s.labels[i])}</td>${s.sets.map(x => `<td>${fmt(x.data[i], decimals)}</td>`).join('')}</tr>`).join('');
+      const bt = document.getElementById('btnTable'); bt.textContent = showAll ? 'Show fewer rows' : `Show all ${s.labels.length} rows`; bt.hidden = s.labels.length <= 12;
 
-      // Related (same pillar)
-      const rel = all.filter(d => d !== ds && (d.pillars || []).some(p => pillars.includes(p))).slice(0, 6);
-      document.getElementById('relatedWrap').classList.toggle('hidden', !rel.length);
-      document.getElementById('related').innerHTML = rel.map(d => {
-        const rs = stats(d, 0);
-        return `<a href="/data/${safeSlug(d.slug, d.title)}" class="block bg-white rounded-2xl border border-gray-100 p-4 hover:border-emerald-200 hover:shadow-sm transition">
-          <span class="block text-sm font-semibold leading-snug">${esc(d.title)}</span>
-          ${rs ? `<span class="block text-xs text-gray-500 mt-1 tabular-nums">${fmt(rs.latest.value, rs.decimals)} ${esc(d.unit || '')} · ${esc(rs.latest.period)}</span>` : ''}
-        </a>`;
-      }).join('');
+      const rel = all.filter(d => d !== ds && (d.pillars || []).some(p => pillars.includes(p))).slice(0, 5);
+      document.getElementById('relatedWrap').hidden = !rel.length;
+      document.getElementById('related').innerHTML = rel.map(d => { const rs = stats(d, 0); return `<a href="/data/${safeSlug(d.slug, d.title)}">${esc(d.title)}${rs ? `<small>${fmt(rs.latest.value, rs.decimals)} ${esc(d.unit || '')} · ${esc(rs.latest.period)}</small>` : ''}</a>`; }).join('');
 
-      // SEO
       const desc = ds.description || `${ds.title} — Iraq data series${srcName ? ' from ' + srcName : ''}, charted and downloadable from Enlil Center.`;
       document.title = `Enlil Center | ${ds.title}`;
       document.querySelector('meta[name="description"]').content = desc;
@@ -332,20 +285,10 @@
       const eu = encodeURIComponent(url), et = encodeURIComponent(ds.title);
       document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?url=${eu}&text=${et}`;
       document.getElementById('shareLinkedIn').href = `https://www.linkedin.com/shareArticle?mini=true&url=${eu}&title=${et}`;
-      const ld = {
-        "@context": "https://schema.org", "@type": "Dataset",
-        "name": ds.title, "description": desc, "url": url,
-        "keywords": pillars.concat(['Iraq']),
-        "spatialCoverage": "Iraq",
-        "temporalCoverage": st ? `${st.first.period}/${st.latest.period}` : undefined,
-        "variableMeasured": s.sets.map(x => x.label),
-        "license": "https://creativecommons.org/licenses/by/4.0/",
-        "isAccessibleForFree": true,
-        "distribution": [{ "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": url }],
-        "creator": { "@type": "Organization", "name": srcName || "Enlil Center" },
-        "publisher": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "url": "https://enlilcenter.org" },
-        "dateModified": ds.updatedAt || ds.retrievedAt || undefined
-      };
+      const ld = { "@context": "https://schema.org", "@type": "Dataset", "name": ds.title, "description": desc, "url": url, "keywords": pillars.concat(['Iraq']), "spatialCoverage": "Iraq",
+        "temporalCoverage": st ? `${st.first.period}/${st.latest.period}` : undefined, "variableMeasured": s.sets.map(x => x.label), "license": "https://creativecommons.org/licenses/by/4.0/", "isAccessibleForFree": true,
+        "distribution": [{ "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": url }], "creator": { "@type": "Organization", "name": srcName || "Enlil Center" },
+        "publisher": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "url": "https://enlilcenter.org" }, "dateModified": ds.updatedAt || ds.retrievedAt || undefined };
       if (src.url) ld.isBasedOn = src.url;
       document.getElementById('ldJson').textContent = JSON.stringify(ld);
     }
@@ -355,10 +298,7 @@
       document.getElementById('btnType').addEventListener('click', () => { bars = !bars; render(); });
       document.getElementById('btnDownload').addEventListener('click', () => ds && download(ds));
       document.getElementById('btnTable').addEventListener('click', () => { showAll = !showAll; render(); });
-      document.getElementById('btnCopy').addEventListener('click', async e => {
-        try { await navigator.clipboard.writeText(`https://enlilcenter.org/data/${safeSlug(ds.slug, ds.title)}`); e.currentTarget.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i>Copied'; }
-        catch { e.currentTarget.textContent = location.href; }
-      });
+      document.getElementById('btnCopy').addEventListener('click', async e => { try { await navigator.clipboard.writeText(`https://enlilcenter.org/data/${safeSlug(ds.slug, ds.title)}`); e.currentTarget.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; } catch {} });
     });
   </script>
 </body>

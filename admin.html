@@ -226,6 +226,10 @@
         <i class="fa-solid fa-chart-line text-emerald-500"></i> Data Hub
         <span id="badge6" class="tab-badge hidden">0</span>
       </button>
+      <button onclick="switchTab(7)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">
+        <i class="fa-solid fa-inbox text-emerald-500"></i> Inbox
+        <span id="badge7" class="tab-badge hidden">0</span>
+      </button>
       <button onclick="logout()" class="w-full text-left px-6 py-4 rounded-2xl hover:bg-red-50 flex items-center gap-3 text-lg text-red-600 mt-4">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
       </button>
@@ -1169,6 +1173,20 @@
       <div id="datasetsList" class="space-y-3"></div>
     </div>
 
+
+    <!-- TAB 7: INBOX (contact form messages) -->
+    <div id="tab7" class="tab-content hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl font-semibold">Inbox</h2>
+        <span class="text-sm text-gray-500 hidden md:inline">Messages sent through the website contact form</span>
+      </div>
+      <div class="mb-4 flex flex-wrap gap-3 items-center">
+        <input type="text" id="inboxSearch" placeholder="Search messages…" class="flex-1 px-4 py-3 border border-gray-200 rounded-2xl text-sm bg-white shadow-sm" oninput="renderInbox()">
+        <button type="button" onclick="loadInbox()" class="px-4 py-3 text-sm bg-gray-100 hover:bg-gray-200 rounded-2xl text-gray-700"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+      <div id="inboxList" class="space-y-3"></div>
+    </div>
+
   </div><!-- end main content -->
 </div><!-- end flex layout -->
 
@@ -1694,6 +1712,7 @@ async function loadFromFiles(){
   }catch(e){console.log('First run or load error',e);}
   renderAll();
   populateAuthorSelects();
+  loadInbox();
 }
 
 async function saveToJSON(key,data){
@@ -3015,6 +3034,41 @@ document.getElementById('datasetForm')?.addEventListener('submit',async e=>{
   hasUnsavedChanges=false;
   showToast('Dataset saved ✓');
 });
+
+
+// ─── INBOX ───────────────────────────────────────────────────────────────────
+let inbox=[];
+async function loadInbox(){
+  try{
+    const r=await fetch(API_BASE+'/data/messages',{headers:{'X-Admin-Token':ADMIN_TOKEN}});
+    const j=r.ok?await r.json():[]; inbox=Array.isArray(j)?j:[];
+  }catch(e){ inbox=[]; }
+  renderInbox();
+  const b=document.getElementById('badge7'); const unread=inbox.filter(m=>!m.read).length;
+  if(b){ b.textContent=unread; b.classList.toggle('hidden',unread===0); }
+}
+async function saveInbox(){ await saveToJSON('messages',inbox); }
+function renderInbox(){
+  const q=getSearch('inboxSearch'); const box=document.getElementById('inboxList'); if(!box)return;
+  const list=q?inbox.filter(m=>[m.name,m.email,m.subject,m.message].join(' ').toLowerCase().includes(q)):inbox;
+  box.innerHTML=list.map(m=>{
+    const i=inbox.indexOf(m); const when=m.receivedAt?new Date(m.receivedAt).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}):'';
+    return `<div class="bg-white p-5 rounded-2xl shadow-sm ${m.read?'':'border-l-4 border-emerald-500'}">
+      <div class="flex flex-wrap justify-between gap-3 items-start">
+        <div class="min-w-0">
+          <p class="font-semibold">${escapeHtml(m.subject||'(no subject)')} ${m.read?'':'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">New</span>'}</p>
+          <p class="text-xs text-gray-500">${escapeHtml(m.name||'')} · <a href="mailto:${escapeHtml(m.email||'')}" class="text-emerald-700 hover:underline">${escapeHtml(m.email||'')}</a> · ${escapeHtml(when)}${m.country?' · '+escapeHtml(m.country):''}</p>
+        </div>
+        <div class="flex gap-3 items-center shrink-0 text-sm">
+          <a href="mailto:${escapeHtml(m.email||'')}?subject=${encodeURIComponent('Re: '+(m.subject||'your message to Enlil Center'))}" class="text-emerald-700 hover:underline"><i class="fa-solid fa-reply"></i> Reply</a>
+          <button onclick="inbox[${i}].read=${m.read?'false':'true'};saveInbox().then(loadInbox)" class="text-blue-600 hover:underline">${m.read?'Mark unread':'Mark read'}</button>
+          <button onclick="if(confirm('Delete this message?')){inbox.splice(${i},1);saveInbox().then(loadInbox);}" class="text-red-500 hover:text-red-600 text-xl leading-none">&times;</button>
+        </div>
+      </div>
+      <p class="mt-3 text-sm text-gray-800 whitespace-pre-wrap">${escapeHtml(m.message||'')}</p>
+    </div>`;
+  }).join('')||'<p class="text-sm text-gray-400">No messages yet. Anything sent through the website contact form appears here.</p>';
+}
 
 // ─── FORM VALIDATION ──────────────────────────────────────────────────────────
 // rules: [{id, required, label, type:'url'|'email'|'slug'|'date'|'year', maxLength}]

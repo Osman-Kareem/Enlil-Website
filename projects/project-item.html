@@ -1,111 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-  <script src="../js/item-extras.js" defer></script>
-
-
-
-  
-  <!-- Basic SEO (overwritten by JS) -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enlil Center | Project</title>
-  <meta name="description" content="Project by Enlil Center for Environment and Sustainable Development.">
-
-  <!-- Canonical (updated by JS) -->
+  <meta name="description" content="Project from Enlil Center for Environment and Sustainable Development.">
   <link id="canonicalLink" rel="canonical" href="https://enlilcenter.org/projects/">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-
-  <!-- Open Graph -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
   <meta id="ogTitle" property="og:title" content="Enlil Center | Project">
-  <meta id="ogDescription" property="og:description" content="Project by Enlil Center for Environment and Sustainable Development.">
+  <meta id="ogDescription" property="og:description" content="Project from Enlil Center for Environment and Sustainable Development.">
   <meta id="ogUrl" property="og:url" content="https://enlilcenter.org/projects/">
   <meta id="ogImage" property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
-
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta id="twTitle" name="twitter:title" content="Enlil Center | Project">
-  <meta id="twDescription" name="twitter:description" content="Project by Enlil Center for Environment and Sustainable Development.">
+  <meta id="twDescription" name="twitter:description" content="Project from Enlil Center for Environment and Sustainable Development.">
   <meta id="twImage" name="twitter:image" content="https://enlilcenter.org/image/og-hero.jpg">
-
-  <!-- JSON-LD Project schema (updated by JS) -->
   <script id="ldJson" type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Project",
-    "name": "Project",
-    "description": "",
-    "member": {
-      "@type": "Organization",
-      "name": "Enlil Center for Environment and Sustainable Development"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Enlil Center for Environment and Sustainable Development",
-      "logo": { "@type": "ImageObject", "url": "https://enlilcenter.org/image/logo.png" }
-    }
-  }
+  { "@context": "https://schema.org", "@type": "CreativeWork", "headline": "Project", "publisher": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "logo": { "@type": "ImageObject", "url": "https://enlilcenter.org/image/logo.png" } } }
   </script>
-
-  <!-- Tailwind & Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="/css/enlil.css">
-  <script src="/js/enlil-site.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <style>
-    body { font-family: var(--font-body); }
-    .hero-bg {
-      background:
-        linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
-        url('/image/hero-1200.jpg') center/cover no-repeat;
-    }
-    .prose img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 1.5rem auto;
-      border-radius: 0.75rem;
-    }
-    .prose a {
-      color: #047857;
-      text-decoration: underline;
-      text-decoration-thickness: 1.5px;
-      text-underline-offset: 2px;
-      font-weight: 500;
-    }
-    .prose a:hover { color: #065f46; }
-    .prose h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #0f172a; }
-    .prose h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem; color: #0f172a; }
-    .prose p  { margin-bottom: 1.25rem; line-height: 1.8; }
-    .prose ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 1.25rem !important; }
-    .prose ol { list-style-type: decimal !important; padding-left: 1.5rem !important; margin-bottom: 1.25rem !important; }
-    .prose li { list-style-type: inherit !important; margin-bottom: 0.4rem !important; padding-left: 0 !important; display: list-item !important; }
-    .prose li[data-list="bullet"] { list-style-type: disc !important; }
-    .prose li[data-list="ordered"] { list-style-type: decimal !important; }
-    .prose li::before,
-    .prose li[data-list]::before { content: none !important; display: none !important; }
-    .prose blockquote {
-      border-left: 4px solid #d1fae5;
-      padding-left: 1rem;
-      color: #475569;
-      font-style: italic;
-      margin: 1.5rem 0;
-    }
-    @media (max-width: 640px) {
-      .hero-bg h1 { font-size: 2.25rem; line-height: 1.15; }
-    }
-  </style>
+  <link rel="stylesheet" href="/css/enlil.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script src="/js/enlil-site.js" defer></script>
+  <script src="/js/item-extras.js" defer></script>
 </head>
-<body class="bg-gray-50 text-slate-900">
+<body>
 
   <!-- enlil:header -->
   <header class="site-header">
@@ -137,109 +62,64 @@
   </header>
   <!-- /enlil:header -->
 
-  <!-- Hero / Breadcrumb -->
-  <section class="hero-bg min-h-[40vh] flex items-center text-white">
-    <div class="max-w-4xl mx-auto px-6">
-      <nav class="text-sm mb-6" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 md:space-x-3">
-          <li class="inline-flex items-center">
-            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
-              <i class="fa-solid fa-house mr-1.5"></i>Home
-            </a>
-          </li>
-          <li>
-            <div class="flex items-center">
-              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
-              <a href="/projects" class="ml-1 text-sm text-white/80 hover:text-white">Projects</a>
-            </div>
-          </li>
-          <li>
-            <div class="flex items-center">
-              <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
-              <span id="breadcrumbTitle" class="ml-1 text-sm font-medium text-white line-clamp-1">Project</span>
-            </div>
-          </li>
-        </ol>
-      </nav>
-      <h1 id="heroTitle" class="text-4xl md:text-5xl font-semibold leading-tight">Project</h1>
-    </div>
-  </section>
+  <article>
+    <header class="art-hero" id="artHero">
+      <div class="photo" id="coverWrapper" hidden><img id="projectCover" src="" alt="" fetchpriority="high"></div>
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><i class="fa-solid fa-chevron-right"></i><a href="/projects">Projects</a><i class="fa-solid fa-chevron-right"></i><span id="breadcrumbTitle">Project</span></nav>
+        <span class="kicker" id="kicker">Project</span>
+        <h1 id="heroTitle">Project</h1>
+        <p class="dek" id="dek" hidden></p>
+        <div class="byline" id="metaLine"></div>
+      </div>
+    </header>
 
-  <!-- Project content -->
-  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16">
-    <article class="bg-white rounded-3xl shadow-lg overflow-hidden">
+    <div class="wrap art-layout">
+      <div class="art-main">
+        <div class="abstract" id="abstractWrapper" hidden>
+          <h2>Abstract</h2>
+          <div class="body" id="abstractBody"></div>
+        </div>
 
-      <!-- Cover image -->
-      <div id="coverWrapper" class="hidden">
-        <img id="projectCover" src="" alt=""
-             class="w-full h-80 md:h-[22rem] object-cover">
+        <div id="projectBody" class="prose"><!-- rendered from the CMS --></div>
+
+        <div class="extras">
+          <section id="videoWrapper" hidden><h2>Video</h2><div class="video" id="videoEmbed"></div></section>
+          <section id="attachmentsWrapper" hidden><h2>Downloads</h2><ul class="downloads" id="attachmentsList"></ul></section>
+          <section id="sourcesWrapper" hidden><h2>Sources &amp; citations</h2><ol class="sources-list" id="sourcesList"></ol><p style="margin-top:14px"><a class="more-link" href="/sources">Browse the sources library <i class="fa-solid fa-arrow-right"></i></a></p></section>
+        </div>
+
+        <p id="notFound" class="not-found" hidden>This project could not be found. <a href="/projects" style="color:var(--green);text-decoration:underline">Back to Projects</a></p>
       </div>
 
-      <div class="p-8 md:p-10 lg:p-12">
-        <header class="mb-8">
-          <p id="projectTagline" class="text-xs font-semibold tracking-wide text-emerald-700 uppercase mb-2">
-            Project
-          </p>
-          <h1 id="projectTitle" class="text-3xl md:text-4xl font-semibold mb-5">Project title</h1>
-
-          <!-- Project meta pills: sponsor, year, status -->
-          <div id="metaPills" class="flex flex-wrap gap-3 mb-6">
-            <!-- filled by JS -->
+      <aside class="art-aside">
+        <div class="pdf-card" id="pdfWrapper" hidden>
+          <span class="kicker">Full report</span>
+          <p>Read the complete report as a PDF, with all figures and references.</p>
+          <a id="pdfDownloadBtn" class="btn btn-amber" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> Download PDF</a>
+        </div>
+        <div class="aside-block" id="pillsWrapper" hidden><h2>Details</h2><div class="pills" id="metaPills"></div></div>
+        <div class="aside-block" id="authorsWrapper" hidden><h2>Authors</h2><div class="author-list" id="authorChips"></div></div>
+        <div class="aside-block" id="tagsWrapper" hidden><h2>Topics</h2><div class="tag-list" id="tagList"></div></div>
+        <div class="aside-block"><h2>Share</h2>
+          <div class="share-row">
+            <a id="shareTwitter" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i> X</a>
+            <a id="shareLinkedIn" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</a>
+            <a id="shareFacebook" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+            <button type="button" id="copyLink"><i class="fa-solid fa-link"></i> Copy link</button>
           </div>
-        </header>
-
-        <!-- Project body rendered from Quill HTML -->
-        <div id="projectBody" class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
-          <!-- Quill HTML injected by JS -->
         </div>
-
-
-        <!-- Video (shown only if the item has a videoUrl) -->
-        <section id="videoWrapper" class="hidden mt-10">
-          <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Video</h2>
-          <div id="videoEmbed" class="rounded-2xl overflow-hidden bg-black aspect-video"></div>
-        </section>
-
-        <!-- Downloads (shown only if the item has attachments) -->
-        <section id="attachmentsWrapper" class="hidden mt-10">
-          <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Downloads</h2>
-          <ul id="attachmentsList" class="grid sm:grid-cols-2 gap-3"></ul>
-        </section>
-
-        <!-- Sources & Citations (shown only if the item cites sources) -->
-        <section id="sourcesWrapper" class="hidden mt-10 pt-8 border-t border-gray-100">
-          <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Sources &amp; Citations</h2>
-          <ol id="sourcesList" class="space-y-4"></ol>
-          <p class="mt-5 text-xs"><a href="/sources" class="inline-flex items-center gap-1.5 text-emerald-700 hover:underline font-medium">Browse the full sources library <i class="fa-solid fa-arrow-right text-[10px]"></i></a></p>
-        </section>
-
-        <!-- Share bar -->
-        <div class="mt-12 pt-8 border-t border-gray-100 flex flex-wrap items-center gap-4">
-          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Share this project</span>
-          <a id="shareTwitter" href="#" target="_blank" rel="noopener"
-             class="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-black text-white hover:bg-gray-800 transition">
-            <i class="fa-brands fa-x-twitter"></i> Share on X
-          </a>
-          <a id="shareLinkedIn" href="#" target="_blank" rel="noopener"
-             class="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-[#0A66C2] text-white hover:bg-blue-700 transition">
-            <i class="fa-brands fa-linkedin-in"></i> Share on LinkedIn
-          </a>
-          <a id="shareFacebook" href="#" target="_blank" rel="noopener"
-             class="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-[#1877F2] text-white hover:bg-blue-600 transition">
-            <i class="fa-brands fa-facebook-f"></i> Share on Facebook
-          </a>
-        </div>
-      </div>
-    </article>
-
-    <!-- Back link -->
-    <div class="mt-10 text-center">
-      <a href="/projects" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
-        <i class="fa-solid fa-arrow-left text-xs"></i>
-        Back to Projects
-      </a>
+        <div class="aside-block"><h2>Cite</h2><p class="cite" id="citeLine"></p></div>
+      </aside>
     </div>
-  </main>
+
+    <section class="related" id="relatedWrap" hidden>
+      <div class="wrap">
+        <div class="section-head"><div><span class="kicker">More projects</span><h2>Keep reading</h2></div><a class="more-link" href="/projects">All Projects <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="card-grid" id="relatedGrid"></div>
+      </div>
+    </section>
+  </article>
 
   <!-- enlil:footer -->
   <footer class="site-footer">
@@ -278,209 +158,136 @@
 
   <script>
     const API_BASE = 'https://enlil-cms-api.osmanalikareem.workers.dev';
+    const SECTION = 'projects', KEY = 'projects', LABEL = 'Project', FALLBACK = 'Project', LDTYPE = 'CreativeWork';
+    const PILLARS = ['Climate', 'Water', 'Energy', 'Economy', 'Governance'];
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const strip = h => String(h || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const fmtDate = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); };
+    const slugOf = it => { const s = it.seo && it.seo.slug || it.slug; if (s && s.trim()) return s.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-'); return (it.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'item'; };
+    const authorSlug = n => (n || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const initials = n => (n || 'E').split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+    const published = it => { const s = String(it.status || it.publishStatus || 'published').toLowerCase(); return s !== 'draft' && s !== 'unpublished'; };
+    const snippet = it => it.seo && it.seo.description || it.seoDescription || (strip(it.abstract || it.content).slice(0, 160) + '…');
+    const slugFromUrl = () => { const u = new URL(location.href); const q = u.searchParams.get('slug'); if (q) return q.trim().toLowerCase(); const last = u.pathname.split('/').filter(Boolean).pop() || ''; return last.replace(/\.html$/i, '').toLowerCase(); };
 
-
-    function getSlugFromUrl() {
-      const url = new URL(window.location.href);
-      const querySlug = url.searchParams.get('slug');
-      if (querySlug) return querySlug.trim().toLowerCase();
-      const parts = url.pathname.split('/').filter(Boolean);
-      const last = parts[parts.length - 1] || '';
-      return last.replace(/\.html$/i, '').toLowerCase();
+    // Quill puts captions in the paragraph after an image as "Caption: …" — turn those into real figures.
+    function figures(html) {
+      const w = document.createElement('div'); w.innerHTML = html;
+      const blocks = Array.from(w.children); const drop = new Set();
+      blocks.forEach((b, i) => {
+        const img = b.querySelector('img'); if (!img || drop.has(b)) return;
+        const next = blocks[i + 1]; const raw = next ? (next.textContent || '').trim() : '';
+        const fig = document.createElement('figure'); fig.appendChild(img.cloneNode(true));
+        if (next && /^caption:/i.test(raw)) { const c = document.createElement('figcaption'); c.textContent = raw.replace(/^caption:\s*/i, ''); fig.appendChild(c); drop.add(next); }
+        w.replaceChild(fig, b);
+      });
+      drop.forEach(el => el.remove());
+      return w.innerHTML;
     }
 
-    function safeSlug(slug, title) {
-      if (slug && slug.trim()) {
-        return slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-');
-      }
-      return (title || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '') || 'project';
+    function card(it) {
+      const url = `/${SECTION}/${slugOf(it)}`;
+      const meta = SECTION === 'projects' ? [it.sponsor, it.year].filter(Boolean).map(esc).join(' · ') : [((it.leadAuthor && it.leadAuthor.name) || it.author || 'Enlil Center'), fmtDate(it.date)].filter(Boolean).map(esc).join(' · ');
+      return `<article class="card"><a class="thumb" href="${url}" aria-label="${esc(it.title)}">${it.cover ? `<img src="${esc(it.cover)}" alt="" loading="lazy">` : ''}</a><span class="kicker">${esc((it.pillars || []).find(p => PILLARS.includes(p)) || FALLBACK)}</span><h3><a href="${url}">${esc(it.title)}</a></h3><p>${esc(snippet(it))}</p><div class="meta">${meta}</div></article>`;
     }
 
-    function updateMetaAndSchema(project, slug) {
-      const title = project.title || 'Project';
-      const desc = project.seo?.description ||
-        (project.content ? project.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : '');
-      const cover = project.cover || 'https://enlilcenter.org/image/og-hero.jpg';
-      const url = `https://enlilcenter.org/projects/${slug}`;
+    function render(item, all) {
+      const slug = slugOf(item);
+      const url = `https://enlilcenter.org/${SECTION}/${slug}`;
+      const title = item.title || LABEL;
+      const desc = snippet(item);
+      const pillars = (item.pillars || []).filter(p => PILLARS.includes(p));
+      const lead = (item.leadAuthor && item.leadAuthor.name) || item.author || '';
+      const coauthors = Array.isArray(item.authors) ? item.authors.filter(a => a && a.name) : [];
 
       document.title = `Enlil Center | ${title}`;
-      const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) metaDesc.content = desc;
+      document.getElementById('heroTitle').textContent = title;
+      document.getElementById('breadcrumbTitle').textContent = title;
+      document.getElementById('kicker').textContent = pillars[0] || FALLBACK;
+      const dek = document.getElementById('dek'); const dekText = item.seo && item.seo.description || item.seoDescription || '';
+      if (dekText) { dek.textContent = dekText; dek.hidden = false; }
 
+      // byline
+      const words = strip(item.content).split(' ').length;
+      const mins = words > 80 ? Math.max(1, Math.round(words / 220)) + ' min read' : '';
+      const parts = [];
+      if (SECTION !== 'projects') {
+        const who = lead || 'Enlil Center';
+        parts.push(`<span class="av">${esc(initials(who))}</span>`);
+        parts.push(lead ? `<a href="/authors/${encodeURIComponent(authorSlug(lead))}">${esc(lead)}</a>${coauthors.length ? ` <span>+${coauthors.length}</span>` : ''}` : 'Enlil Center');
+      }
+      if (item.date) parts.push(`<time datetime="${esc(item.date)}">${esc(fmtDate(item.date))}</time>`);
+      if (SECTION === 'projects' && item.year) parts.push(esc(String(item.year)));
+      if (mins) parts.push(esc(mins));
+      document.getElementById('metaLine').innerHTML = parts.join('<span aria-hidden="true">·</span>');
+
+      // hero photo
+      if (item.cover) { const img = document.getElementById('projectCover'); img.src = item.cover; img.alt = title; document.getElementById('coverWrapper').hidden = false; document.getElementById('artHero').classList.add('has-photo'); }
+
+      // abstract / pdf (research)
+      if (item.abstract) { document.getElementById('abstractBody').innerHTML = DOMPurify.sanitize(item.abstract); document.getElementById('abstractWrapper').hidden = false; }
+      const pdf = item.pdfUrl || item.pdfBase64 || item.pdf || '';
+      if (pdf) { const b = document.getElementById('pdfDownloadBtn'); b.href = pdf; if (!/^https?:/.test(pdf)) b.download = title.replace(/[^a-z0-9]+/gi, '-') + '.pdf'; document.getElementById('pdfWrapper').hidden = false; }
+
+      // project details
+      const pills = [];
+      if (item.sponsor) pills.push(['fa-building', item.sponsor]);
+      if (item.year) pills.push(['fa-calendar', item.year]);
+      if (item.location) pills.push(['fa-location-dot', item.location]);
+      if (item.status && item.status !== 'published') pills.push(['fa-circle', item.status]);
+      if (pills.length) { document.getElementById('metaPills').innerHTML = pills.map(([i, t]) => `<span class="pill"><i class="fa-solid ${i}"></i>${esc(t)}</span>`).join(''); document.getElementById('pillsWrapper').hidden = false; }
+
+      // authors
+      const people = [];
+      if (lead) people.push({ name: lead, role: (item.leadAuthor && item.leadAuthor.role) || 'Lead author' });
+      coauthors.forEach(a => people.push({ name: a.name, role: a.role || 'Co-author' }));
+      if (people.length) {
+        document.getElementById('authorChips').innerHTML = people.map(p => `<a href="/authors/${encodeURIComponent(authorSlug(p.name))}"><span class="av">${esc(initials(p.name))}</span><span>${esc(p.name)}<small>${esc(p.role)}</small></span></a>`).join('');
+        document.getElementById('authorsWrapper').hidden = false;
+      }
+      if (pillars.length) { document.getElementById('tagList').innerHTML = pillars.map(p => `<a href="/${SECTION}?pillar=${encodeURIComponent(p)}">${esc(p)}</a>`).join(''); document.getElementById('tagsWrapper').hidden = false; }
+
+      // body
+      const body = document.getElementById('projectBody');
+      body.innerHTML = DOMPurify.sanitize(figures(item.content || ''));
+      if (window.renderItemExtras) renderItemExtras(item);
+
+      // share + cite + meta
+      const eu = encodeURIComponent(url), et = encodeURIComponent(title);
+      document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?url=${eu}&text=${et}`;
+      document.getElementById('shareLinkedIn').href = `https://www.linkedin.com/shareArticle?mini=true&url=${eu}&title=${et}`;
+      document.getElementById('shareFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=${eu}`;
+      const year = item.date ? new Date(item.date).getFullYear() : (item.year || new Date().getFullYear());
+      document.getElementById('citeLine').textContent = `${lead || 'Enlil Center'} (${year}). ${title}. Enlil Center for Environment and Sustainable Development. ${url}`;
       document.getElementById('canonicalLink').href = url;
-      document.getElementById('ogTitle').content = `Enlil Center | ${title}`;
-      document.getElementById('ogDescription').content = desc;
+      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = `Enlil Center | ${title}`);
+      ['ogDescription', 'twDescription'].forEach(id => document.getElementById(id).content = desc);
       document.getElementById('ogUrl').content = url;
-      document.getElementById('ogImage').content = cover;
-      document.getElementById('twTitle').content = `Enlil Center | ${title}`;
-      document.getElementById('twDescription').content = desc;
-      document.getElementById('twImage').content = cover;
+      if (item.cover) ['ogImage', 'twImage'].forEach(id => document.getElementById(id).content = item.cover);
+      document.querySelector('meta[name="description"]').content = desc;
 
-      // Share links
-      const encodedUrl = encodeURIComponent(url);
-      const encodedTitle = encodeURIComponent(title);
-      document.getElementById('shareTwitter').href =
-        `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
-      document.getElementById('shareLinkedIn').href =
-        `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}`;
-      document.getElementById('shareFacebook').href =
-        `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-
-      // JSON-LD
-      const ldScript = document.getElementById('ldJson');
-      if (ldScript) {
-        ldScript.textContent = JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Project",
-          "name": title,
-          "description": desc,
-          "image": cover,
-          "url": url,
-          "funder": project.sponsor ? { "@type": "Organization", "name": project.sponsor } : undefined,
-          "member": {
-            "@type": "Organization",
-            "name": "Enlil Center for Environment and Sustainable Development"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "Enlil Center for Environment and Sustainable Development",
-            "logo": { "@type": "ImageObject", "url": "https://enlilcenter.org/image/logo.png" }
-          }
-        });
-      }
+      // related
+      const rel = all.filter(x => x !== item && published(x)).filter(x => !pillars.length || (x.pillars || []).some(p => pillars.includes(p)) || true).slice(0, 3);
+      if (rel.length) { document.getElementById('relatedGrid').innerHTML = rel.map(card).join(''); document.getElementById('relatedWrap').hidden = false; }
     }
-    function transformImagesWithCaptions(html) {
-      if (!html) return html;
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = html;
-      const blocks = Array.from(wrapper.children);
-      const toRemove = new Set();
-      blocks.forEach((block, idx) => {
-        if (toRemove.has(block)) return;
-        const img = block.querySelector('img');
-        if (!img) return;
-        const nextBlock = blocks[idx + 1];
-        if (!nextBlock || toRemove.has(nextBlock)) return;
-        const raw = (nextBlock.textContent || '').trim();
-        if (!raw.toLowerCase().startsWith('caption:')) return;
-        const captionText = raw.slice(8).trim();
-        const figure = document.createElement('figure');
-        figure.style.cssText = 'margin:1.5rem auto;text-align:center';
-        const imgClone = img.cloneNode(true);
-        imgClone.style.margin = '0 auto';
-        figure.appendChild(imgClone);
-        const figcap = document.createElement('figcaption');
-        figcap.textContent = captionText;
-        figcap.style.cssText = 'font-size:0.8rem;color:#6b7280;margin-top:0.35rem;font-style:italic;line-height:1.5';
-        figure.appendChild(figcap);
-        wrapper.replaceChild(figure, block);
-        toRemove.add(nextBlock);
-      });
-      toRemove.forEach(el => { if (el.parentNode) el.parentNode.removeChild(el); });
-      return wrapper.innerHTML;
-    }
-    async function loadProject() {
-      const slugFromUrl = getSlugFromUrl();
-      if (!document.getElementById('projectBody').dataset.ssr) document.getElementById('projectBody').innerHTML =
-        '<p class="text-center py-16 text-sm text-gray-500">Loading project…</p>';
 
+    async function load() {
+      const wanted = slugFromUrl();
       try {
-        const res = await fetch(`${API_BASE}/data/projects`);
-        if (!res.ok) throw new Error('Fetch failed');
-        const projects = await res.json();
-
-        let project = null;
-        for (const p of projects) {
-          const s = safeSlug(p.seo?.slug, p.title);
-          if (s === slugFromUrl) { project = p; break; }
-        }
-
-        if (!project) {
-          document.getElementById('heroTitle').textContent = 'Project not found';
-          document.getElementById('projectBody').innerHTML = `
-            <p class="text-center py-16 text-sm text-gray-500">
-              This project could not be found. It may have been unpublished.<br>
-              <a href="/projects" class="text-emerald-700 hover:underline">Back to Projects</a>
-            </p>`;
-          return;
-        }
-
-        const finalSlug = safeSlug(project.seo?.slug, project.title);
-
-
-
-        // Hero + breadcrumb
-        document.getElementById('heroTitle').textContent = project.title || 'Project';
-        document.getElementById('breadcrumbTitle').textContent = project.title || 'Project';
-        document.getElementById('projectTitle').textContent = project.title || 'Project';
-        document.getElementById('projectTagline').textContent = 'Project';
-
-        // Meta pills: sponsor, year, status
-        const pills = document.getElementById('metaPills');
-        pills.innerHTML = '';
-
-        if (project.sponsor) {
-          pills.innerHTML += `
-            <span class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-              <i class="fa-solid fa-building text-emerald-600 text-[10px]"></i>
-              ${project.sponsor}
-            </span>`;
-        }
-        if (project.year) {
-          pills.innerHTML += `
-            <span class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-              <i class="fa-solid fa-calendar text-emerald-600 text-[10px]"></i>
-              ${project.year}
-            </span>`;
-        }
-        if (project.status) {
-          const isActive = project.status.toLowerCase().includes('active') ||
-                           project.status.toLowerCase().includes('ongoing');
-          pills.innerHTML += `
-            <span class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border ${
-              isActive
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                : 'bg-gray-100 text-gray-600 border-gray-200'
-            }">
-              <i class="fa-solid fa-circle text-[8px] ${isActive ? 'text-emerald-500' : 'text-gray-400'}"></i>
-              ${project.status}
-            </span>`;
-        }
-        if (project.location) {
-          pills.innerHTML += `
-            <span class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-              <i class="fa-solid fa-location-dot text-emerald-600 text-[10px]"></i>
-              ${project.location}
-            </span>`;
-        }
-
-        // Cover image
-        if (project.cover) {
-          document.getElementById('projectCover').src = project.cover;
-          document.getElementById('projectCover').alt = project.title || 'Project cover';
-          document.getElementById('coverWrapper').classList.remove('hidden');
-        }
-
-        // RENDER Body content
-        document.getElementById('projectBody').innerHTML = DOMPurify.sanitize(transformImagesWithCaptions(project.content));
-
-        // Optional blocks: video, downloads, sources & citations (js/item-extras.js)
-        if (window.renderItemExtras) renderItemExtras(project);
-
-        // SEO + share
-        updateMetaAndSchema(project, finalSlug);
-
-      } catch (e) {
-        console.error('Project load error', e);
-        document.getElementById('projectBody').innerHTML =
-          '<p class="text-center py-16 text-sm text-red-600">We could not load this project. Please try again later.</p>';
-      }
+        const r = await fetch(`${API_BASE}/data/${KEY}`);
+        const j = await r.json(); const all = Array.isArray(j) ? j : [];
+        const item = all.find(x => slugOf(x) === wanted);
+        if (!item || !published(item)) { if (!document.getElementById('projectBody').dataset.ssr) { document.getElementById('heroTitle').textContent = LABEL + ' not found'; document.getElementById('notFound').hidden = false; } return; }
+        render(item, all);
+      } catch (e) { console.error(e); if (!document.getElementById('projectBody').dataset.ssr) document.getElementById('notFound').hidden = false; }
     }
 
-    document.addEventListener('DOMContentLoaded', loadProject);
+    document.addEventListener('DOMContentLoaded', () => {
+      load();
+      document.getElementById('copyLink').addEventListener('click', async e => {
+        try { await navigator.clipboard.writeText(document.getElementById('canonicalLink').href); e.currentTarget.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; } catch {}
+      });
+    });
   </script>
 </body>
 </html>

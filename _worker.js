@@ -164,13 +164,39 @@ async function renderHome(html) {
   return html.replace('</head>', `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
 }
 
+// ── listing pages ────────────────────────────────────────────────────────────
+const LISTINGS = { articles: { key: 'articles', fb: 'Analysis' }, research: { key: 'research', fb: 'Report' }, projects: { key: 'projects', fb: 'Project' } };
+async function renderListing(html, section) {
+  const cfg = LISTINGS[section];
+  let items = (await api(cfg.key)).filter(isPublished);
+  items.sort(section === 'projects' ? (a, b) => String(b.year || '').localeCompare(String(a.year || '')) : byDateDesc);
+  const badge = it => section === 'research' && (it.pdfUrl || it.pdfBase64 || it.pdf) ? '<span class="badge pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>'
+    : section === 'projects' && it.status && it.status !== 'published' ? `<span class="badge amber">${esc(it.status)}</span>` : '';
+  html = setInner(html, 'listGrid', items.slice(0, 12).map(it => card(it, section, cfg.fb, badge(it))).join('') || '<p class="empty">Nothing published here yet.</p>');
+  html = setInner(html, 'count', items.length ? `${Math.min(12, items.length)} of ${items.length}` : '');
+  const list = { "@context": "https://schema.org", "@type": "ItemList", "numberOfItems": items.length,
+    "itemListElement": items.slice(0, 50).map((it, i) => ({ "@type": "ListItem", "position": i + 1, "url": `${SITE}/${section}/${itemSlug(it, section)}`, "name": it.title })) };
+  return html.replace('</head>', `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
+}
+
 // ── detail pages ─────────────────────────────────────────────────────────────
 function findItem(items, section, slug) {
   if (section === 'authors') return items.find(a => safeSlug(a.slug, a.name, '') === slug || authorSlug(a.name) === slug);
   return items.find(i => itemSlug(i, section) === slug);
 }
 
+
+// New detail templates: hero photo class, kicker and dek.
+function heroBits(html, item, fallbackKicker) {
+  html = setInner(html, 'kicker', esc(kickerOf(item, fallbackKicker)));
+  const dek = item.seo?.description || item.seoDescription || '';
+  if (dek) { html = unhide(html, 'dek'); html = setInner(html, 'dek', esc(dek)); }
+  if (item.cover) html = setAttr(html, 'artHero', 'class', 'art-hero has-photo');
+  return html;
+}
+
 function renderArticle(html, item, slug) {
+  html = heroBits(html, item, 'Analysis');
   const url = `${SITE}/articles/${slug}`;
   const title = `Enlil Center | ${item.title}`;
   const desc = snippet(item);
@@ -196,6 +222,7 @@ function renderArticle(html, item, slug) {
 }
 
 function renderResearch(html, item, slug) {
+  html = heroBits(html, item, 'Report');
   const url = `${SITE}/research/${slug}`;
   const title = `Enlil Center | ${item.title}`;
   const desc = snippet(item);
@@ -223,6 +250,7 @@ function renderResearch(html, item, slug) {
 }
 
 function renderProject(html, item, slug) {
+  html = heroBits(html, item, 'Project');
   const url = `${SITE}/projects/${slug}`;
   const title = `Enlil Center | ${item.title}`;
   const desc = snippet(item);
@@ -335,6 +363,15 @@ export default {
       const res = await env.ASSETS.fetch(new Request(new URL('/index.html', url.origin)));
       let html = await res.text();
       try { html = await renderHome(html); } catch (e) { /* serve the static page if the API is unavailable */ }
+      return htmlResponse(html, 300);
+    }
+
+    // Listing pages — server-rendered first page of cards + ItemList schema.
+    const lm = path.match(/^\/(articles|research|projects)(?:\.html)?\/?$/);
+    if (lm) {
+      const res = await env.ASSETS.fetch(new Request(new URL(`/${lm[1]}.html`, url.origin)));
+      let html = await res.text();
+      try { html = await renderListing(html, lm[1]); } catch (e) { /* static fallback */ }
       return htmlResponse(html, 300);
     }
 
