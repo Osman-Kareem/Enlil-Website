@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="/vendor/fa/css/all.min.css">
   <link rel="stylesheet" href="/css/enlil.css">
   <script src="/vendor/purify.min.js"></script>
+  <script src="/js/enlil-data.js" defer></script>
   <script src="/js/enlil-site.js" defer></script>
   <script src="/js/item-extras.js" defer></script>
 </head>
@@ -75,7 +76,7 @@
 
     <main class="wrap art-layout">
       <div class="art-main">
-        <figure class="lead-figure" id="coverWrapper" hidden><img id="articleCover" src="" alt="" fetchpriority="high"></figure>
+        <figure class="lead-figure" id="coverWrapper" hidden><img id="articleCover" src="" alt="" fetchpriority="high"><figcaption id="coverCaption" hidden></figcaption></figure>
         <div class="abstract" id="abstractWrapper" hidden>
           <h2>Abstract</h2>
           <div class="body" id="abstractBody"></div>
@@ -86,6 +87,7 @@
         <div class="extras">
           <section id="videoWrapper" hidden><h2>Video</h2><div class="video" id="videoEmbed"></div></section>
           <section id="attachmentsWrapper" hidden><h2>Downloads</h2><ul class="downloads" id="attachmentsList"></ul></section>
+          <section id="datasetsWrapper" hidden><h2>Data behind this article</h2><div class="data-links" id="datasetsList"></div><p style="margin-top:12px;font-size:.8rem;color:var(--ink-soft)">Series from the Enlil Data Hub — each chart is downloadable with its source.</p></section>
           <section id="sourcesWrapper" hidden><h2>Sources &amp; citations</h2><ol class="sources-list" id="sourcesList"></ol><p style="margin-top:14px"><a class="more-link" href="/sources">Browse the sources library <i class="fa-solid fa-arrow-right"></i></a></p></section>
         </div>
 

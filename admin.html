@@ -449,6 +449,18 @@
                      class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
             </div>
           </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <label class="block text-sm font-medium mb-2" for="articleCoverCredit">Cover photo credit <span class="text-xs text-gray-400 font-normal">(shown under the cover, optional)</span></label>
+              <input type="text" id="articleCoverCredit" placeholder="Photo: Name / Agency, licence" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+            </div>
+            <div class="relative">
+              <label class="block text-sm font-medium mb-2" for="articleDatasetSearch">Data behind this piece <span class="text-xs text-gray-400 font-normal">(Data Hub series, optional)</span></label>
+              <input type="text" id="articleDatasetSearch" placeholder="Type to search datasets…" autocomplete="off" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+              <div id="articleDatasetResults" class="cite-results hidden"></div>
+              <div id="articleDatasetChips" class="mt-2 flex flex-wrap gap-2"></div>
+            </div>
+          </div>
 
           <div class="space-y-3">
             <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
@@ -639,6 +651,18 @@
                      class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
             </div>
           </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <label class="block text-sm font-medium mb-2" for="researchCoverCredit">Cover photo credit <span class="text-xs text-gray-400 font-normal">(shown under the cover, optional)</span></label>
+              <input type="text" id="researchCoverCredit" placeholder="Photo: Name / Agency, licence" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+            </div>
+            <div class="relative">
+              <label class="block text-sm font-medium mb-2" for="researchDatasetSearch">Data behind this piece <span class="text-xs text-gray-400 font-normal">(Data Hub series, optional)</span></label>
+              <input type="text" id="researchDatasetSearch" placeholder="Type to search datasets…" autocomplete="off" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+              <div id="researchDatasetResults" class="cite-results hidden"></div>
+              <div id="researchDatasetChips" class="mt-2 flex flex-wrap gap-2"></div>
+            </div>
+          </div>
 
           <div class="space-y-3">
             <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
@@ -809,6 +833,18 @@
               <label class="block text-sm font-medium mb-2" for="projectVideoUrl">Video embed URL <span class="text-xs text-gray-400 font-normal">(YouTube or Vimeo, optional)</span></label>
               <input type="url" id="projectVideoUrl" placeholder="https://www.youtube.com/watch?v=…"
                      class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <label class="block text-sm font-medium mb-2" for="projectCoverCredit">Cover photo credit <span class="text-xs text-gray-400 font-normal">(shown under the cover, optional)</span></label>
+              <input type="text" id="projectCoverCredit" placeholder="Photo: Name / Agency, licence" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+            </div>
+            <div class="relative">
+              <label class="block text-sm font-medium mb-2" for="projectDatasetSearch">Data behind this piece <span class="text-xs text-gray-400 font-normal">(Data Hub series, optional)</span></label>
+              <input type="text" id="projectDatasetSearch" placeholder="Type to search datasets…" autocomplete="off" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+              <div id="projectDatasetResults" class="cite-results hidden"></div>
+              <div id="projectDatasetChips" class="mt-2 flex flex-wrap gap-2"></div>
             </div>
           </div>
 
@@ -2039,7 +2075,9 @@ document.getElementById('articleForm')?.addEventListener('submit',async e=>{
     pillars:getPillars('article'),
     sources:citations.article.slice(),
     attachments:attachments.article.slice(),
-    videoUrl:document.getElementById('articleVideoUrl').value.trim()
+    videoUrl:document.getElementById('articleVideoUrl').value.trim(),
+    coverCredit:document.getElementById('articleCoverCredit').value.trim(),
+    datasets:linkedDatasets['article'].slice()
   };
   if(idx!=='') articles[parseInt(idx)]=item;
   else articles.push(item);
@@ -2127,7 +2165,9 @@ document.getElementById('researchForm')?.addEventListener('submit', async (e) =>
       pillars:     getPillars('research'),
       sources:     citations.research.slice(),
       attachments: attachments.research.slice(),
-      videoUrl:    document.getElementById('researchVideoUrl').value.trim()
+      videoUrl:    document.getElementById('researchVideoUrl').value.trim(),
+      coverCredit: document.getElementById('researchCoverCredit').value.trim(),
+      datasets:    linkedDatasets['research'].slice()
     };
 
     if (idx !== '') {
@@ -2174,7 +2214,9 @@ document.getElementById('projectForm')?.addEventListener('submit',async e=>{
     pillars:getPillars('project'),
     sources:citations.project.slice(),
     attachments:attachments.project.slice(),
-    videoUrl:document.getElementById('projectVideoUrl').value.trim()
+    videoUrl:document.getElementById('projectVideoUrl').value.trim(),
+    coverCredit:document.getElementById('projectCoverCredit').value.trim(),
+    datasets:linkedDatasets['project'].slice()
   };
   if(idx!=='') projects[parseInt(idx)]=item;
   else projects.push(item);
@@ -2271,6 +2313,8 @@ function editItem(type,index){
     citations.article=Array.isArray(item.sources)?item.sources.map(s=>({...s})):[]; renderCitationChips('article');
     attachments.article=Array.isArray(item.attachments)?item.attachments.map(a=>({...a})):[]; renderAttachmentList('article');
     document.getElementById('articleVideoUrl').value=item.videoUrl||'';
+    document.getElementById('articleCoverCredit').value=item.coverCredit||'';
+    linkedDatasets['article']=Array.isArray(item.datasets)?item.datasets.slice():[]; renderDatasetChips('article');
     document.getElementById('articleSeoDescription').value=item.seo?.description||item.seoDescription||'';
     document.getElementById('articleSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('article',item.status||'published');
@@ -2309,6 +2353,8 @@ function editItem(type,index){
     citations.research=Array.isArray(item.sources)?item.sources.map(s=>({...s})):[]; renderCitationChips('research');
     attachments.research=Array.isArray(item.attachments)?item.attachments.map(a=>({...a})):[]; renderAttachmentList('research');
     document.getElementById('researchVideoUrl').value=item.videoUrl||'';
+    document.getElementById('researchCoverCredit').value=item.coverCredit||'';
+    linkedDatasets['research']=Array.isArray(item.datasets)?item.datasets.slice():[]; renderDatasetChips('research');
     document.getElementById('researchSeoDescription').value=item.seo?.description||item.seoDescription||'';
     document.getElementById('researchSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('research',item.status||'published');
@@ -2340,6 +2386,8 @@ function editItem(type,index){
     citations.project=Array.isArray(item.sources)?item.sources.map(s=>({...s})):[]; renderCitationChips('project');
     attachments.project=Array.isArray(item.attachments)?item.attachments.map(a=>({...a})):[]; renderAttachmentList('project');
     document.getElementById('projectVideoUrl').value=item.videoUrl||'';
+    document.getElementById('projectCoverCredit').value=item.coverCredit||'';
+    linkedDatasets['project']=Array.isArray(item.datasets)?item.datasets.slice():[]; renderDatasetChips('project');
     document.getElementById('projectSeoDescription').value=item.seo?.description||item.seoDescription||'';
     document.getElementById('projectSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('project',item.publishStatus||'published');
@@ -2758,7 +2806,7 @@ function clearExtras(type){
   attachments[type]=[]; renderAttachmentList(type);
   const v=document.getElementById(type+'VideoUrl'); if(v)v.value='';
   const s=document.getElementById(type+'SourceSearch'); if(s)s.value='';
-}
+ linkedDatasets[type]=[]; renderDatasetChips(type); const cc=document.getElementById(type+'CoverCredit'); if(cc)cc.value=''; }
 
 // ─── CITATIONS (links to the Sources library) ─────────────────────────────────
 function sourceSlugOf(s){ return (s.slug&&s.slug.trim())?s.slug.trim():toSlug(s.title||''); }
@@ -3070,6 +3118,25 @@ function renderInbox(){
   }).join('')||'<p class="text-sm text-gray-400">No messages yet. Anything sent through the website contact form appears here.</p>';
 }
 
+
+// ─── LINKED DATASETS (Data behind this piece) ─────────────────────────────────
+const linkedDatasets={article:[],research:[],project:[]};
+function renderDatasetChips(type){
+  const el=document.getElementById(type+'DatasetChips'); if(!el)return;
+  el.innerHTML=linkedDatasets[type].map((slug,i)=>{const d=datasets.find(x=>(x.slug||'')===slug);return `<span class="cite-chip"><i class="fa-solid fa-chart-line text-[11px]"></i> ${escapeHtml(d?d.title:slug)} <button type="button" onclick="linkedDatasets['${type}'].splice(${i},1);renderDatasetChips('${type}');hasUnsavedChanges=true;" aria-label="Remove">&times;</button></span>`;}).join('');
+}
+function setupDatasetPicker(type){
+  const input=document.getElementById(type+'DatasetSearch'); const results=document.getElementById(type+'DatasetResults'); if(!input||!results)return;
+  const run=()=>{
+    const q=input.value.trim().toLowerCase(); if(!q){results.classList.add('hidden');results.innerHTML='';return;}
+    const hits=datasets.filter(d=>((d.title||'')+' '+(d.pillars||[]).join(' ')+' '+((d.source||{}).publisher||'')).toLowerCase().includes(q)&&!linkedDatasets[type].includes(d.slug)).slice(0,8);
+    results.innerHTML=hits.length?hits.map(d=>`<button type="button" class="cite-result" data-slug="${escapeHtml(d.slug)}"><span class="font-medium">${escapeHtml(d.title)}</span><span class="text-xs text-gray-500"> · ${escapeHtml((d.pillars||[]).join(', '))}</span></button>`).join(''):'<div class="px-3 py-2 text-xs text-gray-500">No dataset matches — add it in the Data Hub tab first.</div>';
+    results.classList.remove('hidden');
+    results.querySelectorAll('button').forEach(b=>b.onclick=()=>{linkedDatasets[type].push(b.dataset.slug);renderDatasetChips(type);input.value='';results.classList.add('hidden');hasUnsavedChanges=true;});
+  };
+  input.addEventListener('input',run); input.addEventListener('focus',run);
+  document.addEventListener('click',e=>{if(!results.contains(e.target)&&e.target!==input)results.classList.add('hidden');});
+}
 // ─── FORM VALIDATION ──────────────────────────────────────────────────────────
 // rules: [{id, required, label, type:'url'|'email'|'slug'|'date'|'year', maxLength}]
 function validateForm(rules){
@@ -3113,7 +3180,7 @@ document.getElementById('loginScreen').classList.add('hidden');
 
 updateLockCountdown();
 initPillarChips();
-['article','research','project'].forEach(t=>{ setupAttachmentInput(t); setupCitationPicker(t); renderAttachmentList(t); renderCitationChips(t); });
+['article','research','project'].forEach(t=>{ setupAttachmentInput(t); setupCitationPicker(t); setupDatasetPicker(t); renderAttachmentList(t); renderCitationChips(t); });
 setupSourceFileInput();
 setupDatasetFileInput(); setupDatasetSourcePicker();
 
