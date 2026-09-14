@@ -17,6 +17,7 @@
   --amber-deep: #B4670A;
   --amber-ink: #291800;
   --amber-text: #8F4E06;   /* amber for small text on light grounds (≥4.5:1) */
+  --amber-light: #F5B04F;  /* amber for small text on green grounds (≥5:1) */
   --font-head: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
   --radius: 3px;
@@ -45,7 +46,7 @@ button { font: inherit; cursor: pointer; }
   font-family: var(--font-head); font-weight: 700; font-size: .72rem;
   letter-spacing: .09em; text-transform: uppercase; color: var(--amber-text);
 }
-.kicker.on-dark, .lead .kicker, .band .kicker, .page-hero .kicker, .art-hero .kicker, .pdf-card .kicker, .dl-card .kicker { color: var(--amber); }
+.kicker.on-dark, .lead .kicker, .band .kicker, .page-hero .kicker, .art-hero .kicker, .pdf-card .kicker, .dl-card .kicker { color: var(--amber-light); }
 .kicker.green { color: var(--green); }
 .kicker.muted { color: var(--ink-mute); }
 
