@@ -206,7 +206,7 @@ function renderArticle(html, item, slug) {
   html = setInner(html, 'heroTitle', esc(item.title));
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'articleTitle', esc(item.title));
-  html = setInner(html, 'metaLine', `<span class="text-gray-500">By </span>${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}`);
+  html = setInner(html, 'metaLine', `${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}`);
   if (item.cover) { html = unhide(html, 'coverWrapper'); html = setAttr(html, 'articleCover', 'src', item.cover); html = setAttr(html, 'articleCover', 'alt', item.title); }
   html = setInner(html, 'articleBody', item.content || '');
   html = setAttr(html, 'articleBody', 'data-ssr', '1');
@@ -232,7 +232,7 @@ function renderResearch(html, item, slug) {
   html = setInner(html, 'heroTitle', esc(item.title));
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'reportTitle', esc(item.title));
-  html = setInner(html, 'metaLine', `<span class="text-gray-500">By </span>${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}`);
+  html = setInner(html, 'metaLine', `${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}`);
   if (item.cover) { html = unhide(html, 'coverWrapper'); html = setAttr(html, 'reportCover', 'src', item.cover); html = setAttr(html, 'reportCover', 'alt', item.title); }
   if (item.abstract) { html = unhide(html, 'abstractWrapper'); html = setInner(html, 'abstractBody', item.abstract); }
   if (pdf) { html = unhide(html, 'pdfWrapper'); html = setAttr(html, 'pdfDownloadBtn', 'href', pdf); }
