@@ -41,6 +41,11 @@ const authorName = it => (it.leadAuthor && it.leadAuthor.name) || it.author || '
 const authorLink = it => { const n = authorName(it); return n === 'Enlil Center' ? n : `<a href="/authors/${authorSlug(n)}">${esc(n)}</a>`; };
 const kickerOf = (it, fb) => (it.pillars || []).find(p => PILLARS.includes(p)) || fb;
 const snippet = (it, n) => it.seo?.description || it.seoDescription || it.description || (strip(it.abstract || it.content).slice(0, n || 160) + '…');
+function normaliseHeadings(html) {
+  let h = String(html || '').replace(/<(\/?)h1\b/gi, '<$1h2');
+  if (!/<h2\b/i.test(h) && /<h3\b/i.test(h)) h = h.replace(/<(\/?)h3\b/gi, '<$1h2');
+  return h;
+}
 const byDateDesc = (a, b) => String(b.date || b.year || '').localeCompare(String(a.date || a.year || ''));
 
 async function api(key) {
@@ -208,7 +213,7 @@ function renderArticle(html, item, slug) {
   html = setInner(html, 'articleTitle', esc(item.title));
   html = setInner(html, 'metaLine', `${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}`);
   if (item.cover) { html = unhide(html, 'coverWrapper'); html = setAttr(html, 'articleCover', 'src', item.cover); html = setAttr(html, 'articleCover', 'alt', item.title); }
-  html = setInner(html, 'articleBody', item.content || '');
+  html = setInner(html, 'articleBody', normaliseHeadings(item.content || ''));
   html = setAttr(html, 'articleBody', 'data-ssr', '1');
   html = setInner(html, 'ldJson', ld({
     "@context": "https://schema.org", "@type": "NewsArticle", "headline": item.title, "description": desc,
@@ -236,7 +241,7 @@ function renderResearch(html, item, slug) {
   if (item.cover) { html = unhide(html, 'coverWrapper'); html = setAttr(html, 'reportCover', 'src', item.cover); html = setAttr(html, 'reportCover', 'alt', item.title); }
   if (item.abstract) { html = unhide(html, 'abstractWrapper'); html = setInner(html, 'abstractBody', item.abstract); }
   if (pdf) { html = unhide(html, 'pdfWrapper'); html = setAttr(html, 'pdfDownloadBtn', 'href', pdf); }
-  html = setInner(html, 'reportBody', item.content || '');
+  html = setInner(html, 'reportBody', normaliseHeadings(item.content || ''));
   html = setAttr(html, 'reportBody', 'data-ssr', '1');
   html = setInner(html, 'ldJson', ld({
     "@context": "https://schema.org", "@type": "Report", "headline": item.title, "name": item.title, "description": desc,
@@ -260,7 +265,7 @@ function renderProject(html, item, slug) {
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'projectTitle', esc(item.title));
   if (item.cover) { html = unhide(html, 'coverWrapper'); html = setAttr(html, 'projectCover', 'src', item.cover); html = setAttr(html, 'projectCover', 'alt', item.title); }
-  html = setInner(html, 'projectBody', item.content || '');
+  html = setInner(html, 'projectBody', normaliseHeadings(item.content || ''));
   html = setAttr(html, 'projectBody', 'data-ssr', '1');
   html = setInner(html, 'ldJson', ld({
     "@context": "https://schema.org", "@type": "CreativeWork", "name": item.title, "headline": item.title, "description": desc,

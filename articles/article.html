@@ -170,6 +170,13 @@
     const snippet = it => it.seo && it.seo.description || it.seoDescription || (strip(it.abstract || it.content).slice(0, 160) + '…');
     const slugFromUrl = () => { const u = new URL(location.href); const q = u.searchParams.get('slug'); if (q) return q.trim().toLowerCase(); const last = u.pathname.split('/').filter(Boolean).pop() || ''; return last.replace(/\.html$/i, '').toLowerCase(); };
 
+    // CMS bodies sometimes start at h3 (or h1); keep the document outline h1 > h2 > h3.
+    function normaliseHeadings(html) {
+      let h = String(html || '').replace(/<(\/?)h1\b/gi, '<$1h2');
+      if (!/<h2\b/i.test(h) && /<h3\b/i.test(h)) h = h.replace(/<(\/?)h3\b/gi, '<$1h2');
+      return h;
+    }
+
     // Quill puts captions in the paragraph after an image as "Caption: …" — turn those into real figures.
     function figures(html) {
       const w = document.createElement('div'); w.innerHTML = html;
@@ -249,7 +256,7 @@
 
       // body
       const body = document.getElementById('articleBody');
-      body.innerHTML = DOMPurify.sanitize(figures(item.content || ''));
+      body.innerHTML = DOMPurify.sanitize(figures(normaliseHeadings(item.content || '')));
       if (window.renderItemExtras) renderItemExtras(item);
 
       // share + cite + meta
