@@ -1,0 +1,22 @@
+# Enlil Center for Environment and Sustainable Development
+
+> Independent, non-profit think tank in Baghdad, Iraq, producing evidence-based research, policy analysis and open data on Iraq's climate, water, energy, economy and governance.
+
+Enlil Center publishes research reports, analysis articles, project documentation and an open data hub of Iraq indicators. All content is in English and free to read. Data series carry their original publisher, a retrieval date and a CSV download.
+
+## Publications
+- [Research & reports](https://enlilcenter.org/research): working papers, technical reports and policy studies, most with a PDF
+- [Articles & commentary](https://enlilcenter.org/articles): short evidence-led analysis on Iraq
+- [Projects](https://enlilcenter.org/projects): funded initiatives and partnerships across Iraq
+
+## Data
+- [Iraq Data Hub](https://enlilcenter.org/data): interactive charts and downloadable datasets (World Bank WDI/WGI and other cited sources), organised by pillar — Climate, Water, Energy, Economy, Governance
+- [Sources & data library](https://enlilcenter.org/sources): the reports, datasets and statistics Enlil's work cites, each linked to its publisher
+
+## About
+- [About Enlil Center](https://enlilcenter.org/#about)
+- [Contact](https://enlilcenter.org/#contact): info@enlilcenter.org
+- [Sitemap](https://enlilcenter.org/sitemap.xml)
+
+## Reuse
+Articles and reports may be quoted with attribution to Enlil Center. Dataset values remain the work of their stated publishers; cite them as "<publisher>, via Enlil Center Data Hub".
