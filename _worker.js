@@ -59,6 +59,16 @@ export default {
       });
     }
 
+    // Admin token endpoint - Cloudflare Access already gates /admin* on this
+    // hostname, so by the time this code runs the caller is verified as an
+    // allowed Enlil admin. This exists so admin.html never needs to ship the
+    // CMS write-token as a hardcoded constant in a public repo again.
+    if (path === '/admin/token' && request.method === 'GET') {
+      return new Response(JSON.stringify({ token: env.ADMIN_TOKEN || null }), {
+        headers: { 'content-type': 'application/json', 'Cache-Control': 'no-store' }
+      });
+    }
+
     return env.ASSETS.fetch(request);
   }
 };

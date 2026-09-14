@@ -822,7 +822,10 @@
 <!-- ═══════════════ SCRIPTS ═══════════════ -->
 <script>
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
-const ADMIN_TOKEN = '1c9b444268b2aba1a6d2c53c02c1a8464eabf4743e468d4bf56e0a731d769ccd';
+let ADMIN_TOKEN = null;
+fetch('/admin/token').then(r=>r.json()).then(d=>{ ADMIN_TOKEN = d.token; }).catch(()=>{
+  console.error('Could not load admin token - Cloudflare Access session may have expired. Try reloading the page.');
+});
 const API_BASE    = 'https://enlil-cms-api.osmanalikareem.workers.dev';
 
 let authors=[], articles=[], research=[], projects=[], partners=[];
@@ -832,8 +835,6 @@ let pendingInlineResolve=null;
 let undoBuffer=null, undoTimer=null;
 let hasUnsavedChanges=false;
 
-const VALID_USERNAME     = 'admin';
-const VALID_PASSWORD_HASH= '4e2f51b1f6ff8ab433eb869bddf1a9bb89a9073f85e30f4d0c4fc41aa33bb8de';
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_MS         = 3*60*1000;
 let isLoggedIn = false;
@@ -859,25 +860,14 @@ async function hashPassword(p){
 }
 
 async function attemptLogin(){
-  const lockUntil=localStorage.getItem('loginLockUntil');
-  if(lockUntil&&Date.now()<parseInt(lockUntil)){
-    const rem=Math.ceil((parseInt(lockUntil)-Date.now())/60000);
-    showLoginError(`Too many failed attempts. Try again in ${rem} minute${rem>1?'s':''}.`);
-    return;
-  }
-  const u=document.getElementById('loginUsername').value.trim();
-  const p=document.getElementById('loginPassword').value;
-  if(!u||!p){showLoginError('Please fill both fields');return;}
-  if(u!==VALID_USERNAME){handleFailedAttempt();return;}
-  const h=await hashPassword(p);
-  if(h===VALID_PASSWORD_HASH){
-    localStorage.removeItem('loginAttempts');
-    localStorage.removeItem('loginLockUntil');
-    isLoggedIn=true;
-    sessionStorage.setItem('enlilAdminLoggedIn','true');
-    document.getElementById('loginScreen').classList.add('hidden');
-    await loadFromFiles();
-  } else { handleFailedAttempt(); }
+  // Cloudflare Access already authenticated this session before this page
+  // could even load - there is no separate password to check here anymore.
+  localStorage.removeItem('loginAttempts');
+  localStorage.removeItem('loginLockUntil');
+  isLoggedIn=true;
+  sessionStorage.setItem('enlilAdminLoggedIn','true');
+  document.getElementById('loginScreen').classList.add('hidden');
+  await loadFromFiles();
 }
 
 function handleFailedAttempt(){
@@ -2193,11 +2183,11 @@ document.getElementById('loginPassword')?.addEventListener('keydown',e=>{
   if(e.key==='Enter')attemptLogin();
 });
 
-// Check session
-if(sessionStorage.getItem('enlilAdminLoggedIn')==='true'){
-  isLoggedIn=true;
-  document.getElementById('loginScreen').classList.add('hidden');
-}
+// Cloudflare Access gates /admin* at the edge - anyone who can load this
+// page is already an authenticated Enlil admin, so grant access immediately.
+isLoggedIn=true;
+sessionStorage.setItem('enlilAdminLoggedIn','true');
+document.getElementById('loginScreen').classList.add('hidden');
 
 updateLockCountdown();
 
