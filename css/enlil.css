@@ -5,7 +5,7 @@
 :root {
   --ink: #1A1A17;
   --ink-soft: #57564E;
-  --ink-mute: #8A897F;
+  --ink-mute: #6B6A61;
   --paper: #FFFFFF;
   --tint: #F1F4F0;
   --line: #DDE3DE;
@@ -42,8 +42,9 @@ button { font: inherit; cursor: pointer; }
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
 .kicker {
   font-family: var(--font-head); font-weight: 700; font-size: .72rem;
-  letter-spacing: .09em; text-transform: uppercase; color: var(--amber);
+  letter-spacing: .09em; text-transform: uppercase; color: var(--amber-deep);
 }
+.kicker.on-dark, .lead .kicker, .band .kicker, .page-hero .kicker, .art-hero .kicker, .pdf-card .kicker, .dl-card .kicker { color: var(--amber); }
 .kicker.green { color: var(--green); }
 .kicker.muted { color: var(--ink-mute); }
 

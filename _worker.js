@@ -135,7 +135,7 @@ async function renderHome(html) {
       html = setInner(html, 'subStrip', strip3.map(x => `
           <div class="sub-card">
             <a class="thumb" href="/articles/${itemSlug(x, 'article')}" aria-label="${attr(x.title)}">${x.cover ? `<img src="${attr(x.cover)}" alt="" loading="lazy">` : ''}</a>
-            <div><span class="kicker">${esc(kickerOf(x, 'Analysis'))}</span><h3><a href="/articles/${itemSlug(x, 'article')}">${esc(x.title)}</a></h3></div>
+            <div><span class="kicker">${esc(kickerOf(x, 'Analysis'))}</span><h2><a href="/articles/${itemSlug(x, 'article')}">${esc(x.title)}</a></h2></div>
           </div>`).join(''));
     }
   }
