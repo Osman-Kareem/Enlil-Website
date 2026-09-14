@@ -64,7 +64,6 @@
 
   <article>
     <header class="art-hero" id="artHero">
-      <div class="photo" id="coverWrapper" hidden><img id="projectCover" src="" alt="" fetchpriority="high"></div>
       <div class="wrap">
         <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><i class="fa-solid fa-chevron-right"></i><a href="/projects">Projects</a><i class="fa-solid fa-chevron-right"></i><span id="breadcrumbTitle">Project</span></nav>
         <span class="kicker" id="kicker">Project</span>
@@ -76,6 +75,7 @@
 
     <main class="wrap art-layout">
       <div class="art-main">
+        <figure class="lead-figure" id="coverWrapper" hidden><img id="projectCover" src="" alt="" fetchpriority="high"></figure>
         <div class="abstract" id="abstractWrapper" hidden>
           <h2>Abstract</h2>
           <div class="body" id="abstractBody"></div>
@@ -229,7 +229,7 @@
       document.getElementById('metaLine').innerHTML = parts.join('<span aria-hidden="true">·</span>');
 
       // hero photo
-      if (item.cover) { const img = document.getElementById('projectCover'); img.src = item.cover; img.alt = title; document.getElementById('coverWrapper').hidden = false; document.getElementById('artHero').classList.add('has-photo'); }
+      if (item.cover) { const img = document.getElementById('projectCover'); img.src = item.cover; img.alt = title; document.getElementById('coverWrapper').hidden = false; }
 
       // abstract / pdf (research)
       if (item.abstract) { document.getElementById('abstractBody').innerHTML = DOMPurify.sanitize(item.abstract); document.getElementById('abstractWrapper').hidden = false; }

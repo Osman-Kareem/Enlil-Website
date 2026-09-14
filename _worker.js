@@ -196,7 +196,6 @@ function heroBits(html, item, fallbackKicker) {
   html = setInner(html, 'kicker', esc(kickerOf(item, fallbackKicker)));
   const dek = item.seo?.description || item.seoDescription || '';
   if (dek) { html = unhide(html, 'dek'); html = setInner(html, 'dek', esc(dek)); }
-  if (item.cover) html = setAttr(html, 'artHero', 'class', 'art-hero has-photo');
   return html;
 }
 
