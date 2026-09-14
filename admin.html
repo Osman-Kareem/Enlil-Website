@@ -13,6 +13,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enlil Center - Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Map Tailwind's palette/radii onto the enlilcenter.org design system (css/enlil.css) so every
+    // existing utility class in this file renders in brand colours without touching the markup.
+    tailwind.config = { theme: { extend: {
+      fontFamily: { sans: ['"Public Sans"', '"Helvetica Neue"', 'Arial', 'sans-serif'] },
+      colors: {
+        emerald: { 50:'#F1F4F0', 100:'#E4EDE7', 200:'#C5D9CC', 300:'#93BBA3', 400:'#4F8D6A', 500:'#1E6B4A', 600:'#0B4D33', 700:'#08381F', 800:'#062B18', 900:'#041D10' },
+        amber:   { 50:'#FFF7EA', 100:'#FDEBCB', 200:'#F9D79A', 300:'#F5B04F', 400:'#E8951F', 500:'#D97F0B', 600:'#D97F0B', 700:'#B4670A', 800:'#8F4E06', 900:'#5C3204' },
+        gray:    { 50:'#F7F8F6', 100:'#F1F4F0', 200:'#DDE3DE', 300:'#CCD3CD', 400:'#9B9A90', 500:'#6B6A61', 600:'#57564E', 700:'#3F3E37', 800:'#2A2925', 900:'#1A1A17' },
+      },
+      borderRadius: { lg:'4px', xl:'5px', '2xl':'6px', '3xl':'8px' },
+      boxShadow: { sm:'0 1px 2px rgba(0,0,0,.04)', DEFAULT:'0 1px 2px rgba(0,0,0,.05), 0 6px 20px -12px rgba(11,77,51,.25)', '2xl':'0 24px 60px -20px rgba(0,0,0,.35)' },
+    } } };
+  </script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;700;800&family=Public+Sans:wght@400;500&display=swap">
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
@@ -21,7 +35,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
   <script src="/vendor/chart.umd.min.js"></script>
   <script src="/js/enlil-data.js"></script>
-  <script src="https://kit.fontawesome.com/a2e0e6ad54.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/vendor/fa/css/all.min.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
   <style>
     /* ── Editor sizing & sticky toolbar ── */
@@ -70,7 +86,7 @@
     .ql-editor a:hover, .preview-body a:hover { color: #065f46; }
 
     /* ── Tab active ── */
-    .tab-active { border-bottom: 3px solid #10b981; color: #10b981; font-weight: 600; }
+    .tab-active { font-weight: 700; }
 
     /* ── Required field error state ── */
     .field-error { border-color: #ef4444 !important; box-shadow: 0 0 0 3px rgba(239,68,68,0.15) !important; }
@@ -156,6 +172,79 @@
     .ds-grid tbody tr:nth-child(even) { background: #f8fafc; }
     .ds-grid td.bad { color: #b91c1c; background: #fef2f2; }
     .field-error-msg{color:#b91c1c;font-size:.75rem;margin-top:.3rem}
+
+    /* ═══════════ Brand layer — mirrors css/enlil.css tokens ═══════════ */
+    :root{--ink:#1A1A17;--ink-soft:#57564E;--ink-mute:#6B6A61;--tint:#F1F4F0;--line:#DDE3DE;--green:#0B4D33;--green-deep:#08381F;--green-tint:#E4EDE7;--amber:#D97F0B;--amber-text:#8F4E06;--amber-light:#F5B04F;--mist:#D7E7DD;--font-head:"Libre Franklin","Helvetica Neue",Arial,sans-serif;--font-body:"Public Sans","Helvetica Neue",Arial,sans-serif}
+    body{background:var(--tint);color:var(--ink);font-family:var(--font-body)}
+    h1,h2,h3,h4{font-family:var(--font-head);letter-spacing:-.01em;color:var(--ink)}
+    .cms-kicker{font:700 11px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--amber-text);margin-bottom:8px}
+    /* sidebar */
+    .cms-shell{align-items:stretch}
+    .cms-side{background:var(--green-deep);color:#fff;position:sticky;top:0;max-height:100vh;overflow:auto;box-shadow:none}
+    .cms-side .tab-button{color:var(--mist);font-family:var(--font-head);font-weight:600;font-size:15px;padding:11px 14px;border-radius:4px;border-left:3px solid transparent}
+    .cms-side .tab-button:hover{background:rgba(255,255,255,.07);color:#fff}
+    .cms-side .tab-button.tab-active{background:rgba(255,255,255,.10);color:#fff;border-left-color:var(--amber)}
+    .cms-side .tab-button i{color:#8FC9A6;width:18px;text-align:center;font-size:15px}
+    .cms-side .tab-button.tab-active i{color:var(--amber-light)}
+    .cms-side .tab-badge{background:rgba(255,255,255,.14);color:#fff;margin-left:auto}
+    .cms-side .tab-button.tab-active .tab-badge{background:var(--amber);color:#fff}
+    .cms-signed{color:#9FBFAE;border-top:1px solid rgba(255,255,255,.12);font-size:12px;line-height:1.5}
+    .cms-signed strong{color:#fff;font-weight:600;word-break:break-all}
+    .cms-signout{color:var(--mist);font-family:var(--font-head);font-weight:600;font-size:15px;padding:11px 14px;border-radius:4px}
+    .cms-signout:hover{background:rgba(255,255,255,.07);color:#fff}
+    .cms-side .cms-sitelink{display:flex;align-items:center;gap:10px;color:var(--amber-light);font:600 13px var(--font-body);padding:10px 14px;text-decoration:none}
+    .cms-side .cms-sitelink:hover{color:#fff}
+    /* main */
+    .cms-main{padding:36px 40px}
+    .cms-main h2.text-3xl{font-size:30px;font-weight:800;line-height:1.1}
+    form.bg-white,.bg-white.shadow,.bg-white.shadow-sm,.cms-card{border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .cms-main label{color:var(--ink-soft)}
+    .cms-main input[type=text],.cms-main input[type=url],.cms-main input[type=email],.cms-main input[type=date],.cms-main input[type=number],.cms-main input[type=search],.cms-main textarea,.cms-main select{background:#fff;border-color:var(--line);color:var(--ink);font-family:var(--font-body)}
+    .cms-main input:focus,.cms-main textarea:focus,.cms-main select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(11,77,51,.15)}
+    .cms-main input[type=file]{font-size:13px;color:var(--ink-soft)}
+    .cms-main input[type=file]::file-selector-button{font:600 13px var(--font-body);color:var(--green);background:var(--green-tint);border:1px solid #cfe0d5;border-radius:4px;padding:8px 12px;margin-right:10px;cursor:pointer}
+    .cms-main input[type=file]::file-selector-button:hover{background:#d5e5db}
+    .cms-main button[type=submit].bg-emerald-600{font-family:var(--font-head);font-weight:700;letter-spacing:.01em}
+    .cms-main .text-blue-600{color:var(--green)}.cms-main .hover\:text-blue-700:hover{color:var(--green-deep)}
+    .ql-toolbar.ql-snow{border-color:var(--line);border-radius:6px 6px 0 0;background:#F7F8F6}
+    .ql-container.ql-snow{border-color:var(--line);border-radius:0 0 6px 6px}
+    .ql-editor{font-family:var(--font-body)}
+    .ql-editor a,.preview-body a{color:var(--green)}
+    .tab-badge{background:var(--green-tint);color:var(--green)}
+    #toastBar{background:var(--green-deep);font-family:var(--font-body)}#toastUndo{color:var(--amber-light)}
+    .pillar-chip{border-color:var(--line);color:var(--ink-soft);font-family:var(--font-body)}
+    .pillar-chip:hover{border-color:var(--green);color:var(--green)}
+    .pillar-chip.pillar-on{background:var(--green);border-color:var(--green)}
+    .cite-results{border-radius:6px}.cite-result:hover{background:var(--green-tint)}
+    .cite-chip{background:var(--green-tint);color:var(--green);border-color:#cfe0d5}.cite-chip .cite-type{background:var(--green)}
+    .attach-row{border-radius:6px}.attach-ext{background:var(--amber)}.attach-name:hover{color:var(--green)}
+    .char-ok{color:var(--green)}.char-warn{color:var(--amber-text)}
+    .last-saved{color:var(--ink-mute)}
+    /* overview */
+    .ov-stat{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 20px;text-align:left;transition:border-color .15s}
+    .ov-stat:hover{border-color:var(--green)}
+    .ov-stat .n{font:800 34px/1 var(--font-head);color:var(--green)}
+    .ov-stat .l{font:600 11px/1 var(--font-body);color:var(--ink-mute);margin-top:8px;text-transform:uppercase;letter-spacing:.1em}
+    .ov-stat .d{font-size:12px;color:var(--amber-text);margin-top:6px;min-height:16px}
+    .cms-card{background:#fff;border-radius:6px;padding:20px 22px}
+    .cms-card h3{font-size:15px;font-weight:700;margin-bottom:10px}
+    .ov-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+    .ov-row:first-child{border-top:0}
+    .ov-type{font:700 10px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--green);background:var(--green-tint);padding:4px 7px;border-radius:3px;white-space:nowrap}
+    .ov-row .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+    .ov-row .d{color:var(--ink-mute);font-size:12px;white-space:nowrap}
+    .cms-btn-secondary{display:inline-flex;align-items:center;gap:8px;font:600 13px var(--font-body);color:var(--green);border:1px solid var(--line);background:#fff;border-radius:4px;padding:9px 14px;text-decoration:none}
+    .cms-btn-secondary:hover{border-color:var(--green)}
+    .ov-links a{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;color:var(--green);text-decoration:none}
+    .ov-links a:first-child{border-top:0}.ov-links a:hover{text-decoration:underline}.ov-links a i{width:16px;text-align:center;color:var(--ink-mute)}
+    @media (max-width:1024px){
+      .cms-shell{flex-direction:column}
+      .cms-side{width:100%!important;position:static;max-height:none;min-height:0;padding:14px 16px}
+      .cms-side nav{display:flex;flex-wrap:wrap;gap:4px}
+      .cms-side .tab-button{width:auto;padding:8px 12px;font-size:14px}
+      .cms-side .cms-signed{display:none}.cms-side .cms-brand{margin-bottom:10px}
+      .cms-main{padding:20px}
+    }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -178,15 +267,18 @@
 </div>
 
 <!-- MAIN LAYOUT -->
-<div class="flex min-h-screen">
+<div class="flex min-h-screen cms-shell">
 
   <!-- SIDEBAR -->
-  <div class="w-72 bg-white shadow-2xl p-6 flex flex-col">
-    <div class="flex items-center gap-3 mb-12">
-      <i class="fa-solid fa-leaf text-4xl text-emerald-600"></i>
-      <h1 class="text-3xl font-semibold">Enlil Center</h1>
-    </div>
+  <div class="cms-side w-72 p-6 flex flex-col">
+    <a href="/admin" class="cms-brand" style="display:flex;align-items:center;gap:12px;margin:2px 0 26px;text-decoration:none">
+      <img src="/image/logo-white.png" alt="" style="height:40px;width:auto">
+      <span><span style="display:block;font:800 20px/1.1 var(--font-head);color:#fff">Enlil Center</span><span style="display:block;font:700 10px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:#F5B04F;margin-top:6px">Content management</span></span>
+    </a>
     <nav class="flex-1 space-y-1">
+      <button onclick="switchTab(8)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">
+        <i class="fa-solid fa-gauge-high text-emerald-500"></i> Overview
+      </button>
       <button onclick="switchTab(0)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">
         <i class="fa-solid fa-user-pen text-emerald-500"></i> Authors
         <span id="badge0" class="tab-badge hidden">0</span>
@@ -219,15 +311,43 @@
         <i class="fa-solid fa-inbox text-emerald-500"></i> Inbox
         <span id="badge7" class="tab-badge hidden">0</span>
       </button>
-      <div class="mt-4 px-6 py-3 text-sm text-gray-500 border-t border-gray-100">Signed in as<br><span id="sessionEmail" class="font-medium text-gray-800 break-all">…</span><br><span class="text-xs text-gray-400">Auto sign-out after 30 min idle</span></div>
-      <button onclick="logout()" class="w-full text-left px-6 py-4 rounded-2xl hover:bg-red-50 flex items-center gap-3 text-lg text-red-600">
+      <a class="cms-sitelink mt-2" href="https://enlilcenter.org/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> View website</a>
+      <div class="cms-signed mt-3 px-4 py-3">Signed in as<br><strong id="sessionEmail">…</strong><br>Auto sign-out after 30 min idle</div>
+      <button onclick="logout()" class="cms-signout w-full text-left flex items-center gap-3">
         <i class="fa-solid fa-right-from-bracket"></i> Sign out
       </button>
     </nav>
   </div>
 
   <!-- MAIN CONTENT -->
-  <div class="flex-1 p-10 overflow-auto">
+  <div class="cms-main flex-1 overflow-auto">
+
+    <!-- ═══════════════ TAB 8: OVERVIEW ═══════════════ -->
+    <div id="tab8" class="tab-content hidden">
+      <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
+        <div><p class="cms-kicker">Enlil Center · CMS</p><h2 class="text-3xl font-semibold">Overview</h2></div>
+        <div class="flex gap-2 flex-wrap">
+          <button type="button" class="cms-btn-secondary" onclick="switchTab(1)"><i class="fa-solid fa-plus"></i> New article</button>
+          <button type="button" class="cms-btn-secondary" onclick="switchTab(2)"><i class="fa-solid fa-plus"></i> New report</button>
+          <button type="button" class="cms-btn-secondary" onclick="switchTab(6)"><i class="fa-solid fa-plus"></i> New dataset</button>
+        </div>
+      </div>
+      <div id="ovStats" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+      <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-6 items-start">
+        <div class="cms-card"><h3>Latest updates</h3><div id="ovLatest"></div></div>
+        <div class="space-y-6">
+          <div class="cms-card"><h3>Inbox</h3><div id="ovInbox"></div></div>
+          <div class="cms-card"><h3>Quick links</h3><div class="ov-links">
+            <a href="https://enlilcenter.org/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> enlilcenter.org</a>
+            <a href="https://enlilcenter.org/data" target="_blank" rel="noopener"><i class="fa-solid fa-chart-line"></i> Data Hub</a>
+            <a href="https://enlilcenter.org/sources" target="_blank" rel="noopener"><i class="fa-solid fa-book-open"></i> Sources library</a>
+            <a href="https://enlilcenter.org/sitemap.xml" target="_blank" rel="noopener"><i class="fa-solid fa-sitemap"></i> Sitemap</a>
+            <a href="https://publish.buffer.com/" target="_blank" rel="noopener"><i class="fa-solid fa-calendar-days"></i> Buffer (social schedule)</a>
+            <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener"><i class="fa-solid fa-cloud"></i> Cloudflare</a>
+          </div></div>
+        </div>
+      </div>
+    </div>
 
     <!-- ═══════════════ TAB 0: AUTHORS ═══════════════ -->
     <div id="tab0" class="tab-content">
@@ -1758,7 +1878,25 @@ async function saveToJSON(key,data){
 // ─── RENDER ALL ───────────────────────────────────────────────────────────────
 function renderAll(){
   renderAuthors();renderArticles();renderResearch();renderProjects();renderPartners();renderSources();renderDatasets();
-  updateBadges();
+  updateBadges(); renderOverview();
+}
+
+// ─── OVERVIEW ────────────────────────────────────────────────────────────────
+const OV_TAB={authors:0,articles:1,research:2,projects:3,partners:4,sources:5,datasets:6};
+function renderOverview(){
+  const stats=document.getElementById('ovStats'); if(!stats)return;
+  const drafts=a=>a.filter(x=>x.status==='draft').length;
+  const dl=n=>n?`${n} draft${n>1?'s':''} pending`:'';
+  const tiles=[['Articles',articles.length,dl(drafts(articles)),1],['Research',research.length,dl(drafts(research)),2],['Projects',projects.length,dl(drafts(projects)),3],['Datasets',datasets.length,`${sources.length} sources in library`,6]];
+  stats.innerHTML=tiles.map(([l,n,d,tab])=>`<button type="button" class="ov-stat" onclick="switchTab(${tab})"><div class="n">${n}</div><div class="l">${l}</div><div class="d">${d||''}</div></button>`).join('');
+  const items=[]; const push=(arr,type,label)=>arr.forEach((x,i)=>items.push({type,label,i,title:x.title||x.name||'(untitled)',when:x.updatedAt||x.createdAt||x.date||'',status:x.status}));
+  push(articles,'articles','Article');push(research,'research','Report');push(projects,'projects','Project');push(datasets,'datasets','Dataset');push(sources,'sources','Source');
+  items.sort((a,b)=>String(b.when).localeCompare(String(a.when)));
+  const fmt=w=>{const d=new Date(w);return isNaN(d)?escapeHtml(String(w)):d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});};
+  document.getElementById('ovLatest').innerHTML=items.slice(0,8).map(it=>`<div class="ov-row"><span class="ov-type">${it.label}</span><span class="t">${escapeHtml(it.title)}${it.status==='draft'?' <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Draft</span>':''}</span><span class="d">${it.when?fmt(it.when):''}</span><button type="button" class="text-blue-600 hover:text-blue-700 text-sm" onclick="editItem('${it.type}',${it.i})"><i class="fa-solid fa-pen"></i> Edit</button></div>`).join('')||'<p class="text-sm text-gray-400">Nothing published yet.</p>';
+  const unread=(typeof inbox!=='undefined'?inbox:[]).filter(m=>!m.read);
+  document.getElementById('ovInbox').innerHTML=(unread.length?unread.slice(0,4).map(m=>`<div class="ov-row"><span class="t">${escapeHtml(m.subject||'(no subject)')} <span class="text-xs text-gray-500">· ${escapeHtml(m.name||'')}</span></span><span class="d">${m.receivedAt?fmt(m.receivedAt):''}</span></div>`).join(''):'<p class="text-sm text-gray-500">No unread messages.</p>')+`<button type="button" class="cms-btn-secondary mt-3" onclick="switchTab(7)">Open inbox${unread.length?` (${unread.length} unread)`:''}</button>`;
+  const b7=document.getElementById('badge7'); if(b7){b7.textContent=unread.length;b7.classList.toggle('hidden',unread.length===0);}
 }
 
 // ─── RENDER HELPERS ───────────────────────────────────────────────────────────
@@ -3110,6 +3248,7 @@ function renderInbox(){
       <p class="mt-3 text-sm text-gray-800 whitespace-pre-wrap">${escapeHtml(m.message||'')}</p>
     </div>`;
   }).join('')||'<p class="text-sm text-gray-400">No messages yet. Anything sent through the website contact form appears here.</p>';
+  renderOverview();
 }
 
 
@@ -3168,7 +3307,7 @@ setupDatasetFileInput(); setupDatasetSourcePicker();
 
 window.addEventListener('DOMContentLoaded',()=>{
   initEditors();
-  switchTab(0);
+  switchTab(8);
   startSession();
 });
 </script>
