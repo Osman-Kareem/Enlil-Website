@@ -91,8 +91,8 @@
     <div class="max-w-5xl mx-auto px-6 w-full">
       <nav class="text-sm mb-6" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
-          <li class="inline-flex items-center"><a href="../" class="inline-flex items-center text-sm text-white/80 hover:text-white"><i class="fa-solid fa-house mr-1.5"></i>Home</a></li>
-          <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i><a href="../data.html" class="ml-1 text-sm text-white/80 hover:text-white">Iraq Data Hub</a></div></li>
+          <li class="inline-flex items-center"><a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white"><i class="fa-solid fa-house mr-1.5"></i>Home</a></li>
+          <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i><a href="/data" class="ml-1 text-sm text-white/80 hover:text-white">Iraq Data Hub</a></div></li>
           <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i><span id="breadcrumbTitle" class="ml-1 text-sm font-medium text-white line-clamp-1">Dataset</span></div></li>
         </ol>
       </nav>
@@ -103,7 +103,7 @@
 
   <main class="max-w-5xl mx-auto px-6 py-12 md:py-16">
     <div id="notFound" class="hidden text-center py-16 text-sm text-gray-500">
-      This dataset could not be found. <a href="../data.html" class="text-emerald-700 hover:underline">Back to the Data Hub</a>
+      This dataset could not be found. <a href="/data" class="text-emerald-700 hover:underline">Back to the Data Hub</a>
     </div>
 
     <article id="dataset" class="hidden">
@@ -159,7 +159,7 @@
     </article>
 
     <div class="mt-10 text-center">
-      <a href="../data.html" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium"><i class="fa-solid fa-arrow-left text-xs"></i> Back to the Data Hub</a>
+      <a href="/data" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium"><i class="fa-solid fa-arrow-left text-xs"></i> Back to the Data Hub</a>
     </div>
   </main>
 
@@ -281,7 +281,7 @@
       if (ds.retrievedAt) blk.push(`<p><strong>Retrieved by Enlil:</strong> ${esc(fmtDate(ds.retrievedAt))}</p>`);
       if (ds.notes) blk.push(`<p><strong>Notes:</strong> ${esc(ds.notes)}</p>`);
       if (ds.file && /^https?:/.test(ds.file.url || '')) blk.push(`<p><a href="${esc(ds.file.url)}" target="_blank" rel="noopener" class="text-emerald-700 hover:underline"><i class="fa-solid fa-download text-xs"></i> Original file as received (${esc(String(ds.file.ext || '').toUpperCase())})</a></p>`);
-      if (src.slug) blk.push(`<p><a href="../sources.html#${encodeURIComponent(src.slug)}" class="text-emerald-700 hover:underline">View this source in the Enlil sources library →</a></p>`);
+      if (src.slug) blk.push(`<p><a href="/sources#${encodeURIComponent(src.slug)}" class="text-emerald-700 hover:underline">View this source in the Enlil sources library →</a></p>`);
       document.getElementById('sourceBlock').innerHTML = blk.join('') || '<p>Compiled by Enlil Center.</p>';
       document.getElementById('citeLine').innerHTML = `<strong>Cite as:</strong> ${esc(srcName || 'Enlil Center')}${srcName ? ', via' : ''} Enlil Center Data Hub, “${esc(ds.title)}”, ${esc(url)} (accessed ${esc(fmtDate(new Date().toISOString()))}).`;
 

@@ -6,7 +6,7 @@
   <title>Enlil Center | Iraq Data Hub</title>
   <meta name="description" content="Interactive charts and downloadable datasets on Iraq's climate, water, energy, economy and governance — every series sourced, dated and free to download.">
 
-  <link rel="canonical" href="https://enlilcenter.org/data.html">
+  <link rel="canonical" href="https://enlilcenter.org/data">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
   <meta property="og:title" content="Enlil Center | Iraq Data Hub">
   <meta property="og:description" content="Interactive charts and downloadable datasets on Iraq's climate, water, energy, economy and governance.">
-  <meta property="og:url" content="https://enlilcenter.org/data.html">
+  <meta property="og:url" content="https://enlilcenter.org/data">
   <meta property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
 
   <script type="application/ld+json">
@@ -23,7 +23,7 @@
     "@type": "DataCatalog",
     "name": "Enlil Center Iraq Data Hub",
     "description": "Interactive charts and downloadable datasets on Iraq's climate, water, energy, economy and governance",
-    "url": "https://enlilcenter.org/data.html",
+    "url": "https://enlilcenter.org/data",
     "publisher": {
       "@type": "NGO",
       "name": "Enlil Center for Environment and Sustainable Development"
@@ -36,7 +36,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://enlilcenter.org/" },
-      { "@type": "ListItem", "position": 2, "name": "Iraq Data Hub", "item": "https://enlilcenter.org/data.html" }
+      { "@type": "ListItem", "position": 2, "name": "Iraq Data Hub", "item": "https://enlilcenter.org/data" }
     ]
   }
   </script>
@@ -324,7 +324,7 @@
       const s = d.source || {};
       const srcName = s.publisher || s.title || '';
       document.getElementById('exSource').innerHTML = srcName
-        ? `Source: ${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener" class="text-emerald-700 hover:underline">${esc(srcName)}</a>` : esc(srcName)}${s.title && s.publisher ? ` — ${esc(s.title)}` : ''}${d.retrievedAt ? ` · retrieved ${esc(fmtDate(d.retrievedAt))}` : ''}${s.slug ? ` · <a href="sources.html#${encodeURIComponent(s.slug)}" class="text-emerald-700 hover:underline">in the sources library</a>` : ''}`
+        ? `Source: ${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener" class="text-emerald-700 hover:underline">${esc(srcName)}</a>` : esc(srcName)}${s.title && s.publisher ? ` — ${esc(s.title)}` : ''}${d.retrievedAt ? ` · retrieved ${esc(fmtDate(d.retrievedAt))}` : ''}${s.slug ? ` · <a href="/sources#${encodeURIComponent(s.slug)}" class="text-emerald-700 hover:underline">in the sources library</a>` : ''}`
         : (d.retrievedAt ? `Compiled by Enlil Center · ${esc(fmtDate(d.retrievedAt))}` : '');
     }
 

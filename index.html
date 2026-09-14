@@ -62,6 +62,7 @@
     .lead .photo { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
     .lead .photo img { width: 100%; height: 100%; object-fit: cover; }
     .lead .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(6,20,13,.94) 0%, rgba(6,20,13,.55) 45%, rgba(6,20,13,.15) 100%); }
+    .lead .wrap { width: 100%; }
     .lead .content { padding: 72px 0 48px; max-width: 760px; }
     .lead .kicker { background: rgba(0,0,0,.35); display: inline-block; padding: 5px 10px; border-radius: 2px; }
     .lead h1 { color: #fff; font-size: clamp(2rem, 4.6vw, 3.6rem); margin-top: 14px; }
@@ -73,14 +74,16 @@
 
     /* ── Three-up strip ─────────────────────────────────────────────────── */
     .sub-strip { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); }
-    .sub-card { display: flex; gap: 14px; padding: 22px 22px 22px 0; border-right: 1px solid var(--line); margin-right: 22px; }
-    .sub-card:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
-    .sub-card .thumb { width: 84px; height: 84px; flex-shrink: 0; border-radius: 2px; overflow: hidden; background: linear-gradient(135deg, var(--green-tint), var(--line)); }
+    .sub-card { display: grid; grid-template-columns: 84px 1fr; gap: 16px; align-items: start; padding: 26px 28px; }
+    .sub-card:first-child { padding-left: 0; }
+    .sub-card:last-child { padding-right: 0; }
+    .sub-card + .sub-card { border-left: 1px solid var(--line); }
+    .sub-card .thumb { width: 84px; height: 84px; border-radius: 2px; overflow: hidden; background: linear-gradient(135deg, var(--green-tint), var(--line)); }
     .sub-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .sub-card h3 { font-size: 1rem; line-height: 1.3; margin-top: 4px; }
+    .sub-card .kicker { font-size: .62rem; display: block; line-height: 1; }
+    .sub-card h3 { font-size: 1rem; line-height: 1.3; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .sub-card h3 a:hover { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
-    .sub-card .kicker { font-size: .62rem; }
-    @media (max-width: 860px) { .sub-strip { grid-template-columns: 1fr; } .sub-card { border-right: 0; margin-right: 0; padding-right: 0; border-bottom: 1px solid var(--line); } .sub-card:last-child { border-bottom: 0; } }
+    @media (max-width: 860px) { .sub-strip { grid-template-columns: 1fr; } .sub-card, .sub-card:first-child, .sub-card:last-child { padding: 18px 0; } .sub-card + .sub-card { border-left: 0; border-top: 1px solid var(--line); } }
 
     /* ── About ──────────────────────────────────────────────────────────── */
     .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 56px; align-items: start; }
@@ -411,7 +414,7 @@
     function slugOf(item, fb) { const s = item.seo && item.seo.slug || item.slug; if (s && s.trim()) return s.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-'); return (item.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || fb; }
     function authorSlug(n) { return (n || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
     function authorName(item) { return (item.leadAuthor && item.leadAuthor.name) || item.author || 'Enlil Center'; }
-    function authorLink(item) { const n = authorName(item); if (n === 'Enlil Center') return n; return `<a href="/authors/author.html?slug=${encodeURIComponent(authorSlug(n))}">${esc(n)}</a>`; }
+    function authorLink(item) { const n = authorName(item); if (n === 'Enlil Center') return n; return `<a href="/authors/${encodeURIComponent(authorSlug(n))}">${esc(n)}</a>`; }
     function kickerOf(item, fallback) { const p = (item.pillars || []).find(x => PILLARS.includes(x)); return p || fallback; }
     function published(item) { const s = String(item.status || item.publishStatus || 'published').toLowerCase(); return s !== 'draft' && s !== 'unpublished'; }
     function snippet(item, n) { return item.seo && item.seo.description || item.seoDescription || item.description || (strip(item.abstract || item.content).slice(0, n || 150) + '…'); }

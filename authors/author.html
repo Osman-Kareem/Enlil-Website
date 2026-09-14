@@ -121,7 +121,7 @@
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
           <li class="inline-flex items-center">
             <!-- FIX: breadcrumb uses ../ -->
-            <a href="../" class="inline-flex items-center text-sm text-white/80 hover:text-white">
+            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
               <i class="fa-solid fa-house mr-1.5"></i>Home
             </a>
           </li>
@@ -187,7 +187,7 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">Articles &amp; News</h2>
           <!-- FIX: "View all" link uses ../ -->
-          <a href="../articles.html" class="text-xs text-emerald-700 hover:text-emerald-800 font-medium">
+          <a href="/articles" class="text-xs text-emerald-700 hover:text-emerald-800 font-medium">
             View all <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
           </a>
         </div>
@@ -201,7 +201,7 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">Research &amp; Reports</h2>
           <!-- FIX: "View all" link uses ../ -->
-          <a href="../research.html" class="text-xs text-emerald-700 hover:text-emerald-800 font-medium">
+          <a href="/research" class="text-xs text-emerald-700 hover:text-emerald-800 font-medium">
             View all <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
           </a>
         </div>
@@ -216,7 +216,7 @@
     <!-- Back link -->
     <div class="mt-12 text-center">
       <!-- FIX: back link uses ../ -->
-      <a href="../articles.html" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+      <a href="/articles" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
         <i class="fa-solid fa-arrow-left text-xs"></i>
         Back to Articles &amp; News
       </a>
@@ -405,11 +405,11 @@
         if (type === 'article') {
           const slug = safeSlug(item.seo?.slug, item.title, 'article');
           // FIX: correct URL template with ?slug= param and ../ relative path
-          url = `../articles/article.html?slug=${encodeURIComponent(slug)}`;
+          url = `/articles/${encodeURIComponent(slug)}`;
         } else if (type === 'research') {
           const slug = safeSlug(item.seo?.slug, item.title, 'research');
           // FIX: correct URL template — was /research/research-item.html (broken)
-          url = `../research/research-item.html?slug=${encodeURIComponent(slug)}`;
+          url = `/research/${encodeURIComponent(slug)}`;
         } 
 
         const snippet = (item.seo?.description ||
@@ -462,7 +462,7 @@
               <h1 class="text-2xl font-semibold mb-3">Author not found</h1>
               <p class="text-sm text-gray-500 mb-4">This author profile could not be found.</p>
               <!-- FIX: back link uses ../ -->
-              <a href="../articles.html" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+              <a href="/articles" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
                 Back to Articles &amp; News
               </a>
             </section>`;
@@ -529,7 +529,7 @@
             <h1 class="text-2xl font-semibold mb-3">Error loading profile</h1>
             <p class="text-sm text-red-600 mb-4">We could not load this author profile. Please try again later.</p>
             <!-- FIX: back link uses ../ -->
-            <a href="../articles.html" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+            <a href="/articles" class="text-sm text-emerald-700 hover:text-emerald-800 font-medium">
               Back to Articles &amp; News
             </a>
           </section>`;

@@ -138,14 +138,14 @@
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
           <li class="inline-flex items-center">
             <!-- FIX: breadcrumb links use ../ -->
-            <a href="../" class="inline-flex items-center text-sm text-white/80 hover:text-white">
+            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
               <i class="fa-solid fa-house mr-1.5"></i>Home
             </a>
           </li>
           <li>
             <div class="flex items-center">
               <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
-              <a href="../articles.html" class="ml-1 text-sm text-white/80 hover:text-white">Articles &amp; News</a>
+              <a href="/articles" class="ml-1 text-sm text-white/80 hover:text-white">Articles &amp; News</a>
             </div>
           </li>
           <li>
@@ -210,7 +210,7 @@
         <section id="sourcesWrapper" class="hidden mt-10 pt-8 border-t border-gray-100">
           <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Sources &amp; Citations</h2>
           <ol id="sourcesList" class="space-y-4"></ol>
-          <p class="mt-5 text-xs"><a href="../sources.html" class="inline-flex items-center gap-1.5 text-emerald-700 hover:underline font-medium">Browse the full sources library <i class="fa-solid fa-arrow-right text-[10px]"></i></a></p>
+          <p class="mt-5 text-xs"><a href="/sources" class="inline-flex items-center gap-1.5 text-emerald-700 hover:underline font-medium">Browse the full sources library <i class="fa-solid fa-arrow-right text-[10px]"></i></a></p>
         </section>
 
         <!-- FIX: Share bar added at the bottom of article -->
@@ -235,7 +235,7 @@
     <!-- Back link -->
     <div class="mt-10 text-center">
       <!-- FIX: relative path back to articles listing -->
-      <a href="../articles.html" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+      <a href="/articles" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
         <i class="fa-solid fa-arrow-left text-xs"></i>
         Back to Articles &amp; News
       </a>
@@ -422,7 +422,7 @@
     
     async function loadArticle() {
       const slugFromUrl = getSlugFromUrl();
-      document.getElementById('articleBody').innerHTML =
+      if (!document.getElementById('articleBody').dataset.ssr) document.getElementById('articleBody').innerHTML =
         '<p class="text-center py-16 text-sm text-gray-500">Loading article…</p>';
 
       try {
@@ -442,7 +442,7 @@
           document.getElementById('articleBody').innerHTML = `
             <p class="text-center py-16 text-sm text-gray-500">
               This article could not be found. It may have been unpublished.<br>
-              <a href="../articles.html" class="text-emerald-700 hover:underline">Back to Articles &amp; News</a>
+              <a href="/articles" class="text-emerald-700 hover:underline">Back to Articles &amp; News</a>
             </p>`;
           return;
         }
@@ -474,7 +474,7 @@
           meta.appendChild(bySpan);
         
           const authorLink = document.createElement('a');
-          authorLink.href = `../authors/author.html?slug=${encodeURIComponent(slug)}`;
+          authorLink.href = `/authors/${encodeURIComponent(slug)}`;
           authorLink.textContent = leadName;
           authorLink.className = 'text-emerald-700 hover:underline font-medium';
           meta.appendChild(authorLink);
@@ -504,7 +504,7 @@
           const slug = authorSlug(ch.name);
           // FIX: path uses ../authors/ since this file is inside /articles/
           const a = document.createElement('a');
-          a.href = `../authors/author.html?slug=${encodeURIComponent(slug)}`;
+          a.href = `/authors/${encodeURIComponent(slug)}`;
           a.className = 'inline-flex items-center rounded-full bg-emerald-50 text-emerald-800 px-3 py-1 border border-emerald-100 hover:bg-emerald-600 hover:text-white transition text-xs';
           a.innerHTML = `<i class="fa-solid fa-user text-[11px] mr-1.5"></i><span>${ch.name}</span>${ch.role ? `<span class="ml-1 text-[11px] opacity-70">(${ch.role})</span>` : ''}`;
           chipsWrap.appendChild(a);

@@ -143,14 +143,14 @@
       <nav class="text-sm mb-6" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
           <li class="inline-flex items-center">
-            <a href="../" class="inline-flex items-center text-sm text-white/80 hover:text-white">
+            <a href="/" class="inline-flex items-center text-sm text-white/80 hover:text-white">
               <i class="fa-solid fa-house mr-1.5"></i>Home
             </a>
           </li>
           <li>
             <div class="flex items-center">
               <i class="fa-solid fa-chevron-right text-sm text-white/60 mx-1"></i>
-              <a href="../projects.html" class="ml-1 text-sm text-white/80 hover:text-white">Projects</a>
+              <a href="/projects" class="ml-1 text-sm text-white/80 hover:text-white">Projects</a>
             </div>
           </li>
           <li>
@@ -210,7 +210,7 @@
         <section id="sourcesWrapper" class="hidden mt-10 pt-8 border-t border-gray-100">
           <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Sources &amp; Citations</h2>
           <ol id="sourcesList" class="space-y-4"></ol>
-          <p class="mt-5 text-xs"><a href="../sources.html" class="inline-flex items-center gap-1.5 text-emerald-700 hover:underline font-medium">Browse the full sources library <i class="fa-solid fa-arrow-right text-[10px]"></i></a></p>
+          <p class="mt-5 text-xs"><a href="/sources" class="inline-flex items-center gap-1.5 text-emerald-700 hover:underline font-medium">Browse the full sources library <i class="fa-solid fa-arrow-right text-[10px]"></i></a></p>
         </section>
 
         <!-- Share bar -->
@@ -234,7 +234,7 @@
 
     <!-- Back link -->
     <div class="mt-10 text-center">
-      <a href="../projects.html" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
+      <a href="/projects" class="inline-flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-medium">
         <i class="fa-solid fa-arrow-left text-xs"></i>
         Back to Projects
       </a>
@@ -384,7 +384,7 @@
     }
     async function loadProject() {
       const slugFromUrl = getSlugFromUrl();
-      document.getElementById('projectBody').innerHTML =
+      if (!document.getElementById('projectBody').dataset.ssr) document.getElementById('projectBody').innerHTML =
         '<p class="text-center py-16 text-sm text-gray-500">Loading project…</p>';
 
       try {
@@ -403,7 +403,7 @@
           document.getElementById('projectBody').innerHTML = `
             <p class="text-center py-16 text-sm text-gray-500">
               This project could not be found. It may have been unpublished.<br>
-              <a href="../projects.html" class="text-emerald-700 hover:underline">Back to Projects</a>
+              <a href="/projects" class="text-emerald-700 hover:underline">Back to Projects</a>
             </p>`;
           return;
         }

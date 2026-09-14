@@ -8,7 +8,7 @@
   <meta name="description" content="In-depth research outputs, working papers and reports on Iraq's climate transition, water resources and environmental governance.">
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://enlilcenter.org/research.html">
+  <link rel="canonical" href="https://enlilcenter.org/research">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
@@ -17,7 +17,7 @@
   <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
   <meta property="og:title" content="Enlil Center | Research &amp; Reports">
   <meta property="og:description" content="In-depth research on Iraq's climate, water, energy and environmental challenges in Iraq.">
-  <meta property="og:url" content="https://enlilcenter.org/research.html">
+  <meta property="og:url" content="https://enlilcenter.org/research">
   <meta property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
 
   <!-- Twitter -->
@@ -33,7 +33,7 @@
     "@type": "CollectionPage",
     "name": "Research & Reports",
     "description": "In-depth research outputs, working papers and formal reports on Iraq's environmental challenges",
-    "url": "https://enlilcenter.org/research.html",
+    "url": "https://enlilcenter.org/research",
     "publisher": {
       "@type": "NGO",
       "name": "Enlil Center for Environment and Sustainable Development"
@@ -48,7 +48,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://enlilcenter.org/" },
-      { "@type": "ListItem", "position": 2, "name": "Research & Reports", "item": "https://enlilcenter.org/research.html" }
+      { "@type": "ListItem", "position": 2, "name": "Research & Reports", "item": "https://enlilcenter.org/research" }
     ]
   }
   </script>
@@ -236,12 +236,12 @@
         const lead = item.leadAuthor.name;
         const slug = authorSlug(lead);
         const extra = Array.isArray(item.authors) ? item.authors.length : 0;
-        const link = `<a href="authors/author.html?slug=${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${lead}</a>`;
+        const link = `<a href="/authors/${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${lead}</a>`;
         return extra ? `${link} <span class="text-gray-400">+${extra} more</span>` : link;
       }
       if (item.author) {
         const slug = authorSlug(item.author);
-        return `<a href="authors/author.html?slug=${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${item.author}</a>`;
+        return `<a href="/authors/${encodeURIComponent(slug)}" class="text-emerald-700 hover:underline">${item.author}</a>`;
       }
       return 'Enlil Center';
     }
