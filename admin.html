@@ -18,6 +18,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="/js/enlil-data.js"></script>
   <script src="https://kit.fontawesome.com/a2e0e6ad54.js" crossorigin="anonymous"></script>
 
   <style>
@@ -128,6 +130,31 @@
     .preview-body li { list-style-type: inherit !important; padding-left: 0 !important; }
     .preview-body li::before,
     .preview-body li[data-list]::before { content: none !important; display: none !important; }
+    /* Phase 2.1: topics, citations, attachments */
+    .pillar-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+    .pillar-chip{font-size:.8rem;font-weight:600;padding:.45rem .9rem;border-radius:9999px;border:1px solid #d1d5db;color:#4b5563;background:#fff;transition:.15s}
+    .pillar-chip:hover{border-color:#059669;color:#047857}
+    .pillar-chip.pillar-on{background:#047857;border-color:#047857;color:#fff}
+    .cite-results{position:absolute;left:0;right:0;top:100%;z-index:40;background:#fff;border:1px solid #e5e7eb;border-radius:1rem;box-shadow:0 10px 30px rgba(0,0,0,.08);margin-top:.35rem;max-height:18rem;overflow:auto}
+    .cite-result{display:block;width:100%;text-align:left;padding:.6rem .9rem;font-size:.85rem;border-bottom:1px solid #f3f4f6}
+    .cite-result:hover{background:#ecfdf5}
+    .cite-chip{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;padding:.35rem .7rem;border-radius:9999px;background:#ecfdf5;color:#065f46;border:1px solid #d1fae5}
+    .cite-chip .cite-type{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:#047857;color:#fff;padding:.1rem .4rem;border-radius:.35rem}
+    .cite-chip .cite-pub{color:#6b7280}
+    .cite-chip button{color:#9ca3af;font-size:1rem;line-height:1;margin-left:.2rem}
+    .cite-chip button:hover{color:#dc2626}
+    .attach-row{display:flex;align-items:center;gap:.6rem;border:1px solid #e5e7eb;border-radius:.9rem;padding:.5rem .8rem;font-size:.82rem;background:#fff}
+    .attach-ext{font-size:.62rem;font-weight:800;background:#d97706;color:#fff;padding:.15rem .45rem;border-radius:.35rem;letter-spacing:.04em}
+    .attach-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1f2937}
+    .attach-name:hover{color:#047857;text-decoration:underline}
+    .attach-size{color:#9ca3af;font-size:.72rem}
+    .attach-remove{color:#9ca3af;font-size:1.1rem;line-height:1}
+    .attach-remove:hover{color:#dc2626}
+    .ds-grid td, .ds-grid th { padding: .35rem .6rem; white-space: nowrap; font-size: .8rem; }
+    .ds-grid td:not(:first-child), .ds-grid th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+    .ds-grid tbody tr:nth-child(even) { background: #f8fafc; }
+    .ds-grid td.bad { color: #b91c1c; background: #fef2f2; }
+    .field-error-msg{color:#b91c1c;font-size:.75rem;margin-top:.3rem}
   </style>
 </head>
 <body class="bg-gray-50">
@@ -190,6 +217,14 @@
       <button onclick="switchTab(4)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">
         <i class="fa-solid fa-handshake-angle text-emerald-500"></i> Partners &amp; Sponsors
         <span id="badge4" class="tab-badge hidden">0</span>
+      </button>
+      <button onclick="switchTab(5)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">
+        <i class="fa-solid fa-book-open text-emerald-500"></i> Sources &amp; Data
+        <span id="badge5" class="tab-badge hidden">0</span>
+      </button>
+      <button onclick="switchTab(6)" class="tab-button w-full text-left px-6 py-4 rounded-2xl hover:bg-emerald-50 flex items-center gap-3 text-lg">
+        <i class="fa-solid fa-chart-line text-emerald-500"></i> Data Hub
+        <span id="badge6" class="tab-badge hidden">0</span>
       </button>
       <button onclick="logout()" class="w-full text-left px-6 py-4 rounded-2xl hover:bg-red-50 flex items-center gap-3 text-lg text-red-600 mt-4">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -384,6 +419,33 @@
             </div>
           </div>
 
+          <div class="space-y-5 border-t border-gray-100 pt-6">
+            <div>
+              <span class="block text-sm font-medium mb-2">Topics <span class="text-xs text-gray-400 font-normal">(the pillars this piece belongs to)</span></span>
+              <div class="pillar-chips" data-pillar-group="article"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="articleSourceSearch">Sources cited</label>
+              <div class="relative">
+                <input type="text" id="articleSourceSearch" placeholder="Search the Sources library by title or publisher…"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm" autocomplete="off">
+                <div id="articleSourceResults" class="cite-results hidden"></div>
+              </div>
+              <div id="articleSourcesChips" class="flex flex-wrap gap-2 mt-3"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="articleAttachments">Attachments <span class="text-xs text-gray-400 font-normal">(PDF, Word, Excel, CSV, PowerPoint · up to 25 MB each)</span></label>
+              <input type="file" id="articleAttachments" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx" class="w-full text-sm">
+              <p id="articleAttachmentsStatus" class="text-xs text-emerald-600 mt-1"></p>
+              <div id="articleAttachmentsList" class="mt-3 space-y-2"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="articleVideoUrl">Video embed URL <span class="text-xs text-gray-400 font-normal">(YouTube or Vimeo, optional)</span></label>
+              <input type="url" id="articleVideoUrl" placeholder="https://www.youtube.com/watch?v=…"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+            </div>
+          </div>
+
           <div class="space-y-3">
             <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
             <div>
@@ -547,6 +609,33 @@
             </div>
           </div>
 
+          <div class="space-y-5 border-t border-gray-100 pt-6">
+            <div>
+              <span class="block text-sm font-medium mb-2">Topics <span class="text-xs text-gray-400 font-normal">(the pillars this piece belongs to)</span></span>
+              <div class="pillar-chips" data-pillar-group="research"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="researchSourceSearch">Sources cited</label>
+              <div class="relative">
+                <input type="text" id="researchSourceSearch" placeholder="Search the Sources library by title or publisher…"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm" autocomplete="off">
+                <div id="researchSourceResults" class="cite-results hidden"></div>
+              </div>
+              <div id="researchSourcesChips" class="flex flex-wrap gap-2 mt-3"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="researchAttachments">Attachments <span class="text-xs text-gray-400 font-normal">(PDF, Word, Excel, CSV, PowerPoint · up to 25 MB each)</span></label>
+              <input type="file" id="researchAttachments" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx" class="w-full text-sm">
+              <p id="researchAttachmentsStatus" class="text-xs text-emerald-600 mt-1"></p>
+              <div id="researchAttachmentsList" class="mt-3 space-y-2"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="researchVideoUrl">Video embed URL <span class="text-xs text-gray-400 font-normal">(YouTube or Vimeo, optional)</span></label>
+              <input type="url" id="researchVideoUrl" placeholder="https://www.youtube.com/watch?v=…"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+            </div>
+          </div>
+
           <div class="space-y-3">
             <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
             <div>
@@ -692,6 +781,33 @@
             </div>
           </div>
 
+          <div class="space-y-5 border-t border-gray-100 pt-6">
+            <div>
+              <span class="block text-sm font-medium mb-2">Topics <span class="text-xs text-gray-400 font-normal">(the pillars this piece belongs to)</span></span>
+              <div class="pillar-chips" data-pillar-group="project"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="projectSourceSearch">Sources cited</label>
+              <div class="relative">
+                <input type="text" id="projectSourceSearch" placeholder="Search the Sources library by title or publisher…"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm" autocomplete="off">
+                <div id="projectSourceResults" class="cite-results hidden"></div>
+              </div>
+              <div id="projectSourcesChips" class="flex flex-wrap gap-2 mt-3"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="projectAttachments">Attachments <span class="text-xs text-gray-400 font-normal">(PDF, Word, Excel, CSV, PowerPoint · up to 25 MB each)</span></label>
+              <input type="file" id="projectAttachments" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx" class="w-full text-sm">
+              <p id="projectAttachmentsStatus" class="text-xs text-emerald-600 mt-1"></p>
+              <div id="projectAttachmentsList" class="mt-3 space-y-2"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="projectVideoUrl">Video embed URL <span class="text-xs text-gray-400 font-normal">(YouTube or Vimeo, optional)</span></label>
+              <input type="url" id="projectVideoUrl" placeholder="https://www.youtube.com/watch?v=…"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm">
+            </div>
+          </div>
+
           <div class="space-y-3">
             <h3 class="text-sm font-semibold text-gray-700">SEO</h3>
             <div>
@@ -789,6 +905,270 @@
       <div id="partnersList" class="space-y-3"></div>
     </div>
 
+    <!-- ═══════════════ TAB 5: SOURCES ═══════════════ -->
+    <div id="tab5" class="tab-content hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl font-semibold">Sources &amp; Data</h2>
+        <span class="text-sm text-gray-500 hidden md:inline">The library of reports, datasets and statistics Enlil's work cites</span>
+      </div>
+
+      <form id="sourceForm" class="bg-white p-8 rounded-3xl shadow mb-10 space-y-6">
+        <input type="hidden" id="sourceEditIndex" value="">
+
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-medium">Status:</span>
+          <button type="button" id="sourceStatusBtn" onclick="toggleStatus('source')"
+                  class="px-4 py-1.5 rounded-full text-sm font-semibold publish-pill">Published</button>
+          <input type="hidden" id="sourceStatus" value="published">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" for="sourceTitle">Source title</label>
+          <div class="flex gap-2">
+            <input type="text" id="sourceTitle" placeholder="e.g. Iraq Electricity Sector Annual Report 2025"
+                   class="flex-1 px-4 py-3 border border-gray-300 rounded-2xl" required oninput="autoSlug('source')">
+            <button type="button" onclick="autoSlug('source',true)"
+                    class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-2xl text-gray-600 whitespace-nowrap">Auto slug</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium mb-2" for="sourcePublisher">Publisher / organisation</label>
+            <input type="text" id="sourcePublisher" placeholder="e.g. World Bank, Ministry of Electricity"
+                   class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" for="sourceType">Type</label>
+            <select id="sourceType" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+              <option value="">— Select type —</option>
+              <option>Report</option>
+              <option>Dataset</option>
+              <option>Statistic</option>
+              <option>News article</option>
+              <option>Academic paper</option>
+              <option>Government document</option>
+              <option>Legal or policy text</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" for="sourceUrl">Link to the original source</label>
+          <input type="url" id="sourceUrl" placeholder="https://…"
+                 class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+          <p class="text-xs text-gray-500 mt-1">Readers are sent here. Keep it pointing at the original publisher, not a copy.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium mb-2" for="sourceDatePublished">Date published</label>
+            <input type="date" id="sourceDatePublished" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" for="sourceDateAccessed">Date accessed</label>
+            <input type="date" id="sourceDateAccessed" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+            <p class="text-xs text-gray-500 mt-1">Leave empty to use today's date.</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" for="sourceNote">Note <span class="text-xs text-gray-400 font-normal">(what it contains, why it matters — shown publicly)</span></label>
+          <textarea id="sourceNote" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm"></textarea>
+        </div>
+
+        <div>
+          <span class="block text-sm font-medium mb-2">Topics</span>
+          <div class="pillar-chips" data-pillar-group="source"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" for="sourceFile">Attach a copy <span class="text-xs text-gray-400 font-normal">(optional)</span></label>
+          <input type="file" id="sourceFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx" class="w-full text-sm">
+          <p id="sourceFileStatus" class="text-xs text-emerald-600 mt-1"></p>
+          <div id="sourceFileChip" class="mt-2"></div>
+          <p class="text-xs text-gray-500 mt-1">Only attach a copy if Enlil is allowed to redistribute it. The link above stays the primary reference.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium mb-1" for="sourceSlug">Slug <span class="text-gray-400 font-normal">(used by citations)</span></label>
+          <input type="text" id="sourceSlug" placeholder="auto-generated from the title"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
+          <p class="text-xs text-gray-500 mt-1">Changing it later breaks existing citations to this source.</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-3 mt-4">
+          <button type="submit" class="flex-1 bg-emerald-600 text-white py-4 rounded-3xl font-medium hover:bg-emerald-700"
+                  id="sourceSubmitButton">Save Source</button>
+          <button type="button" class="px-6 py-4 rounded-3xl border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  onclick="resetSourceForm()">Clear Form</button>
+        </div>
+        <p class="last-saved" id="sourceLastSaved"></p>
+      </form>
+
+      <div class="mb-4">
+        <input type="text" id="sourceSearch" placeholder="Search sources by title, publisher or type…"
+               class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm bg-white shadow-sm"
+               oninput="renderSources()">
+      </div>
+      <div id="sourcesList" class="space-y-3"></div>
+    </div>
+
+    <!-- TAB 6: DATA HUB (datasets) -->
+    <div id="tab6" class="tab-content hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl font-semibold">Data Hub</h2>
+        <span class="text-sm text-gray-500 hidden md:inline">Indicator datasets shown as interactive charts on <a href="/data.html" target="_blank" class="text-emerald-600 underline">enlilcenter.org/data</a></span>
+      </div>
+
+      <form id="datasetForm" class="bg-white p-8 rounded-3xl shadow mb-10 space-y-6">
+        <input type="hidden" id="datasetEditIndex" value="">
+
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-medium">Status:</span>
+          <button type="button" id="datasetStatusBtn" onclick="toggleStatus('dataset')"
+                  class="px-4 py-1.5 rounded-full text-sm font-semibold publish-pill">Published</button>
+          <input type="hidden" id="datasetStatus" value="published">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" for="datasetTitle">Dataset title</label>
+          <div class="flex gap-2">
+            <input type="text" id="datasetTitle" placeholder="e.g. Iraq electricity generation by source"
+                   class="flex-1 px-4 py-3 border border-gray-300 rounded-2xl" required oninput="autoSlug('dataset')">
+            <button type="button" onclick="autoSlug('dataset',true)"
+                    class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-2xl text-gray-600 whitespace-nowrap">Auto slug</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" for="datasetDescription">What this series shows <span class="text-xs text-gray-400 font-normal">(one or two sentences, shown publicly)</span></label>
+          <textarea id="datasetDescription" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-2xl text-sm"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div>
+            <label class="block text-sm font-medium mb-2" for="datasetUnit">Unit</label>
+            <input type="text" id="datasetUnit" placeholder="e.g. USD billion, %, mm" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" for="datasetFrequency">Frequency</label>
+            <select id="datasetFrequency" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+              <option value="annual">Annual</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="monthly">Monthly</option>
+              <option value="daily">Daily</option>
+              <option value="irregular">Irregular</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" for="datasetChartType">Default chart</label>
+            <select id="datasetChartType" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+              <option value="line">Line</option>
+              <option value="area">Area</option>
+              <option value="bar">Bars</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" for="datasetDecimals">Decimals shown</label>
+            <select id="datasetDecimals" class="w-full px-4 py-3 border border-gray-300 rounded-2xl">
+              <option value="">Auto</option><option>0</option><option>1</option><option>2</option><option>3</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <span class="block text-sm font-medium mb-2">Topics</span>
+          <div class="pillar-chips" data-pillar-group="dataset"></div>
+        </div>
+
+        <!-- Data entry -->
+        <div class="border border-emerald-100 bg-emerald-50/40 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-sm font-semibold">The data</span>
+            <span class="text-xs text-gray-500">First column = period (year or date). Each further column = one series. First row = column names.</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium mb-1" for="datasetPaste">Paste from Excel / Google Sheets / CSV</label>
+              <textarea id="datasetPaste" rows="7" placeholder="Year&#9;GDP&#10;2020&#9;167.2&#10;2021&#9;207.9&#10;2022&#9;264.2"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-xs font-mono"></textarea>
+              <button type="button" onclick="parseDatasetPaste()" class="mt-2 px-4 py-2 text-sm bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700">Load pasted table</button>
+            </div>
+            <div>
+              <label class="block text-xs font-medium mb-1" for="datasetFile">…or upload a CSV / Excel-exported CSV</label>
+              <input type="file" id="datasetFile" accept=".csv,.txt,.tsv" class="w-full text-sm">
+              <p id="datasetFileStatus" class="text-xs text-emerald-600 mt-1"></p>
+              <div id="datasetFileChip" class="mt-2"></div>
+              <p class="text-xs text-gray-500 mt-1">The original file is kept in storage so readers can download it as received. Excel: File → Save As → CSV.</p>
+            </div>
+          </div>
+          <div id="datasetParseMsg" class="text-xs"></div>
+          <div id="datasetPreview" class="hidden space-y-3">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="bg-white rounded-2xl border border-gray-200 p-3"><div class="h-56"><canvas id="datasetPreviewChart"></canvas></div></div>
+              <div class="bg-white rounded-2xl border border-gray-200 overflow-auto max-h-64">
+                <table id="datasetPreviewTable" class="ds-grid w-full"><thead class="bg-gray-50 sticky top-0"></thead><tbody></tbody></table>
+              </div>
+            </div>
+            <p id="datasetPreviewSummary" class="text-xs text-gray-600"></p>
+          </div>
+        </div>
+
+        <!-- Source -->
+        <div class="border border-gray-200 rounded-2xl p-5 space-y-4">
+          <span class="text-sm font-semibold">Where the numbers come from</span>
+          <div class="relative">
+            <label class="block text-xs font-medium mb-1" for="datasetSourceSearch">Pick from the Sources library</label>
+            <input type="text" id="datasetSourceSearch" placeholder="Type to search sources…" autocomplete="off"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
+            <div id="datasetSourceResults" class="cite-results hidden"></div>
+            <div id="datasetSourceChip" class="mt-2"></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium mb-1" for="datasetSourcePublisher">Publisher</label>
+              <input type="text" id="datasetSourcePublisher" placeholder="e.g. World Bank" class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium mb-1" for="datasetSourceTitle">Publication / dataset name</label>
+              <input type="text" id="datasetSourceTitle" placeholder="e.g. World Development Indicators" class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium mb-1" for="datasetRetrievedAt">Date retrieved</label>
+              <input type="date" id="datasetRetrievedAt" class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium mb-1" for="datasetSourceUrl">Link to the original data</label>
+            <input type="url" id="datasetSourceUrl" placeholder="https://…" class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-medium mb-1" for="datasetNotes">Method notes <span class="text-gray-400 font-normal">(conversions, caveats — shown publicly)</span></label>
+            <textarea id="datasetNotes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium mb-1" for="datasetSlug">Slug <span class="text-gray-400 font-normal">(public URL: enlilcenter.org/data/<em>slug</em>)</span></label>
+          <input type="text" id="datasetSlug" placeholder="auto-generated from the title" class="w-full px-3 py-2 border border-gray-300 rounded-2xl text-sm">
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-3 mt-4">
+          <button type="submit" class="flex-1 bg-emerald-600 text-white py-4 rounded-3xl font-medium hover:bg-emerald-700" id="datasetSubmitButton">Save Dataset</button>
+          <button type="button" class="px-6 py-4 rounded-3xl border border-gray-300 text-gray-700 hover:bg-gray-100" onclick="resetDatasetForm()">Clear Form</button>
+        </div>
+        <p class="last-saved" id="datasetLastSaved"></p>
+      </form>
+
+      <div class="mb-4">
+        <input type="text" id="datasetSearch" placeholder="Search datasets by title, topic or publisher…"
+               class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm bg-white shadow-sm" oninput="renderDatasets()">
+      </div>
+      <div id="datasetsList" class="space-y-3"></div>
+    </div>
+
   </div><!-- end main content -->
 </div><!-- end flex layout -->
 
@@ -828,7 +1208,7 @@ fetch('/admin/token').then(r=>r.json()).then(d=>{ ADMIN_TOKEN = d.token; }).catc
 });
 const API_BASE    = 'https://enlil-cms-api.osmanalikareem.workers.dev';
 
-let authors=[], articles=[], research=[], projects=[], partners=[];
+let authors=[], articles=[], research=[], projects=[], partners=[], sources=[], datasets=[];
 let quillArticle, quillResearch, quillProject, quillBio;
 let currentCropper=null, currentInputId=null, currentAspectRatio=1, currentMaxKB=1500;
 let pendingInlineResolve=null;
@@ -904,12 +1284,12 @@ function logout(){
   isLoggedIn=false;
   sessionStorage.removeItem('enlilAdminLoggedIn');
   document.getElementById('loginScreen').classList.remove('hidden');
-  authors=[];articles=[];research=[];projects=[];partners=[];
+  authors=[];articles=[];research=[];projects=[];partners=[];sources=[];datasets=[];
   clearAllLists();
 }
 
 function clearAllLists(){
-  ['authorsList','articlesList','researchList','projectsList','partnersList']
+  ['authorsList','articlesList','researchList','projectsList','partnersList','sourcesList','datasetsList']
     .forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
 }
 
@@ -1121,35 +1501,46 @@ function cancelCrop(){
 async function applyCrop(){
   if(!currentCropper)return;
   const isInline=currentInputId==='inlineBody'||pendingInlineResolve;
-  const config=IMAGE_CONFIG[isInline?'inlineBody':(currentInputId||'inlineBody')];
+  const fieldId=isInline?'inlineBody':(currentInputId||'inlineBody');
+  const config=IMAGE_CONFIG[fieldId];
   const maxW=config?.maxWidth||1200;
   const maxKB=currentMaxKB||1200;
   const canvas=currentCropper.getCroppedCanvas({width:maxW});
   let base64=canvas.toDataURL('image/jpeg',0.92);
   base64=await compressImage(base64,maxKB);
   const alt=document.getElementById('cropAltText').value.trim();
-
-  if(pendingInlineResolve){
-    pendingInlineResolve(base64,alt);
-    pendingInlineResolve=null;
-  } else {
-    window['cropped'+currentInputId]=base64;
-    window['cropped'+currentInputId] = base64;
-    console.log('✅ CROP SAVED:', 'cropped'+currentInputId, '→', base64.slice(0,50));
-    // show preview
-    const previewEl=document.getElementById(currentInputId+'Preview')||
-                    document.getElementById(currentInputId.replace('Cover','CoverPreview'));
-    const imgEl=document.getElementById(currentInputId+'PreviewImg')||
-               document.getElementById(currentInputId.replace('Cover','PreviewImg'));
-    if(previewEl&&imgEl){imgEl.src=base64;previewEl.classList.remove('hidden');}
-    if(alt) window['alt'+currentInputId]=alt;
-    updateArticlePreview();updateResearchPreview();updateProjectPreview();
-  }
-
+  const resolveFn=pendingInlineResolve, targetId=currentInputId;
   if(currentCropper){currentCropper.destroy();currentCropper=null;}
   document.getElementById('cropModal').classList.add('hidden');
-  currentInputId=null;
-  showToast('Image cropped & compressed ✓');
+  currentInputId=null; pendingInlineResolve=null;
+
+  // Store in the media library (R2). Only if that fails do we keep the inline copy,
+  // so an upload hiccup never blocks editing.
+  let stored=base64;
+  showToast('Uploading image to the media library…');
+  try{
+    const folder=IMAGE_FOLDERS[fieldId]||'misc';
+    const hint=fieldId==='inlineBody'?'image':slugHint(fieldId.replace(/Cover|Photo|Logo$/,''));
+    stored=await uploadImageToR2(base64,folder,hint);
+  }catch(err){
+    console.warn('R2 upload failed — keeping inline image',err);
+    showToast('Upload failed — image kept inline for now. Save again later to retry.');
+  }
+
+  if(resolveFn){
+    resolveFn(stored,alt);
+  } else if(targetId){
+    window['cropped'+targetId]=stored;
+    const previewEl=document.getElementById(targetId+'Preview')||
+                    document.getElementById(targetId.replace('Cover','CoverPreview'));
+    const imgEl=document.getElementById(targetId+'PreviewImg')||
+               document.getElementById(targetId.replace('Cover','PreviewImg'));
+    if(previewEl&&imgEl){imgEl.src=stored;previewEl.classList.remove('hidden');}
+    if(alt) window['alt'+targetId]=alt;
+    updateArticlePreview();updateResearchPreview();updateProjectPreview();
+  }
+  hasUnsavedChanges=true;
+  if(!stored.startsWith('data:')) showToast('Image uploaded ✓');
 }
 
 async function compressImage(base64,maxKB){
@@ -1284,7 +1675,7 @@ window.addEventListener('beforeunload',e=>{
 
 // ─── TAB BADGES ───────────────────────────────────────────────────────────────
 function updateBadges(){
-  const counts=[authors.length,articles.length,research.length,projects.length,partners.length];
+  const counts=[authors.length,articles.length,research.length,projects.length,partners.length,sources.length,datasets.length];
   counts.forEach((c,i)=>{
     const el=document.getElementById('badge'+i);
     if(!el)return;
@@ -1295,19 +1686,11 @@ function updateBadges(){
 
 // ─── DATA LOAD / SAVE ─────────────────────────────────────────────────────────
 async function loadFromFiles(){
+  const keys=['authors','articles','research','projects','partners','sources','datasets'];
   try{
-    const [aRes,arRes,rRes,pRes,prRes]=await Promise.all([
-      fetch(API_BASE+'/data/authors'),
-      fetch(API_BASE+'/data/articles'),
-      fetch(API_BASE+'/data/research'),
-      fetch(API_BASE+'/data/projects'),
-      fetch(API_BASE+'/data/partners'),
-    ]);
-    authors =await aRes.json();
-    articles=await arRes.json();
-    research=await rRes.json();
-    projects=await pRes.json();
-    partners=await prRes.json();
+    const res=await Promise.all(keys.map(k=>fetch(API_BASE+'/data/'+k)));
+    const data=await Promise.all(res.map(r=>r.ok?r.json().catch(()=>[]):[]));
+    [authors,articles,research,projects,partners,sources,datasets]=data.map(d=>Array.isArray(d)?d:[]);
   }catch(e){console.log('First run or load error',e);}
   renderAll();
   populateAuthorSelects();
@@ -1325,7 +1708,7 @@ async function saveToJSON(key,data){
 
 // ─── RENDER ALL ───────────────────────────────────────────────────────────────
 function renderAll(){
-  renderAuthors();renderArticles();renderResearch();renderProjects();renderPartners();
+  renderAuthors();renderArticles();renderResearch();renderProjects();renderPartners();renderSources();renderDatasets();
   updateBadges();
 }
 
@@ -1587,7 +1970,7 @@ function addAuthorLinkRow(existing){
 // AUTHORS
 document.getElementById('authorForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
-  if(!validateRequired([{id:'authorName'}]))return;
+  if(!validateForm([{id:'authorName',required:true,label:'Full name'},{id:'authorEmail',type:'email'}]))return;
   const idx=document.getElementById('authorEditIndex').value;
   const bio=quillBio?quillBio.root.innerHTML:'';
   const links=[];
@@ -1616,7 +1999,7 @@ document.getElementById('authorForm')?.addEventListener('submit',async e=>{
 // ARTICLES
 document.getElementById('articleForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
-  if(!validateRequired([{id:'articleTitle'}]))return;
+  if(!validateForm([{id:'articleTitle',required:true,label:'Title'},{id:'articleSlug',type:'slug'},{id:'articleDate',type:'date'},{id:'articleVideoUrl',type:'url'},{id:'articleSeoDescription',maxLength:170}]))return;
   const idx=document.getElementById('articleEditIndex').value;
   const leadName=document.getElementById('articleLeadAuthor').value;
   const leadRole=resolveLeadRole('articleLeadRole','articleLeadRoleCustom');
@@ -1633,7 +2016,11 @@ document.getElementById('articleForm')?.addEventListener('submit',async e=>{
       description:document.getElementById('articleSeoDescription').value.trim(),
       keywords:document.getElementById('articleSeoKeywords').value.trim()
     },
-    status:document.getElementById('articleStatus')?.value||'published'
+    status:document.getElementById('articleStatus')?.value||'published',
+    pillars:getPillars('article'),
+    sources:citations.article.slice(),
+    attachments:attachments.article.slice(),
+    videoUrl:document.getElementById('articleVideoUrl').value.trim()
   };
   if(idx!=='') articles[parseInt(idx)]=item;
   else articles.push(item);
@@ -1653,6 +2040,7 @@ document.getElementById('researchForm')?.addEventListener('submit', async (e) =>
   submitBtn.textContent = 'Saving…';
 
   try {
+    if(!validateForm([{id:'researchTitle',required:true,label:'Title'},{id:'researchSlug',type:'slug'},{id:'researchDate',type:'date'},{id:'researchVideoUrl',type:'url'},{id:'researchSeoDescription',maxLength:170}])) return;
     console.log('📦 SUBMIT - currentInputId was:', currentInputId);
     console.log('📦 SUBMIT - croppedresearchCover:', window['croppedresearchCover']?.slice(0,50));
     console.log('📦 SUBMIT - ALL cropped keys:', Object.keys(window).filter(k => k.toLowerCase().includes('cropped')));
@@ -1673,6 +2061,13 @@ document.getElementById('researchForm')?.addEventListener('submit', async (e) =>
       // Keep existing URL if editing and no new file selected
       pdfUrl = research[parseInt(idx)].pdfUrl;
       pdfKey = research[parseInt(idx)].pdfKey || '';
+    }
+
+    // First-page thumbnail goes to the media library too, never inline
+    let pdfThumb = window.researchPDFThumb || (idx !== '' ? research[parseInt(idx)]?.pdfThumb : '') || '';
+    if (pdfThumb.startsWith('data:')) {
+      try { pdfThumb = await uploadImageToR2(pdfThumb, 'research/thumbs', slug); }
+      catch (err) { console.warn('Thumbnail upload failed, keeping inline', err); }
     }
 
     // Build lead author
@@ -1703,13 +2098,17 @@ document.getElementById('researchForm')?.addEventListener('submit', async (e) =>
       cover:       window.croppedresearchCover || (idx !== '' ? research[parseInt(idx)]?.cover : ''),
       pdfUrl,
       pdfKey,
-      pdfThumb:    window.researchPDFThumb || (idx !== '' ? research[parseInt(idx)]?.pdfThumb : ''),
+      pdfThumb,
       content:     quillResearch.root.innerHTML,
       seo: {
         slug,
         description: document.getElementById('researchSeoDescription').value.trim(),
         keywords:    document.getElementById('researchSeoKeywords').value.trim()
-      }
+      },
+      pillars:     getPillars('research'),
+      sources:     citations.research.slice(),
+      attachments: attachments.research.slice(),
+      videoUrl:    document.getElementById('researchVideoUrl').value.trim()
     };
 
     if (idx !== '') {
@@ -1735,7 +2134,7 @@ document.getElementById('researchForm')?.addEventListener('submit', async (e) =>
 // PROJECTS
 document.getElementById('projectForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
-  if(!validateRequired([{id:'projectTitle'}]))return;
+  if(!validateForm([{id:'projectTitle',required:true,label:'Project title'},{id:'projectSlug',type:'slug'},{id:'projectYear',type:'year'},{id:'projectVideoUrl',type:'url'},{id:'projectSeoDescription',maxLength:170}]))return;
   const idx=document.getElementById('projectEditIndex').value;
   const content=quillProject?DOMPurify.sanitize(quillProject.root.innerHTML):'';
   const item={
@@ -1752,7 +2151,11 @@ document.getElementById('projectForm')?.addEventListener('submit',async e=>{
       description:document.getElementById('projectSeoDescription').value.trim(),
       keywords:document.getElementById('projectSeoKeywords').value.trim()
     },
-    publishStatus:document.getElementById('projectStatus2')?.value||'published'
+    publishStatus:document.getElementById('projectStatus2')?.value||'published',
+    pillars:getPillars('project'),
+    sources:citations.project.slice(),
+    attachments:attachments.project.slice(),
+    videoUrl:document.getElementById('projectVideoUrl').value.trim()
   };
   if(idx!=='') projects[parseInt(idx)]=item;
   else projects.push(item);
@@ -1766,7 +2169,7 @@ document.getElementById('projectForm')?.addEventListener('submit',async e=>{
 // PARTNERS
 document.getElementById('partnerForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
-  if(!validateRequired([{id:'partnerName'}]))return;
+  if(!validateForm([{id:'partnerName',required:true,label:'Organization name'},{id:'partnerUrl',type:'url'}]))return;
   const idx=document.getElementById('partnerEditIndex').value;
   const item={
     name:document.getElementById('partnerName').value.trim(),
@@ -1784,7 +2187,7 @@ document.getElementById('partnerForm')?.addEventListener('submit',async e=>{
 
 // ─── DELETE WITH UNDO ─────────────────────────────────────────────────────────
 async function deleteItem(type,index){
-  const map={authors,articles,research,projects,partners};
+  const map={authors,articles,research,projects,partners,sources,datasets};
   const arr=map[type]; if(!arr)return;
   const deleted=arr[index];
   const snapshot=[...arr];
@@ -1845,6 +2248,10 @@ function editItem(type,index){
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
     }
     document.getElementById('articleSlug').value=item.slug||'';
+    setPillars('article',item.pillars);
+    citations.article=Array.isArray(item.sources)?item.sources.map(s=>({...s})):[]; renderCitationChips('article');
+    attachments.article=Array.isArray(item.attachments)?item.attachments.map(a=>({...a})):[]; renderAttachmentList('article');
+    document.getElementById('articleVideoUrl').value=item.videoUrl||'';
     document.getElementById('articleSeoDescription').value=item.seo?.description||item.seoDescription||'';
     document.getElementById('articleSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('article',item.status||'published');
@@ -1879,6 +2286,10 @@ function editItem(type,index){
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
     }
     document.getElementById('researchSlug').value=item.slug||'';
+    setPillars('research',item.pillars);
+    citations.research=Array.isArray(item.sources)?item.sources.map(s=>({...s})):[]; renderCitationChips('research');
+    attachments.research=Array.isArray(item.attachments)?item.attachments.map(a=>({...a})):[]; renderAttachmentList('research');
+    document.getElementById('researchVideoUrl').value=item.videoUrl||'';
     document.getElementById('researchSeoDescription').value=item.seo?.description||item.seoDescription||'';
     document.getElementById('researchSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('research',item.status||'published');
@@ -1906,6 +2317,10 @@ function editItem(type,index){
       if(p&&i){i.src=item.cover;p.classList.remove('hidden');}
     }
     document.getElementById('projectSlug').value=item.slug||'';
+    setPillars('project',item.pillars);
+    citations.project=Array.isArray(item.sources)?item.sources.map(s=>({...s})):[]; renderCitationChips('project');
+    attachments.project=Array.isArray(item.attachments)?item.attachments.map(a=>({...a})):[]; renderAttachmentList('project');
+    document.getElementById('projectVideoUrl').value=item.videoUrl||'';
     document.getElementById('projectSeoDescription').value=item.seo?.description||item.seoDescription||'';
     document.getElementById('projectSeoKeywords').value=item.seo?.keywords||item.seoKeywords||'';
     setStatusUI('project',item.publishStatus||'published');
@@ -1917,13 +2332,60 @@ function editItem(type,index){
     document.getElementById('projectForm').scrollIntoView({behavior:'smooth'});
     updateProjectPreview();
   }
+  else if(type==='sources'){
+    const item=sources[index];
+    document.getElementById('sourceEditIndex').value=index;
+    document.getElementById('sourceTitle').value=item.title||'';
+    document.getElementById('sourceSlug').value=item.slug||'';
+    document.getElementById('sourcePublisher').value=item.publisher||'';
+    document.getElementById('sourceType').value=item.type||'';
+    document.getElementById('sourceUrl').value=item.url||'';
+    document.getElementById('sourceDatePublished').value=item.datePublished||'';
+    document.getElementById('sourceDateAccessed').value=item.dateAccessed||'';
+    document.getElementById('sourceNote').value=item.note||'';
+    setPillars('source',item.pillars);
+    sourceFile=item.file?{...item.file}:null; renderSourceFileChip();
+    setStatusUI('source',item.status||'published');
+    document.getElementById('sourceStatus').value=item.status||'published';
+    document.getElementById('sourceSubmitButton').textContent='Update Source';
+    switchTab(5);
+    document.getElementById('sourceForm').scrollIntoView({behavior:'smooth'});
+  }
+  else if(type==='datasets'){
+    const item=datasets[index];
+    document.getElementById('datasetEditIndex').value=index;
+    document.getElementById('datasetTitle').value=item.title||'';
+    document.getElementById('datasetSlug').value=item.slug||'';
+    document.getElementById('datasetDescription').value=item.description||'';
+    document.getElementById('datasetUnit').value=item.unit||'';
+    document.getElementById('datasetFrequency').value=item.frequency||'annual';
+    document.getElementById('datasetChartType').value=item.chartType||'line';
+    document.getElementById('datasetDecimals').value=Number.isFinite(item.decimals)?String(item.decimals):'';
+    document.getElementById('datasetNotes').value=item.notes||'';
+    document.getElementById('datasetRetrievedAt').value=item.retrievedAt||'';
+    const src=item.source||{};
+    document.getElementById('datasetSourcePublisher').value=src.publisher||'';
+    document.getElementById('datasetSourceTitle').value=src.title||'';
+    document.getElementById('datasetSourceUrl').value=src.url||'';
+    datasetSourceSlug=src.slug||''; renderDatasetSourceChip();
+    setPillars('dataset',item.pillars);
+    datasetTable={columns:Array.isArray(item.columns)?[...item.columns]:[],rows:Array.isArray(item.rows)?item.rows.map(r=>[...r]):[]};
+    datasetFile=item.file?{...item.file}:null; renderDatasetFileChip();
+    document.getElementById('datasetPaste').value='';
+    renderDatasetPreview();
+    setStatusUI('dataset',item.status||'published');
+    document.getElementById('datasetStatus').value=item.status||'published';
+    document.getElementById('datasetSubmitButton').textContent='Update Dataset';
+    switchTab(6);
+    document.getElementById('datasetForm').scrollIntoView({behavior:'smooth'});
+  }
   else if(type==='partners'){
     const item=partners[index];
     document.getElementById('partnerEditIndex').value=index;
     document.getElementById('partnerName').value=item.name||'';
     document.getElementById('partnerUrl').value=item.url||'';
     if(item.logo){
-      window['cropped_partnerLogo']=item.logo;
+      window['croppedpartnerLogo']=item.logo;
       const p=document.getElementById('partnerLogoPreview');
       const i=document.getElementById('partnerLogoPreviewImg');
       if(p&&i){i.src=item.logo;p.classList.remove('hidden');}
@@ -1959,6 +2421,7 @@ function resetArticleForm(){
   document.getElementById('articleStatus').value='published';
   setStatusUI('article','published');
   updateCharCounter('articleSeoDescription','articleSeoDescCounter');
+  clearExtras('article');
 }
 
 function resetResearchForm(){
@@ -1977,6 +2440,7 @@ function resetResearchForm(){
   updateCharCounter('researchSeoDescription','researchSeoDescCounter');
   window.researchPDFFile  = null;
   window.researchPDFThumb = null;
+  clearExtras('research');
 }
 
 function resetProjectForm(){
@@ -1992,6 +2456,7 @@ function resetProjectForm(){
   if(document.getElementById('projectStatus2'))document.getElementById('projectStatus2').value='published';
   setStatusUI('project','published');
   updateCharCounter('projectSeoDescription','projectSeoDescCounter');
+  clearExtras('project');
 }
 
 function resetPartnerForm(){
@@ -2183,6 +2648,403 @@ document.getElementById('researchPDF')?.addEventListener('change', async (e) => 
   });
 });
 
+// ─── TOPICS / PILLARS ─────────────────────────────────────────────────────────
+const PILLARS=['Climate','Water','Energy','Economy','Governance'];
+const pillarState={article:new Set(),research:new Set(),project:new Set(),source:new Set(),dataset:new Set()};
+const citations={article:[],research:[],project:[]};
+const attachments={article:[],research:[],project:[]};
+let sourceFile=null;
+
+function renderPillarChips(group){
+  const wrap=document.querySelector(`[data-pillar-group="${group}"]`); if(!wrap)return;
+  wrap.innerHTML=PILLARS.map(p=>`<button type="button" data-pillar="${p}" class="pillar-chip ${pillarState[group].has(p)?'pillar-on':''}">${p}</button>`).join('');
+  wrap.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const p=b.dataset.pillar;
+    pillarState[group].has(p)?pillarState[group].delete(p):pillarState[group].add(p);
+    renderPillarChips(group); hasUnsavedChanges=true;
+  });
+}
+function setPillars(group,list){ pillarState[group]=new Set(Array.isArray(list)?list.filter(p=>PILLARS.includes(p)):[]); renderPillarChips(group); }
+function getPillars(group){ return PILLARS.filter(p=>pillarState[group].has(p)); }
+function initPillarChips(){ Object.keys(pillarState).forEach(renderPillarChips); }
+
+// ─── MEDIA LIBRARY (R2) UPLOADS ───────────────────────────────────────────────
+const IMAGE_FOLDERS={authorPhoto:'authors',articleCover:'articles',researchCover:'research',projectCover:'projects',partnerLogo:'partners',inlineBody:'inline'};
+
+function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtBytes(n){ if(n==null||isNaN(n))return ''; if(n<1024)return n+' B'; if(n<1048576)return (n/1024).toFixed(0)+' KB'; return (n/1048576).toFixed(1)+' MB'; }
+function slugHint(prefix){
+  const t=document.getElementById(prefix+'Title')?.value||document.getElementById(prefix+'Name')?.value||'';
+  return toSlug(t).slice(0,60)||prefix||'item';
+}
+
+async function uploadImageToR2(dataUrl,folder,nameHint){
+  if(!ADMIN_TOKEN) throw new Error('Admin session not ready — reload the page and try again');
+  const blob=await (await fetch(dataUrl)).blob();
+  const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg';
+  const key=`${folder}/${toSlug(nameHint||'image')||'image'}-${Date.now()}.${ext}`;
+  const res=await fetch(`${API_BASE}/upload-image`,{
+    method:'POST',
+    headers:{'X-Admin-Token':ADMIN_TOKEN,'Content-Type':blob.type||'image/jpeg','X-Filename':key},
+    body:blob
+  });
+  if(!res.ok) throw new Error('Image upload failed ('+res.status+')');
+  const out=await res.json();
+  if(!out.url) throw new Error('Upload returned no URL');
+  return out.url;
+}
+
+async function uploadFileToR2(file,folder,slug){
+  if(!ADMIN_TOKEN) throw new Error('Admin session not ready — reload the page and try again');
+  const fd=new FormData();
+  fd.append('file',file);
+  fd.append('folder',folder);
+  fd.append('slug',slug||toSlug(file.name.replace(/\.[^.]+$/,''))||'document');
+  const res=await fetch(`${API_BASE}/upload/file`,{method:'POST',headers:{'X-Admin-Token':ADMIN_TOKEN},body:fd});
+  const out=await res.json().catch(()=>({}));
+  if(!res.ok||!out.success) throw new Error(out.error||'File upload failed ('+res.status+')');
+  return out; // {key,url,name,size,type,ext}
+}
+
+// ─── ATTACHMENTS ──────────────────────────────────────────────────────────────
+function attachmentRowHtml(f,removeJs){
+  return `<div class="attach-row"><span class="attach-ext">${escapeHtml((f.ext||'file').toUpperCase())}</span><a href="${escapeHtml(f.url)}" target="_blank" rel="noopener" class="attach-name">${escapeHtml(f.name||f.key)}</a><span class="attach-size">${fmtBytes(f.size)}</span><button type="button" class="attach-remove" onclick="${removeJs}" aria-label="Remove">&times;</button></div>`;
+}
+function renderAttachmentList(type){
+  const el=document.getElementById(type+'AttachmentsList'); if(!el)return;
+  const list=attachments[type];
+  el.innerHTML=list.length?list.map((f,i)=>attachmentRowHtml(f,`removeAttachment('${type}',${i})`)).join(''):'<p class="text-xs text-gray-400">No attachments yet.</p>';
+}
+function removeAttachment(type,i){ attachments[type].splice(i,1); renderAttachmentList(type); hasUnsavedChanges=true; }
+function setupAttachmentInput(type){
+  const input=document.getElementById(type+'Attachments'); if(!input)return;
+  input.addEventListener('change',async e=>{
+    const files=Array.from(e.target.files||[]); if(!files.length)return;
+    const status=document.getElementById(type+'AttachmentsStatus');
+    for(const f of files){
+      if(status)status.textContent=`Uploading ${f.name}…`;
+      try{
+        const out=await uploadFileToR2(f,`attachments/${type}s`,slugHint(type));
+        attachments[type].push({name:f.name,url:out.url,key:out.key,size:f.size,ext:out.ext});
+        renderAttachmentList(type); hasUnsavedChanges=true;
+      }catch(err){ showToast('Upload failed: '+err.message); }
+    }
+    if(status)status.textContent='';
+    input.value='';
+  });
+}
+function clearExtras(type){
+  setPillars(type,[]);
+  citations[type]=[]; renderCitationChips(type);
+  attachments[type]=[]; renderAttachmentList(type);
+  const v=document.getElementById(type+'VideoUrl'); if(v)v.value='';
+  const s=document.getElementById(type+'SourceSearch'); if(s)s.value='';
+}
+
+// ─── CITATIONS (links to the Sources library) ─────────────────────────────────
+function sourceSlugOf(s){ return (s.slug&&s.slug.trim())?s.slug.trim():toSlug(s.title||''); }
+function renderCitationChips(type){
+  const el=document.getElementById(type+'SourcesChips'); if(!el)return;
+  const list=citations[type];
+  el.innerHTML=list.length
+    ?list.map((s,i)=>`<span class="cite-chip"><span class="cite-type">${escapeHtml(s.type||'Source')}</span>${escapeHtml(s.title)}${s.publisher?` <span class="cite-pub">· ${escapeHtml(s.publisher)}</span>`:''}<button type="button" onclick="removeCitation('${type}',${i})" aria-label="Remove">&times;</button></span>`).join('')
+    :'<p class="text-xs text-gray-400">No sources cited yet — search above to add from the Sources library.</p>';
+}
+function removeCitation(type,i){ citations[type].splice(i,1); renderCitationChips(type); hasUnsavedChanges=true; }
+function addCitation(type,src){
+  const slug=sourceSlugOf(src);
+  if(!slug||citations[type].some(c=>c.slug===slug))return;
+  citations[type].push({slug,title:src.title||'',publisher:src.publisher||'',type:src.type||'',url:src.url||''});
+  renderCitationChips(type); hasUnsavedChanges=true;
+}
+function setupCitationPicker(type){
+  const input=document.getElementById(type+'SourceSearch');
+  const results=document.getElementById(type+'SourceResults'); if(!input||!results)return;
+  const run=()=>{
+    const q=input.value.trim().toLowerCase();
+    if(!q){results.classList.add('hidden');results.innerHTML='';return;}
+    const hits=sources.filter(s=>((s.title||'')+' '+(s.publisher||'')+' '+(s.type||'')).toLowerCase().includes(q)).slice(0,8);
+    results.innerHTML=hits.length
+      ?hits.map(s=>`<button type="button" class="cite-result" data-i="${sources.indexOf(s)}"><span class="font-medium">${escapeHtml(s.title)}</span><span class="text-xs text-gray-500"> · ${escapeHtml(s.publisher||'')}${s.type?' · '+escapeHtml(s.type):''}</span></button>`).join('')
+      :'<p class="text-xs text-gray-400 px-3 py-2">No matching source — add it in the Sources &amp; Data tab first.</p>';
+    results.classList.remove('hidden');
+    results.querySelectorAll('.cite-result').forEach(b=>b.onclick=()=>{ addCitation(type,sources[parseInt(b.dataset.i)]); input.value=''; results.classList.add('hidden'); });
+  };
+  input.addEventListener('input',run);
+  input.addEventListener('focus',run);
+  document.addEventListener('click',e=>{ if(!results.contains(e.target)&&e.target!==input) results.classList.add('hidden'); });
+}
+
+// ─── SOURCES & DATA ───────────────────────────────────────────────────────────
+function renderSources(){
+  const q=getSearch('sourceSearch');
+  const container=document.getElementById('sourcesList'); if(!container)return;
+  const list=q?sources.filter(s=>((s.title||'')+' '+(s.publisher||'')+' '+(s.type||'')).toLowerCase().includes(q)):sources;
+  const citedCount=slug=>[...articles,...research,...projects].filter(it=>Array.isArray(it.sources)&&it.sources.some(c=>c.slug===slug)).length;
+  container.innerHTML=list.map(s=>{
+    const realI=sources.indexOf(s); const n=citedCount(sourceSlugOf(s));
+    return `<div class="bg-white p-4 rounded-2xl shadow-sm mb-1 flex justify-between items-center gap-4">
+      <div class="min-w-0">
+        <p class="font-semibold truncate">${escapeHtml(s.title||'')} ${s.status==='draft'?'<span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Draft</span>':''}</p>
+        <p class="text-xs text-gray-500 truncate">${escapeHtml(s.publisher||'')}${s.type?' · '+escapeHtml(s.type):''}${s.datePublished?' · '+escapeHtml(s.datePublished):''} · cited in ${n} publication${n===1?'':'s'}${s.file?' · <i class="fa-solid fa-paperclip"></i> copy attached':''}</p>
+      </div>
+      <div class="flex gap-3 items-center shrink-0">
+        ${s.url?`<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener" class="text-gray-400 hover:text-emerald-600 text-sm" title="Open original"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`:''}
+        <button onclick="editItem('sources',${realI})" class="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1"><i class="fa-solid fa-pen"></i><span>Edit</span></button>
+        <button onclick="deleteItem('sources',${realI})" class="text-red-500 hover:text-red-600 text-xl leading-none">&times;</button>
+      </div>
+    </div>`;
+  }).join('')||'<p class="text-sm text-gray-400">No sources yet. Add the reports, datasets and statistics Enlil\'s work relies on.</p>';
+}
+function renderSourceFileChip(){
+  const el=document.getElementById('sourceFileChip'); if(!el)return;
+  el.innerHTML=sourceFile?attachmentRowHtml(sourceFile,"sourceFile=null;renderSourceFileChip();"):'';
+}
+function setupSourceFileInput(){
+  const input=document.getElementById('sourceFile'); if(!input)return;
+  input.addEventListener('change',async e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const status=document.getElementById('sourceFileStatus'); if(status)status.textContent=`Uploading ${f.name}…`;
+    try{
+      const out=await uploadFileToR2(f,'sources',slugHint('source'));
+      sourceFile={name:f.name,url:out.url,key:out.key,size:f.size,ext:out.ext};
+      renderSourceFileChip(); hasUnsavedChanges=true;
+    }catch(err){ showToast('Upload failed: '+err.message); }
+    if(status)status.textContent='';
+    input.value='';
+  });
+}
+function resetSourceForm(){
+  document.getElementById('sourceForm').reset();
+  document.getElementById('sourceEditIndex').value='';
+  document.getElementById('sourceSubmitButton').textContent='Save Source';
+  setPillars('source',[]);
+  sourceFile=null; renderSourceFileChip();
+  document.getElementById('sourceStatus').value='published';
+  setStatusUI('source','published');
+}
+document.getElementById('sourceForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!validateForm([{id:'sourceTitle',required:true,label:'Title'},{id:'sourceUrl',type:'url'},{id:'sourceSlug',type:'slug'},{id:'sourceDatePublished',type:'date'},{id:'sourceDateAccessed',type:'date'}]))return;
+  const idx=document.getElementById('sourceEditIndex').value;
+  const title=document.getElementById('sourceTitle').value.trim();
+  const item={
+    title,
+    slug:document.getElementById('sourceSlug').value.trim()||toSlug(title),
+    publisher:document.getElementById('sourcePublisher').value.trim(),
+    type:document.getElementById('sourceType').value,
+    url:document.getElementById('sourceUrl').value.trim(),
+    datePublished:document.getElementById('sourceDatePublished').value,
+    dateAccessed:document.getElementById('sourceDateAccessed').value||new Date().toISOString().split('T')[0],
+    note:document.getElementById('sourceNote').value.trim(),
+    pillars:getPillars('source'),
+    file:sourceFile,
+    status:document.getElementById('sourceStatus').value||'published',
+    updatedAt:new Date().toISOString()
+  };
+  if(idx!=='') sources[parseInt(idx)]=item; else sources.unshift(item);
+  await saveToJSON('sources',sources);
+  renderSources(); resetSourceForm(); updateLastSaved('source'); updateBadges();
+  hasUnsavedChanges=false;
+  showToast('Source saved ✓');
+});
+
+
+// ─── DATA HUB (datasets) ─────────────────────────────────────────────────────
+let datasetTable={columns:[],rows:[]};
+let datasetFile=null;
+let datasetSourceSlug='';
+
+function renderDatasets(){
+  const q=getSearch('datasetSearch');
+  const container=document.getElementById('datasetsList'); if(!container)return;
+  const list=q?datasets.filter(d=>((d.title||'')+' '+(d.pillars||[]).join(' ')+' '+((d.source||{}).publisher||'')).toLowerCase().includes(q)):datasets;
+  container.innerHTML=list.map(d=>{
+    const realI=datasets.indexOf(d);
+    const st=window.EnlilData?EnlilData.stats(d,0):null;
+    const slug=(d.slug||'').trim()||toSlug(d.title||'');
+    return `<div class="bg-white p-4 rounded-2xl shadow-sm mb-1 flex justify-between items-center gap-4">
+      <div class="min-w-0">
+        <p class="font-semibold truncate">${escapeHtml(d.title||'')} ${d.status==='draft'?'<span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Draft</span>':''}</p>
+        <p class="text-xs text-gray-500 truncate">${(d.pillars||[]).map(escapeHtml).join(' · ')}${st?` · ${st.span} · latest ${EnlilData.fmt(st.latest.value,st.decimals)} ${escapeHtml(d.unit||'')}`:' · no data'}${(d.source||{}).publisher?' · '+escapeHtml(d.source.publisher):''}</p>
+      </div>
+      <div class="flex gap-3 items-center shrink-0">
+        <a href="/data/${encodeURIComponent(slug)}" target="_blank" rel="noopener" class="text-gray-400 hover:text-emerald-600 text-sm" title="View on site"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        <button onclick="editItem('datasets',${realI})" class="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1"><i class="fa-solid fa-pen"></i><span>Edit</span></button>
+        <button onclick="deleteItem('datasets',${realI})" class="text-red-500 hover:text-red-600 text-xl leading-none">&times;</button>
+      </div>
+    </div>`;
+  }).join('')||'<p class="text-sm text-gray-400">No datasets yet. Paste a table or upload a CSV above to publish your first chart.</p>';
+}
+
+function parseDatasetPaste(){
+  const text=document.getElementById('datasetPaste').value;
+  const parsed=window.EnlilData?EnlilData.parseTable(text):null;
+  const msg=document.getElementById('datasetParseMsg');
+  if(!parsed||!parsed.rows.length||parsed.columns.length<2){
+    msg.innerHTML='<span class="text-red-600">Could not read a table. Need a header row plus at least one data row, with a period column and one value column.</span>';
+    return;
+  }
+  datasetTable=parsed; hasUnsavedChanges=true;
+  msg.innerHTML='';
+  renderDatasetPreview();
+}
+
+function renderDatasetPreview(){
+  const wrap=document.getElementById('datasetPreview'); if(!wrap)return;
+  const {columns,rows}=datasetTable;
+  if(!columns.length||!rows.length){wrap.classList.add('hidden');return;}
+  wrap.classList.remove('hidden');
+  const probe={columns,rows,unit:document.getElementById('datasetUnit').value,chartType:document.getElementById('datasetChartType').value};
+  if(window.EnlilData&&window.Chart) EnlilData.chart(document.getElementById('datasetPreviewChart'),probe,{});
+  const thead=document.querySelector('#datasetPreviewTable thead');
+  const tbody=document.querySelector('#datasetPreviewTable tbody');
+  thead.innerHTML=`<tr>${columns.map(c=>`<th class="text-left">${escapeHtml(c)}</th>`).join('')}</tr>`;
+  const bad=[];
+  tbody.innerHTML=rows.map((r,ri)=>`<tr>${r.map((v,ci)=>{
+    if(ci===0)return `<td>${escapeHtml(v)}</td>`;
+    const isBad=v===null&&ri<rows.length; if(isBad)bad.push(1);
+    return `<td class="${v===null?'bad':''}">${v===null?'—':v}</td>`;
+  }).join('')}</tr>`).join('');
+  const series=columns.length-1;
+  document.getElementById('datasetPreviewSummary').textContent=
+    `${rows.length} periods (${rows[0][0]} → ${rows[rows.length-1][0]}), ${series} series${bad.length?`, ${bad.length} empty cell${bad.length===1?'':'s'} (shown as gaps)`:''}. Check the chart looks right before saving.`;
+}
+['datasetUnit','datasetChartType'].forEach(id=>document.getElementById(id)?.addEventListener('change',renderDatasetPreview));
+document.getElementById('datasetUnit')?.addEventListener('input',renderDatasetPreview);
+
+function renderDatasetFileChip(){
+  const el=document.getElementById('datasetFileChip'); if(!el)return;
+  el.innerHTML=datasetFile?attachmentRowHtml(datasetFile,"datasetFile=null;renderDatasetFileChip();"):'';
+}
+function setupDatasetFileInput(){
+  const input=document.getElementById('datasetFile'); if(!input)return;
+  input.addEventListener('change',async e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const status=document.getElementById('datasetFileStatus');
+    try{
+      const text=await f.text();
+      const parsed=window.EnlilData?EnlilData.parseTable(text):null;
+      if(!parsed||!parsed.rows.length||parsed.columns.length<2) throw new Error('Could not read a table from that file');
+      datasetTable=parsed; renderDatasetPreview(); document.getElementById('datasetParseMsg').innerHTML='';
+      if(status)status.textContent=`Read ${parsed.rows.length} rows. Uploading original ${f.name}…`;
+      const uploadFile=f.name.toLowerCase().endsWith('.csv')?f:new File([text],f.name.replace(/\.[^.]+$/,'')+'.csv',{type:'text/csv'});
+      const out=await uploadFileToR2(uploadFile,'datasets',slugHint('dataset'));
+      datasetFile={name:uploadFile.name,url:out.url,key:out.key,size:uploadFile.size,ext:out.ext};
+      renderDatasetFileChip(); hasUnsavedChanges=true;
+      if(status)status.textContent='';
+    }catch(err){ if(status)status.textContent=''; showToast('File problem: '+err.message); }
+    input.value='';
+  });
+}
+
+function renderDatasetSourceChip(){
+  const el=document.getElementById('datasetSourceChip'); if(!el)return;
+  if(!datasetSourceSlug){el.innerHTML='';return;}
+  const s=sources.find(x=>sourceSlugOf(x)===datasetSourceSlug);
+  el.innerHTML=`<span class="cite-chip"><i class="fa-solid fa-book-open text-[11px]"></i> ${escapeHtml(s?s.title:datasetSourceSlug)} <button type="button" onclick="datasetSourceSlug='';renderDatasetSourceChip();" aria-label="Remove">&times;</button></span>`;
+}
+function setupDatasetSourcePicker(){
+  const input=document.getElementById('datasetSourceSearch');
+  const results=document.getElementById('datasetSourceResults'); if(!input||!results)return;
+  const run=()=>{
+    const q=input.value.trim().toLowerCase();
+    if(!q){results.classList.add('hidden');results.innerHTML='';return;}
+    const hits=sources.filter(s=>((s.title||'')+' '+(s.publisher||'')+' '+(s.type||'')).toLowerCase().includes(q)).slice(0,8);
+    results.innerHTML=hits.length
+      ?hits.map(s=>`<button type="button" class="cite-result" data-i="${sources.indexOf(s)}"><span class="font-medium">${escapeHtml(s.title)}</span><span class="text-xs text-gray-500"> · ${escapeHtml(s.publisher||'')}${s.type?' · '+escapeHtml(s.type):''}</span></button>`).join('')
+      :'<div class="px-3 py-2 text-xs text-gray-500">No match — add it under Sources &amp; Data first, or fill the publisher fields below.</div>';
+    results.classList.remove('hidden');
+    results.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      const s=sources[+b.dataset.i];
+      datasetSourceSlug=sourceSlugOf(s); renderDatasetSourceChip();
+      const pub=document.getElementById('datasetSourcePublisher'), ttl=document.getElementById('datasetSourceTitle'), url=document.getElementById('datasetSourceUrl');
+      if(pub&&!pub.value)pub.value=s.publisher||''; if(ttl&&!ttl.value)ttl.value=s.title||''; if(url&&!url.value)url.value=s.url||'';
+      input.value=''; results.classList.add('hidden'); hasUnsavedChanges=true;
+    });
+  };
+  input.addEventListener('input',run);
+  input.addEventListener('focus',run);
+  document.addEventListener('click',e=>{ if(!results.contains(e.target)&&e.target!==input) results.classList.add('hidden'); });
+}
+
+function resetDatasetForm(){
+  document.getElementById('datasetForm').reset();
+  document.getElementById('datasetEditIndex').value='';
+  document.getElementById('datasetSubmitButton').textContent='Save Dataset';
+  setPillars('dataset',[]);
+  datasetTable={columns:[],rows:[]}; datasetFile=null; datasetSourceSlug='';
+  renderDatasetFileChip(); renderDatasetSourceChip(); renderDatasetPreview();
+  document.getElementById('datasetParseMsg').innerHTML='';
+  document.getElementById('datasetStatus').value='published';
+  setStatusUI('dataset','published');
+}
+
+document.getElementById('datasetForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!validateForm([{id:'datasetTitle',required:true,label:'Title'},{id:'datasetSourceUrl',type:'url'},{id:'datasetSlug',type:'slug'},{id:'datasetRetrievedAt',type:'date'}]))return;
+  if(!datasetTable.rows.length||datasetTable.columns.length<2){ showToast('Add the data first — paste a table or upload a CSV.'); document.getElementById('datasetPaste').focus(); return; }
+  const idx=document.getElementById('datasetEditIndex').value;
+  const title=document.getElementById('datasetTitle').value.trim();
+  const dec=document.getElementById('datasetDecimals').value;
+  const item={
+    title,
+    slug:document.getElementById('datasetSlug').value.trim()||toSlug(title),
+    pillars:getPillars('dataset'),
+    description:document.getElementById('datasetDescription').value.trim(),
+    unit:document.getElementById('datasetUnit').value.trim(),
+    frequency:document.getElementById('datasetFrequency').value,
+    chartType:document.getElementById('datasetChartType').value,
+    decimals:dec===''?undefined:parseInt(dec,10),
+    columns:datasetTable.columns, rows:datasetTable.rows,
+    source:{
+      title:document.getElementById('datasetSourceTitle').value.trim(),
+      publisher:document.getElementById('datasetSourcePublisher').value.trim(),
+      url:document.getElementById('datasetSourceUrl').value.trim(),
+      slug:datasetSourceSlug||''
+    },
+    retrievedAt:document.getElementById('datasetRetrievedAt').value||new Date().toISOString().split('T')[0],
+    notes:document.getElementById('datasetNotes').value.trim(),
+    file:datasetFile,
+    status:document.getElementById('datasetStatus').value||'published',
+    updatedAt:new Date().toISOString()
+  };
+  if(idx!=='') datasets[parseInt(idx)]=item; else datasets.unshift(item);
+  await saveToJSON('datasets',datasets);
+  renderDatasets(); resetDatasetForm(); updateLastSaved('dataset'); updateBadges();
+  hasUnsavedChanges=false;
+  showToast('Dataset saved ✓');
+});
+
+// ─── FORM VALIDATION ──────────────────────────────────────────────────────────
+// rules: [{id, required, label, type:'url'|'email'|'slug'|'date'|'year', maxLength}]
+function validateForm(rules){
+  let ok=true, first=null;
+  rules.forEach(r=>{
+    const el=document.getElementById(r.id); if(!el)return;
+    const v=(el.value||'').trim(); let msg='';
+    if(r.required&&!v) msg=(r.label||'This field')+' is required';
+    else if(v&&r.type==='url'&&!/^https?:\/\/[^\s]+\.[^\s]+/i.test(v)) msg='Enter a full link starting with http:// or https://';
+    else if(v&&r.type==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) msg='Enter a valid email address';
+    else if(v&&r.type==='slug'&&!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(v)) msg='Use lowercase letters, numbers and single hyphens only';
+    else if(v&&r.type==='date'&&isNaN(Date.parse(v))) msg='Enter a valid date';
+    else if(v&&r.type==='year'&&!/^(19|20)\d{2}$/.test(v)) msg='Enter a four-digit year';
+    else if(v&&r.maxLength&&v.length>r.maxLength) msg=`Keep this under ${r.maxLength} characters`;
+    let note=el.parentElement?.querySelector(':scope > .field-error-msg');
+    if(msg){
+      ok=false; el.classList.add('field-error');
+      if(!note){note=document.createElement('p');note.className='field-error-msg';el.insertAdjacentElement('afterend',note);}
+      note.textContent=msg;
+      if(!first)first=el;
+      el.addEventListener('input',()=>{el.classList.remove('field-error');note.remove();},{once:true});
+    } else {
+      el.classList.remove('field-error'); if(note)note.remove();
+    }
+  });
+  if(first){ first.scrollIntoView({behavior:'smooth',block:'center'}); showToast('Please fix the highlighted fields'); }
+  return ok;
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 document.getElementById('loginButton')?.addEventListener('click',attemptLogin);
 document.getElementById('loginPassword')?.addEventListener('keydown',e=>{
@@ -2196,6 +3058,10 @@ sessionStorage.setItem('enlilAdminLoggedIn','true');
 document.getElementById('loginScreen').classList.add('hidden');
 
 updateLockCountdown();
+initPillarChips();
+['article','research','project'].forEach(t=>{ setupAttachmentInput(t); setupCitationPicker(t); renderAttachmentList(t); renderCitationChips(t); });
+setupSourceFileInput();
+setupDatasetFileInput(); setupDatasetSourcePicker();
 
 window.addEventListener('DOMContentLoaded',()=>{
   initEditors();

@@ -14,7 +14,7 @@ const ALLOWED_ORIGINS = [
   'https://enlilcenter.pages.dev'
 ];
 
-const ALLOWED_KEYS = ['authors', 'articles', 'research', 'projects', 'partners', 'sources'];
+const ALLOWED_KEYS = ['authors', 'articles', 'research', 'projects', 'partners', 'sources', 'datasets'];
 
 const TEMPLATES = {
   projects: '/projects/project-item.html',

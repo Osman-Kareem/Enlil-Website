@@ -3,6 +3,7 @@
 <head>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script src="../js/item-extras.js" defer></script>
 
 
 
@@ -118,6 +119,7 @@
         <a href="../research.html" class="hover:text-emerald-600">Research</a>
         <!-- Active: Projects -->
         <a href="../projects.html" class="text-emerald-600 font-medium">Projects</a>
+        <a href="../sources.html" class="hover:text-emerald-600">Sources</a>
         <a href="../index.html#partners" class="hover:text-emerald-600">Partners</a>
         <a href="../index.html#contact" class="hover:text-emerald-600">Contact</a>
       </div>
@@ -135,6 +137,7 @@
         <a href="../articles.html" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Articles</a>
         <a href="../research.html" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Research</a>
         <a href="../projects.html" onclick="toggleMobileMenu()" class="py-2 text-emerald-600 font-medium">Projects</a>
+        <a href="../sources.html" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Sources</a>
         <a href="../index.html#partners" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Partners</a>
         <a href="../index.html#contact" onclick="toggleMobileMenu()" class="py-2 hover:text-emerald-600">Contact</a>
       </div>
@@ -196,6 +199,26 @@
         <div id="projectBody" class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
           <!-- Quill HTML injected by JS -->
         </div>
+
+
+        <!-- Video (shown only if the item has a videoUrl) -->
+        <section id="videoWrapper" class="hidden mt-10">
+          <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Video</h2>
+          <div id="videoEmbed" class="rounded-2xl overflow-hidden bg-black aspect-video"></div>
+        </section>
+
+        <!-- Downloads (shown only if the item has attachments) -->
+        <section id="attachmentsWrapper" class="hidden mt-10">
+          <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Downloads</h2>
+          <ul id="attachmentsList" class="grid sm:grid-cols-2 gap-3"></ul>
+        </section>
+
+        <!-- Sources & Citations (shown only if the item cites sources) -->
+        <section id="sourcesWrapper" class="hidden mt-10 pt-8 border-t border-gray-100">
+          <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Sources &amp; Citations</h2>
+          <ol id="sourcesList" class="space-y-4"></ol>
+          <p class="mt-5 text-xs"><a href="../sources.html" class="inline-flex items-center gap-1.5 text-emerald-700 hover:underline font-medium">Browse the full sources library <i class="fa-solid fa-arrow-right text-[10px]"></i></a></p>
+        </section>
 
         <!-- Share bar -->
         <div class="mt-12 pt-8 border-t border-gray-100 flex flex-wrap items-center gap-4">
@@ -468,6 +491,9 @@
 
         // RENDER Body content
         document.getElementById('projectBody').innerHTML = DOMPurify.sanitize(transformImagesWithCaptions(project.content));
+
+        // Optional blocks: video, downloads, sources & citations (js/item-extras.js)
+        if (window.renderItemExtras) renderItemExtras(project);
 
         // SEO + share
         updateMetaAndSchema(project, finalSlug);

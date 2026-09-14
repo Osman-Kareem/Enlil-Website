@@ -3,7 +3,7 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    const slugMatch = path.match(/^\/(projects|articles|research)\/([^/.]+)$/);
+    const slugMatch = path.match(/^\/(projects|articles|research|data)\/([^/.]+)$/);
     if (slugMatch) {
       const section = slugMatch[1];
       const slug = slugMatch[2];
@@ -11,8 +11,11 @@ export default {
       const templates = {
         projects: '/projects/project-item.html',
         articles: '/articles/article.html',
-        research: '/research/research-item.html'
+        research: '/research/research-item.html',
+        data: '/datasets/dataset.html'
       };
+      // Datasets live under the KV key `datasets` but are served at /data/:slug
+      const apiKey = section === 'data' ? 'datasets' : section;
 
       // Fetch the static HTML template
       const templateReq = new Request(new URL(templates[section], url.origin));
@@ -21,7 +24,7 @@ export default {
 
       // Fetch project data from API
       try {
-        const apiRes = await fetch(`https://enlil-cms-api.osmanalikareem.workers.dev/data/${section}`);
+        const apiRes = await fetch(`https://enlil-cms-api.osmanalikareem.workers.dev/data/${apiKey}`);
         const items = await apiRes.json();
 
         function safeSlug(s, title) {
@@ -33,7 +36,7 @@ export default {
 
         if (item) {
           const title = `Enlil Center | ${item.title || 'Project'}`;
-          const desc = item.seo?.description || item.seoDescription ||
+          const desc = item.seo?.description || item.seoDescription || item.description ||
             (item.content ? item.content.replace(/<[^>]+>/g, '').slice(0, 160) + '…' : 'Enlil Center for Environment and Sustainable Development.');
           const image = item.cover || 'https://enlilcenter.org/image/og-hero.jpg';
           const canonical = `https://enlilcenter.org/${section}/${slug}`;
@@ -74,7 +77,8 @@ export default {
         return s !== 'draft' && s !== 'unpublished';
       }
 
-      const sections = ['articles', 'research', 'projects'];
+      const sections = ['articles', 'research', 'projects', 'datasets'];
+      const pathFor = { articles: 'articles', research: 'research', projects: 'projects', datasets: 'data' };
       let bySection = {};
       try {
         const results = await Promise.all(sections.map(s =>
@@ -90,6 +94,8 @@ export default {
         { loc: 'https://enlilcenter.org/articles.html', priority: '0.8' },
         { loc: 'https://enlilcenter.org/research.html', priority: '0.8' },
         { loc: 'https://enlilcenter.org/projects.html', priority: '0.8' },
+        { loc: 'https://enlilcenter.org/data.html', priority: '0.8' },
+        { loc: 'https://enlilcenter.org/sources.html', priority: '0.7' },
       ];
 
       const dynamicUrls = [];
@@ -97,9 +103,9 @@ export default {
         for (const item of bySection[section]) {
           if (!isPublished(item)) continue;
           const slug = safeSlug(item.seo?.slug || item.slug, item.title, section.slice(0, -1));
-          const rawDate = item.seo?.publishedDate || item.date || (item.year ? `${item.year}-01-01` : null);
+          const rawDate = item.seo?.publishedDate || item.date || item.updatedAt || item.retrievedAt || (item.year ? `${item.year}-01-01` : null);
           const lastmod = rawDate && !isNaN(Date.parse(rawDate)) ? new Date(rawDate).toISOString().slice(0, 10) : null;
-          dynamicUrls.push({ loc: `https://enlilcenter.org/${section}/${slug}`, lastmod, priority: '0.6' });
+          dynamicUrls.push({ loc: `https://enlilcenter.org/${pathFor[section]}/${slug}`, lastmod, priority: '0.6' });
         }
       }
 

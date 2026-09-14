@@ -13,7 +13,7 @@ Endpoints:
 
 | Route | Auth | Purpose |
 |---|---|---|
-| `GET /data/{key}` | public | Read a content type (`authors`, `articles`, `research`, `projects`, `partners`, `sources`) |
+| `GET /data/{key}` | public | Read a content type (`authors`, `articles`, `research`, `projects`, `partners`, `sources`, `datasets`) |
 | `PUT /data/{key}` | `X-Admin-Token` | Replace a content type's JSON array |
 | `POST /upload-image` | `X-Admin-Token` | Raw image body → R2 `IMAGES_BUCKET`; `X-Filename` sets the key |
 | `POST /upload/file` | `X-Admin-Token` | multipart `file`/`folder`/`slug` → R2 `FILES_BUCKET` (PDF, DOC/X, XLS/X, CSV, PPT/X, ≤25 MB) |
