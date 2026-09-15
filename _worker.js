@@ -7,6 +7,8 @@
 //     titles, body text, JSON-LD and Open Graph tags without running JavaScript.
 //     The page's own script then takes over and re-renders identically (hydration-lite).
 //   • /sitemap.xml built live from the CMS.
+//   • Legacy .html / trailing-slash URLs 301 to their clean path; unknown paths
+//     fall through to Pages, which serves /404.html with a real 404 status.
 //   • /admin/token — Access-gated route that hands the CMS its write token.
 
 const API = 'https://enlil-cms-api.osmanalikareem.workers.dev';
@@ -368,6 +370,16 @@ export default {
       return new Response(JSON.stringify({ token: env.ADMIN_TOKEN || null, email, iat, exp }), {
         headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
       });
+    }
+
+    // Canonical URL hygiene — exactly one URL per page. Legacy ".html" and
+    // trailing-slash variants 301 to the clean path so Google stops treating
+    // them as duplicate pages (Search Console: "Page with redirect" / duplicates).
+    if (path === '/index.html') return Response.redirect(`${url.origin}/${url.search}`, 301);
+    const legacy = path.match(/^\/(articles|research|projects|data|sources)(?:\.html|\/)$/);
+    if (legacy) return Response.redirect(`${url.origin}/${legacy[1]}${url.search}`, 301);
+    if (path.length > 1 && path.endsWith('/')) {
+      return Response.redirect(`${url.origin}${path.replace(/\/+$/, '')}${url.search}`, 301);
     }
 
     // Homepage — server-rendered lead story, strips, cards and stats.
