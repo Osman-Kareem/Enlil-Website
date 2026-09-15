@@ -189,7 +189,10 @@ async function renderListing(html, section) {
 // ── detail pages ─────────────────────────────────────────────────────────────
 function findItem(items, section, slug) {
   if (section === 'authors') return items.find(a => safeSlug(a.slug, a.name, '') === slug || authorSlug(a.name) === slug);
-  return items.find(i => itemSlug(i, section) === slug);
+  return items.find(i => itemSlug(i, section) === slug)
+    // Fallback: the slug an old link derived from the title, before the CMS
+    // gained explicit slugs. The router 301s such matches to the canonical path.
+    || items.find(i => safeSlug('', i.title || i.name, '') === slug);
 }
 
 
@@ -416,6 +419,9 @@ export default {
       try {
         const items = await api(cfg.key);
         const item = findItem(items, section, slug);
+        if (item && section !== 'authors' && itemSlug(item, section) !== slug) {
+          return Response.redirect(`${url.origin}/${section}/${itemSlug(item, section)}`, 301);
+        }
         if (item && (section === 'authors' || isPublished(item))) html = RENDER[section](html, item, slug);
         else status = 404;
       } catch (e) { /* template as-is; the page's own script will try again client-side */ }
