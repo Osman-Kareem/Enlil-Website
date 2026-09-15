@@ -381,6 +381,7 @@ async function renderTopic(html, slug) {
   const A = pick(articles, byDateDesc), R = pick(research, byDateDesc), P = pick(projects, (a, b) => String(b.year || '').localeCompare(String(a.year || ''))), D = pick(datasets, (a, b) => String(a.title).localeCompare(String(b.title)));
   const url = `${SITE}/topics/${slug}`;
   html = setMeta(html, { title: t.title, desc: t.desc, canonical: url });
+  html = html.replace(/(<link id="altEn"[^>]*href=")([^"]*)(")/, `$1${url}$3`).replace(/(<link id="altAr"[^>]*href=")([^"]*)(")/, `$1${SITE}/ar/topics/${slug}$3`);
   html = setInner(html, 'crumbTopic', esc(t.name));
   html = setInner(html, 'topicKicker', `${esc(t.name)} · Research topic`);
   html = setInner(html, 'topicTitle', esc(t.h1));
@@ -407,6 +408,72 @@ async function renderTopic(html, slug) {
   return html.replace('</head>', `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
 }
 
+
+// Arabic topic copy (same slugs). Lists reuse the English cards; the page
+// chrome, titles, intros and schema are Arabic so Arabic searches land here.
+const TOPICS_AR = {
+  climate: { name: 'المناخ', h1: 'أبحاث المناخ في العراق',
+    title: 'أبحاث المناخ في العراق: تقارير وتحليلات وبيانات | مركز إنليل، بغداد',
+    desc: 'مركز إنليل مركز أبحاث مناخ مستقل في العراق. تقارير وتحليلات سياسات وبيانات مفتوحة عن مخاطر المناخ في العراق، والمساهمات المحددة وطنياً، وخطة التكيف الوطنية، والخسائر والأضرار، وتمويل المناخ.',
+    dek: 'العراق من أكثر الدول تعرضاً لتغير المناخ وأقلها استعداداً له. مركز إنليل مركز أبحاث مناخ مستقل في بغداد يعمل على الأدلة التي تقوم عليها التزامات العراق المناخية والتكيف وتمويل المناخ.',
+    intro: ['يقف عملنا المناخي قريباً من صناعة السياسات. أسهم فريق مركز إنليل في فصل التخفيف من المساهمة المحددة وطنياً للعراق (NDC 3.0)، وفي بحوث الحراك المناخي التي قامت عليها خطة التكيف الوطنية، وفي خطة الاستثمار المناخي، وفي دليل المفاوضين الذي استخدمه الوفد العراقي في مؤتمر الأطراف الثامن والعشرين. وهذه الخبرة تحدد ما ننشره: تحليل يمكن لوزارة أو جهة مانحة أو صحفي أن يبني عليه، مع إتاحة البيانات خلف كل رقم في مركز بيانات العراق.',
+            'تجد في هذه الصفحة تقاريرنا ومقالاتنا وبياناتنا المناخية، وتشمل اتجاهات الحرارة والأمطار، والانبعاثات، وتمويل المناخ، والخسائر والأضرار، والمؤسسات المسؤولة عن الاستجابة المناخية في العراق.'] },
+  water: { name: 'المياه', h1: 'أبحاث المياه في العراق',
+    title: 'أبحاث المياه في العراق: دجلة والفرات وشح المياه والحوكمة | مركز إنليل، بغداد',
+    desc: 'مركز إنليل مركز أبحاث مياه مستقل في العراق. تحليلات وبيانات عن دجلة والفرات، وشح المياه والملوحة، والأهوار، وتقاسم المياه العابرة للحدود، والري، وحوكمة المياه.',
+    dek: 'أزمة المياه هي التحدي الأبرز للموارد في العراق. مركز إنليل مركز أبحاث مياه مستقل في بغداد يتابع الأنهار وقرارات التوزيع والمؤسسات القائمة عليها، وينشر ما تظهره الأدلة.',
+    intro: ['يعتمد العراق على نهرين تُحدَّد تدفقاتهما إلى حد كبير في دول المنبع، وعلى منظومة ري تستهلك معظم ما يصل. تغطي أبحاثنا المائية دجلة والفرات، والملوحة في المحافظات الجنوبية، وتعافي أهوار بلاد الرافدين، والمياه الجوفية، وسؤال الحوكمة: كيف تُوزَّع المياه بين المزارع والمدن والأنظمة البيئية. ونستند إلى تدريب الفريق في تخطيط الموارد المائية في ظل تغير المناخ (معهد IHE Delft) وإلى العمل المباشر مع وزارة الموارد المائية والحوار الوطني للمياه.',
+            'أدناه تقاريرنا ومقالاتنا وبياناتنا عن المياه، وتشمل نصيب الفرد من المياه العذبة المتجددة، والسحب حسب القطاع، والهطول المطري، والحصول على خدمات المياه والصرف الصحي الأساسية.'] },
+  energy: { name: 'الطاقة', h1: 'أبحاث الطاقة في العراق',
+    title: 'أبحاث الطاقة في العراق: الكهرباء والغاز وأسواق النفط والطاقة المتجددة | مركز إنليل، بغداد',
+    desc: 'مركز إنليل مركز أبحاث طاقة مستقل في العراق. تحليلات وبيانات عن عجز الكهرباء في العراق، وحرق الغاز واستثماره، وأسواق النفط وصمود الصادرات، والطاقة المتجددة، واقتصاديات قطاع الكهرباء.',
+    dek: 'يصدّر العراق النفط ويستورد الكهرباء. مركز إنليل مركز أبحاث طاقة مستقل في بغداد يحلل قطاع الكهرباء والغاز وأسواق النفط والتحول نحو الطاقة المتجددة بالأرقام، ومع المؤسسات التي تديرها.',
+    intro: ['مؤسس مركز إنليل مهندس طاقة، والطاقة حاضرة في كل عملنا: مفارقة الكهرباء في العراق بين وفرة الوقود والانقطاعات المزمنة، وحرق الغاز ومشاريع استثماره، وتعرض البلاد لصدمات أسواق النفط ومخاطر الملاحة في الخليج، والمسار الواقعي للطاقة الشمسية وسائر مصادر الطاقة المتجددة. وقد أنجزنا تقييمات للطاقة المتجددة لبرامج مدعومة من الوكالة الألمانية للتعاون الدولي (GIZ) وتدريباً للوزارات العراقية على أسواق الكربون بموجب المادة السادسة من اتفاق باريس.',
+            'تجمع هذه الصفحة تقاريرنا ومقالاتنا وبياناتنا عن الطاقة، وتشمل الحصول على الكهرباء، وحصص الطاقة المتجددة في الإنتاج والاستهلاك، واستهلاك الطاقة للفرد، وانبعاثات ثاني أكسيد الكربون.'] },
+  economy: { name: 'الاقتصاد', h1: 'أبحاث الاقتصاد العراقي',
+    title: 'أبحاث الاقتصاد العراقي: الاعتماد على النفط والمالية العامة والنمو | مركز إنليل، بغداد',
+    desc: 'مركز إنليل مركز أبحاث اقتصادية مستقل في العراق. تحليلات وبيانات عن الاعتماد على النفط، والمالية العامة، والتضخم، والنمو، والتشغيل، والقطاع الخاص، والإصلاحات التي يحتاجها الاقتصاد العراقي.',
+    dek: 'يرتفع الاقتصاد العراقي ويهبط مع سعر النفط. مركز إنليل مركز أبحاث مستقل في بغداد يعمل على المالية العامة والقطاع الخاص والخيارات الهيكلية التي تقرر ما إذا كان النمو سيصل إلى العراقيين.',
+    intro: ['تربط أبحاثنا الاقتصادية الصورة الكلية، من الريع النفطي والموازنة والتضخم والنمو، بالأسئلة التي تهم الأسر والشركات: فرص العمل، والحماية الاجتماعية، والوصول إلى التمويل، وكلفة التقاعس عن مواجهة أزمتي المناخ والمياه. وقد أدار الفريق العمل الميداني الوطني لتقييم جامعة برمنغهام لمنظومة الحماية الاجتماعية في العراق، ومشاورات للبنك الأوروبي لإعادة الإعمار والتنمية ومؤسسة التمويل الدولية حول القطاع الخاص.',
+            'أدناه تقاريرنا ومقالاتنا وبياناتنا الاقتصادية، وتشمل الناتج المحلي الإجمالي، والنمو، والتضخم، والبطالة، وحصة الريع النفطي من الناتج، والسكان.'] },
+  governance: { name: 'الحوكمة', h1: 'أبحاث الحوكمة في العراق',
+    title: 'أبحاث الحوكمة في العراق: المؤسسات والسياسات والتشريع البيئي | مركز إنليل، بغداد',
+    desc: 'مركز إنليل مركز أبحاث سياسات مستقل في العراق. تحليلات وبيانات عن كيفية صنع المؤسسات العراقية للسياسات وتنفيذها: التشريع البيئي، والتنسيق بين الوزارات، والبيانات في الحكومة، والحكم المحلي.',
+    dek: 'معظم مشكلات العراق البيئية والاقتصادية مشكلات حوكمة أولاً. مركز إنليل مركز أبحاث سياسات مستقل في بغداد يدرس كيف تقرر المؤسسات العراقية وتنسق وتنفذ، وأين تقصّر.',
+    intro: ['يسأل عملنا في الحوكمة كيف تُصنع السياسات وتُنفَّذ فعلياً في العراق: أي وزارة تملك أي صلاحية، وكيف تنتقل البيانات (أو لا تنتقل) بين المؤسسات، ولماذا لا تُنفَّذ قوانين مثل قانون حماية البيئة، وما الذي تستطيعه الحكومات المحلية وما لا تستطيعه. ويستند كثير من هذا العمل إلى مقابلات مع مسؤولين كبار في ملفات البيئة والمياه والتخطيط والنفط والبلديات، وإلى خبرة الفريق في تنسيق العمل بين الوزارات للمساهمة المحددة وطنياً وخطة الاستثمار المناخي.',
+            'تجمع هذه الصفحة تقاريرنا ومقالاتنا وبياناتنا عن الحوكمة، وتشمل مؤشرات الحوكمة العالمية للعراق وتحليلاتنا عن النفايات والتشريع البيئي والإصلاح المؤسسي.'] }
+};
+async function renderTopicAr(html, slug) {
+  const t = TOPICS[slug], a = TOPICS_AR[slug];
+  const [articles, research, projects, datasets] = await Promise.all(['articles', 'research', 'projects', 'datasets'].map(api));
+  const pick = (items, sort) => items.filter(isPublished).filter(it => topicMatch(it, t)).sort(sort);
+  const A = pick(articles, byDateDesc), R = pick(research, byDateDesc), P = pick(projects, (x, y) => String(y.year || '').localeCompare(String(x.year || ''))), D = pick(datasets, (x, y) => String(x.title).localeCompare(String(y.title)));
+  const url = `${SITE}/ar/topics/${slug}`;
+  html = setMeta(html, { title: a.title, desc: a.desc, canonical: url });
+  html = html.replace(/(<link id="altEn"[^>]*href=")([^"]*)(")/, `$1${SITE}/topics/${slug}$3`).replace(/(<link id="altAr"[^>]*href=")([^"]*)(")/, `$1${url}$3`);
+  html = setInner(html, 'crumbTopic', esc(a.name));
+  html = setInner(html, 'topicKicker', `${esc(a.name)} · موضوع بحثي`);
+  html = setInner(html, 'topicTitle', esc(a.h1));
+  html = setInner(html, 'topicDek', esc(a.dek));
+  html = setInner(html, 'topicNav', Object.entries(TOPICS_AR).map(([s, x]) => `<a href="/ar/topics/${s}"${s === slug ? ' class="on" aria-current="page"' : ''}>${esc(x.name)}</a>`).join(''));
+  html = setInner(html, 'topicIntro', a.intro.map(p => `<p>${esc(p)}</p>`).join(''));
+  const badge = it => (it.pdfUrl || it.pdfBase64 || it.pdf) ? '<span class="badge pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>' : '';
+  html = setInner(html, 'researchGrid', R.slice(0, 6).map(it => card(it, 'research', 'Report', badge(it))).join(''));
+  html = setInner(html, 'articlesGrid', A.slice(0, 9).map(it => card(it, 'articles', 'Analysis')).join(''));
+  html = setInner(html, 'dataGrid', D.map(d => `<a class="data-card" href="/data/${itemSlug(d, 'dataset')}"><b>${esc(d.title)}</b><span>${esc([d.unit, d.source && (d.source.name || d.source)].filter(Boolean).join(' · '))}</span></a>`).join(''));
+  html = setInner(html, 'projectsGrid', P.slice(0, 6).map(it => card(it, 'projects', 'Project')).join(''));
+  const dropSection = (h, id) => h.replace(new RegExp(`\\s*<section class="topic-section" id="${id}">[\\s\\S]*?</section>`), '');
+  if (!R.length) html = dropSection(html, 'secResearch');
+  if (!A.length) html = dropSection(html, 'secArticles');
+  if (!D.length) html = dropSection(html, 'secData');
+  if (!P.length) html = dropSection(html, 'secProjects');
+  const ld1 = { "@context": "https://schema.org", "@type": "CollectionPage", "inLanguage": "ar", "name": a.h1, "url": url, "description": a.desc,
+    "publisher": { "@type": "NGO", "name": "مركز إنليل للبيئة والتنمية المستدامة", "alternateName": ORG, "url": `${SITE}/` } };
+  const ld2 = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": `${SITE}/ar` }, { "@type": "ListItem", "position": 2, "name": "المواضيع", "item": `${SITE}/ar/topics` }, { "@type": "ListItem", "position": 3, "name": a.name, "item": url }] };
+  return html.replace('</head>', `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
+}
+
 // ── sitemap ──────────────────────────────────────────────────────────────────
 async function sitemap() {
   const [articles, research, projects, datasets, authors] = await Promise.all(['articles', 'research', 'projects', 'datasets', 'authors'].map(api));
@@ -418,7 +485,10 @@ async function sitemap() {
     { loc: `${SITE}/data`, priority: '0.8' },
     { loc: `${SITE}/sources`, priority: '0.7' },
     { loc: `${SITE}/topics`, priority: '0.8' },
-    ...Object.keys(TOPICS).map(s => ({ loc: `${SITE}/topics/${s}`, priority: '0.8' }))
+    ...Object.keys(TOPICS).map(s => ({ loc: `${SITE}/topics/${s}`, priority: '0.8' })),
+    { loc: `${SITE}/ar`, priority: '0.9' },
+    { loc: `${SITE}/ar/topics`, priority: '0.7' },
+    ...Object.keys(TOPICS).map(s => ({ loc: `${SITE}/ar/topics/${s}`, priority: '0.7' }))
   ];
   const add = (items, section, fb) => items.filter(isPublished).forEach(item => {
     const raw = item.seo?.publishedDate || item.date || item.updatedAt || item.retrievedAt || (item.year ? `${item.year}-01-01` : null);
@@ -467,7 +537,7 @@ export default {
       return Response.redirect(`${url.origin}/${qs[1]}/${encodeURIComponent(url.searchParams.get('slug').toLowerCase())}`, 301);
     }
     if (path === '/index.html') return Response.redirect(`${url.origin}/${url.search}`, 301);
-    const legacy = path.match(/^\/(articles|research|projects|data|sources|topics)(?:\.html|\/)$/);
+    const legacy = path.match(/^\/(articles|research|projects|data|sources|topics|ar|ar\/topics)(?:\.html|\/)$/);
     if (legacy) return Response.redirect(`${url.origin}/${legacy[1]}${url.search}`, 301);
     if (path.length > 1 && path.endsWith('/')) {
       return Response.redirect(`${url.origin}${path.replace(/\/+$/, '')}${url.search}`, 301);
@@ -479,6 +549,23 @@ export default {
       let html = await res.text();
       try { html = await renderHome(html); } catch (e) { /* serve the static page if the API is unavailable */ }
       return htmlResponse(html, 300);
+    }
+
+    // Arabic pages.
+    if (path === '/ar') {
+      const res = await env.ASSETS.fetch(new Request(new URL('/ar.html', url.origin)));
+      return htmlResponse(await res.text(), 600);
+    }
+    if (path === '/ar/topics') {
+      const res = await env.ASSETS.fetch(new Request(new URL('/ar/topics.html', url.origin)));
+      return htmlResponse(await res.text(), 600);
+    }
+    const am = path.match(/^\/ar\/topics\/([a-z]+)$/);
+    if (am && TOPICS_AR[am[1]]) {
+      const res = await env.ASSETS.fetch(new Request(new URL('/ar/topics/topic.html', url.origin)));
+      let html = await res.text();
+      try { html = await renderTopicAr(html, am[1]); } catch (e) { /* template as-is */ }
+      return htmlResponse(html, 600);
     }
 
     // Topic hub pages.
