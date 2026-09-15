@@ -375,6 +375,12 @@ export default {
     // Canonical URL hygiene — exactly one URL per page. Legacy ".html" and
     // trailing-slash variants 301 to the clean path so Google stops treating
     // them as duplicate pages (Search Console: "Page with redirect" / duplicates).
+    // Pre-2026 detail URLs kept the slug in a query string
+    // (/articles/article?slug=x, /research/research-item?slug=x ...). 301 to /section/x.
+    const qs = path.match(/^\/(articles|research|projects|data|authors)\/(article|research-item|project-item|project|dataset|author)\/?$/);
+    if (qs && url.searchParams.get('slug')) {
+      return Response.redirect(`${url.origin}/${qs[1]}/${encodeURIComponent(url.searchParams.get('slug').toLowerCase())}`, 301);
+    }
     if (path === '/index.html') return Response.redirect(`${url.origin}/${url.search}`, 301);
     const legacy = path.match(/^\/(articles|research|projects|data|sources)(?:\.html|\/)$/);
     if (legacy) return Response.redirect(`${url.origin}/${legacy[1]}${url.search}`, 301);
