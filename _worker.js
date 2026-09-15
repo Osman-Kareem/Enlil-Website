@@ -392,6 +392,12 @@ async function renderTopic(html, slug) {
   html = setInner(html, 'articlesGrid', A.slice(0, 9).map(it => card(it, 'articles', 'Analysis')).join('') || '<p class="empty">No articles on this topic yet.</p>');
   html = setInner(html, 'dataGrid', D.map(d => `<a class="data-card" href="/data/${itemSlug(d, 'dataset')}"><b>${esc(d.title)}</b><span>${esc([d.unit, d.source && (d.source.name || d.source)].filter(Boolean).join(' · '))}</span></a>`).join('') || '<p class="empty">No datasets on this topic yet.</p>');
   html = setInner(html, 'projectsGrid', P.slice(0, 6).map(it => card(it, 'projects', 'Project')).join('') || '<p class="empty">No projects on this topic yet.</p>');
+  // Hide sections with nothing in them rather than showing an empty state.
+  const dropSection = (h, id) => h.replace(new RegExp(`\\s*<section class="topic-section" id="${id}">[\\s\\S]*?</section>`), '');
+  if (!R.length) html = dropSection(html, 'secResearch');
+  if (!A.length) html = dropSection(html, 'secArticles');
+  if (!D.length) html = dropSection(html, 'secData');
+  if (!P.length) html = dropSection(html, 'secProjects');
   const ld1 = { "@context": "https://schema.org", "@type": "CollectionPage", "name": t.h1, "url": url, "description": t.desc, "about": `${t.name} in Iraq`,
     "publisher": { "@type": "NGO", "name": "Enlil Center for Environment and Sustainable Development", "url": `${SITE}/` },
     "mainEntity": { "@type": "ItemList", "numberOfItems": R.length + A.length + D.length,
