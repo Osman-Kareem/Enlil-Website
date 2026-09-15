@@ -3,9 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enlil Center | Page not found</title>
-  <meta name="description" content="The page you were looking for does not exist on enlilcenter.org. Browse Enlil Center's research, articles, projects and Iraq data instead.">
-  <meta name="robots" content="noindex, follow">
+  <title id="pageTitle">Enlil Center | Topic</title>
+  <meta name="description" content="">
+  <link id="canonicalLink" rel="canonical" href="https://enlilcenter.org/topics">
+  <meta id="ogTitle" property="og:title" content="">
+  <meta id="ogDescription" property="og:description" content="">
+  <meta id="ogUrl" property="og:url" content="">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
+  <meta property="og:image" content="https://enlilcenter.org/image/og-hero.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,17 +22,26 @@
   <link rel="stylesheet" href="/css/enlil.css">
   <script src="/js/enlil-site.js" defer></script>
   <style>
-    .nf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 32px; }
-    @media (max-width: 900px) { .nf-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 520px) { .nf-grid { grid-template-columns: 1fr; } }
-    .nf-card { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--green); padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 8px; color: inherit; }
-    .nf-card:hover { border-top-color: var(--amber); }
-    .nf-card i { color: var(--green); font-size: 1.2rem; }
-    .nf-card b { font-family: var(--font-head); font-size: 1.02rem; }
-    .nf-card span { font-size: .88rem; color: var(--ink-soft); line-height: 1.5; }
-    .nf-code { font-family: var(--font-head); font-weight: 900; font-size: clamp(4rem, 12vw, 7rem); line-height: 1; color: var(--green); opacity: .12; letter-spacing: -.04em; margin-bottom: -18px; }
-    .nf-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
-    .nf-hint { margin-top: 36px; font-size: .86rem; color: var(--ink-mute); max-width: 62ch; }
+    .topic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    @media (max-width: 960px) { .topic-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .topic-grid { grid-template-columns: 1fr; } }
+    .topic-section { padding-top: 28px; }
+    .topic-section .section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+    .topic-section .section-head a.more { color: var(--green); font-weight: 600; font-size: .9rem; }
+    .topic-section .section-head a.more:hover { text-decoration: underline; }
+    .data-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    @media (max-width: 960px) { .data-list { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .data-list { grid-template-columns: 1fr; } }
+    .data-card { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--amber); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; color: inherit; }
+    .data-card b { font-family: var(--font-head); font-size: .98rem; line-height: 1.3; }
+    .data-card span { font-size: .82rem; color: var(--ink-mute); }
+    .data-card:hover b { color: var(--green); }
+    .topic-intro { max-width: 76ch; }
+    .topic-intro p { font-size: 1.02rem; line-height: 1.6; color: var(--ink-soft); }
+    .topic-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .topic-nav a { border: 1px solid var(--line); padding: 6px 12px; font-size: .84rem; font-weight: 600; color: var(--ink); background: #fff; }
+    .topic-nav a.on, .topic-nav a:hover { background: var(--green); color: #fff; border-color: var(--green); }
+    .empty { color: var(--ink-mute); font-size: .92rem; }
   </style>
 </head>
 <body>
@@ -41,7 +57,6 @@
         <a href="/#about">About</a>
         <a href="/research">Research</a>
         <a href="/articles">Articles</a>
-        <a href="/topics">Topics</a>
         <a href="/projects">Projects</a>
         <a href="/data">Data</a>
         <a href="/sources">Sources</a>
@@ -53,7 +68,6 @@
       <a href="/#about" onclick="toggleMobileMenu()">About</a>
       <a href="/research">Research</a>
       <a href="/articles">Articles</a>
-      <a href="/topics">Topics</a>
       <a href="/projects">Projects</a>
       <a href="/data">Data</a>
       <a href="/sources">Sources</a>
@@ -64,27 +78,37 @@
 
   <section class="page-hero">
     <div class="wrap">
-      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><i class="fa-solid fa-chevron-right"></i><span>Page not found</span></nav>
-      <div class="nf-code" aria-hidden="true">404</div>
-      <span class="kicker">Error 404</span>
-      <h1>We can't find that page</h1>
-      <p class="dek">The link may be out of date, or the page may have moved when we reorganised the site. Everything we publish is still here — start from one of the sections below.</p>
-      <div class="nf-actions">
-        <a class="btn btn-green" href="/"><i class="fa-solid fa-house"></i>&nbsp; Back to the homepage</a>
-        <a class="btn btn-outline-light" href="/articles">Latest articles</a>
-      </div>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><i class="fa-solid fa-chevron-right"></i><a href="/topics">Topics</a><i class="fa-solid fa-chevron-right"></i><span id="crumbTopic">Topic</span></nav>
+      <span class="kicker" id="topicKicker">Research topic</span>
+      <h1 id="topicTitle">Topic</h1>
+      <p class="dek" id="topicDek"></p>
+      <nav class="topic-nav" aria-label="Other topics" id="topicNav"></nav>
     </div>
   </section>
 
   <main class="section" style="padding-top:8px">
     <div class="wrap">
-      <div class="nf-grid">
-        <a class="nf-card" href="/research"><i class="fa-solid fa-file-lines"></i><b>Research &amp; reports</b><span>Full-length studies and technical reports on Iraq's climate, water, energy and economy.</span></a>
-        <a class="nf-card" href="/articles"><i class="fa-solid fa-newspaper"></i><b>Articles &amp; commentary</b><span>Analysis and opinion on the policy questions shaping Iraq's future.</span></a>
-        <a class="nf-card" href="/projects"><i class="fa-solid fa-diagram-project"></i><b>Projects</b><span>Advisory and field work with government, UN agencies and partners.</span></a>
-        <a class="nf-card" href="/data"><i class="fa-solid fa-chart-line"></i><b>Iraq Data Hub</b><span>Charts and downloadable datasets on Iraq's economy, energy, water and population.</span></a>
-      </div>
-      <p class="nf-hint">Think this is a broken link on our side? Email <a href="mailto:info@enlilcenter.org">info@enlilcenter.org</a> with the address you tried and we'll fix it.</p>
+      <div class="topic-intro" id="topicIntro"></div>
+
+      <section class="topic-section" id="secResearch">
+        <div class="section-head"><h2>Research and reports</h2><a class="more" href="/research">All research</a></div>
+        <div class="topic-grid" id="researchGrid"></div>
+      </section>
+
+      <section class="topic-section" id="secArticles">
+        <div class="section-head"><h2>Articles and commentary</h2><a class="more" href="/articles">All articles</a></div>
+        <div class="topic-grid" id="articlesGrid"></div>
+      </section>
+
+      <section class="topic-section" id="secData">
+        <div class="section-head"><h2>Data on this topic</h2><a class="more" href="/data">Iraq Data Hub</a></div>
+        <div class="data-list" id="dataGrid"></div>
+      </section>
+
+      <section class="topic-section" id="secProjects">
+        <div class="section-head"><h2>Projects</h2><a class="more" href="/projects">All projects</a></div>
+        <div class="topic-grid" id="projectsGrid"></div>
+      </section>
     </div>
   </main>
 

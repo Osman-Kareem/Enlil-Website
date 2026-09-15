@@ -327,6 +327,80 @@ function renderAuthor(html, item, slug) {
 
 const RENDER = { articles: renderArticle, research: renderResearch, projects: renderProject, data: renderDataset, authors: renderAuthor };
 
+
+// ── topic hub pages (/topics/:slug) ──────────────────────────────────────────
+// One landing page per pillar, server-rendered from the CMS, so that searches
+// like "water research center in Iraq" have a page whose title, heading and
+// intro say exactly that, backed by the reports, articles and datasets.
+const TOPICS = {
+  climate: { pillar: 'Climate', name: 'Climate', h1: 'Iraq climate research',
+    title: 'Iraq Climate Research: Reports, Analysis and Data | Enlil Center, Baghdad',
+    desc: "Enlil Center is an independent climate research center in Iraq. Reports, policy analysis and open data on Iraq's climate risks, NDC and NAP processes, adaptation, loss and damage and climate finance.",
+    dek: "Iraq is among the countries most exposed to climate change and least prepared for it. Enlil Center is an independent climate research center in Baghdad: we work on the evidence behind Iraq's national climate commitments, adaptation and climate finance.",
+    intro: ["Our climate work sits close to the policy process. Enlil Center's team has contributed to the mitigation chapter of Iraq's Nationally Determined Contribution (NDC 3.0), to the climate-mobility research behind the National Adaptation Plan, to the Climate Investment Plan and to the negotiators' handbook used by the Iraqi delegation at COP28. That experience shapes what we publish: analysis that a ministry, a donor or a journalist can act on, with the data behind every figure available in the Iraq Data Hub.",
+            "On this page you will find our climate reports, articles and datasets, covering temperature and rainfall trends, emissions, climate finance, loss and damage and the institutions responsible for Iraq's climate response."],
+    kw: /climate|cop2|ndc|adaptation|emission|carbon|warming|drought|dust/i },
+  water: { pillar: 'Water', name: 'Water', h1: 'Iraq water research',
+    title: 'Iraq Water Research: Tigris, Euphrates, Scarcity and Governance | Enlil Center, Baghdad',
+    desc: "Enlil Center is an independent water research center in Iraq. Analysis and data on the Tigris and Euphrates, water scarcity and salinity, the marshes, transboundary allocation, irrigation and water governance.",
+    dek: "Iraq's water crisis is the country's defining resource challenge. Enlil Center is an independent water research center in Baghdad: we track the rivers, the allocation decisions and the institutions behind them, and publish what the evidence shows.",
+    intro: ["Iraq depends on two rivers whose flows are decided largely upstream, and on an irrigation system that consumes most of what arrives. Our water research covers the Tigris and Euphrates, salinity in the southern governorates, the recovery of the Mesopotamian marshes, groundwater, and the governance question of how water is allocated between farms, cities and ecosystems. We draw on the team's training in water-resources planning under a changing climate (IHE Delft) and on direct engagement with the Ministry of Water Resources and the national water dialogue.",
+            "Below are our water reports, articles and datasets, including renewable freshwater per person, withdrawals by sector, precipitation and access to basic water and sanitation."],
+    kw: /water|tigris|euphrates|marsh|river|irrigat|salin|drought|dam\b/i },
+  energy: { pillar: 'Energy', name: 'Energy', h1: 'Iraq energy research',
+    title: 'Iraq Energy Research: Electricity, Gas, Oil Markets and Renewables | Enlil Center, Baghdad',
+    desc: "Enlil Center is an independent energy research center in Iraq. Analysis and data on Iraq's electricity shortfall, gas flaring and capture, oil markets and export resilience, renewable energy and power-sector economics.",
+    dek: "Iraq exports oil and imports electricity. Enlil Center is an independent energy research center in Baghdad: we analyse the power sector, gas, oil markets and the renewable transition with the numbers, and with the institutions that run them.",
+    intro: ["Enlil Center's founder is an energy engineer, and energy runs through our work: Iraq's power paradox of abundant fuel and chronic outages, gas flaring and the capture projects meant to end it, the country's exposure to oil-market shocks and Gulf shipping risks, and the realistic path for solar and other renewables. We have delivered renewable-energy assessments for GIZ-supported programmes and Article 6 carbon-market training for Iraqi ministries.",
+            "This page collects our energy reports, articles and datasets, including access to electricity, renewable output and consumption shares, energy use per person and carbon dioxide emissions."],
+    kw: /energy|electric|power|oil|gas|flar|renewab|solar|fuel|hormuz|opec/i },
+  economy: { pillar: 'Economy', name: 'Economy', h1: 'Iraq economy research',
+    title: 'Iraq Economy Research: Oil Dependence, Public Finance and Growth | Enlil Center, Baghdad',
+    desc: "Enlil Center is an independent economic research center in Iraq. Analysis and data on oil dependence, public finance, inflation, growth, employment, the private sector and the reforms Iraq's economy needs.",
+    dek: "Iraq's economy rises and falls with the oil price. Enlil Center is an independent research center in Baghdad working on the public finances, the private sector and the structural choices that decide whether growth reaches Iraqis.",
+    intro: ["Our economic research connects the macro picture, oil rents, the budget, inflation and growth, to the questions that matter for households and firms: jobs, social protection, access to finance and the cost of inaction on climate and water. The team has managed national fieldwork for the University of Birmingham's assessment of Iraq's social-protection system and consultations for EBRD and IFC on the private sector.",
+            "Below are our economy reports, articles and datasets, including GDP, growth, inflation, unemployment, oil rents as a share of GDP and population."],
+    kw: /econom|gdp|inflation|budget|finance|fiscal|employment|unemploy|private sector|msme|investment|cost of inaction|trade/i },
+  governance: { pillar: 'Governance', name: 'Governance', h1: 'Iraq governance research',
+    title: 'Iraq Governance Research: Institutions, Policy and Environmental Law | Enlil Center, Baghdad',
+    desc: "Enlil Center is an independent policy research center in Iraq. Analysis and data on how Iraqi institutions make and implement policy: environmental law, inter-ministerial coordination, data in government and local governance.",
+    dek: "Most of Iraq's environmental and economic problems are governance problems first. Enlil Center is an independent policy research center in Baghdad studying how Iraqi institutions decide, coordinate and deliver, and where they fall short.",
+    intro: ["Our governance work asks how policy actually gets made and implemented in Iraq: which ministry holds which mandate, how data moves (or does not) between institutions, why laws such as the environmental protection law go unenforced, and what local government can and cannot do. Much of it draws on interviews with senior officials across the environment, water, planning, oil and municipal portfolios and on the team's work coordinating inter-ministerial processes for the NDC and the Climate Investment Plan.",
+            "This page collects our governance reports, articles and datasets, including the Worldwide Governance Indicators for Iraq and our analysis of waste, environmental law and institutional reform."],
+    kw: /governance|institution|ministry|law|legislat|policy|regulat|corruption|municipal|local government|parliament/i }
+};
+function topicMatch(item, t) {
+  const pillars = item.pillars || [];
+  if (pillars.length) return pillars.includes(t.pillar);
+  return t.kw.test(`${item.title || ''} ${item.description || ''} ${item.abstract || ''} ${(item.seo && item.seo.keywords) || ''}`);
+}
+async function renderTopic(html, slug) {
+  const t = TOPICS[slug];
+  const [articles, research, projects, datasets] = await Promise.all(['articles', 'research', 'projects', 'datasets'].map(api));
+  const pick = (items, sort) => items.filter(isPublished).filter(it => topicMatch(it, t)).sort(sort);
+  const A = pick(articles, byDateDesc), R = pick(research, byDateDesc), P = pick(projects, (a, b) => String(b.year || '').localeCompare(String(a.year || ''))), D = pick(datasets, (a, b) => String(a.title).localeCompare(String(b.title)));
+  const url = `${SITE}/topics/${slug}`;
+  html = setMeta(html, { title: t.title, desc: t.desc, canonical: url });
+  html = setInner(html, 'crumbTopic', esc(t.name));
+  html = setInner(html, 'topicKicker', `${esc(t.name)} · Research topic`);
+  html = setInner(html, 'topicTitle', esc(t.h1));
+  html = setInner(html, 'topicDek', esc(t.dek));
+  html = setInner(html, 'topicNav', Object.entries(TOPICS).map(([s, x]) => `<a href="/topics/${s}"${s === slug ? ' class="on" aria-current="page"' : ''}>${esc(x.name)}</a>`).join(''));
+  html = setInner(html, 'topicIntro', t.intro.map(p => `<p>${esc(p)}</p>`).join(''));
+  const badge = it => (it.pdfUrl || it.pdfBase64 || it.pdf) ? '<span class="badge pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>' : '';
+  html = setInner(html, 'researchGrid', R.slice(0, 6).map(it => card(it, 'research', 'Report', badge(it))).join('') || '<p class="empty">No reports on this topic yet.</p>');
+  html = setInner(html, 'articlesGrid', A.slice(0, 9).map(it => card(it, 'articles', 'Analysis')).join('') || '<p class="empty">No articles on this topic yet.</p>');
+  html = setInner(html, 'dataGrid', D.map(d => `<a class="data-card" href="/data/${itemSlug(d, 'dataset')}"><b>${esc(d.title)}</b><span>${esc([d.unit, d.source && (d.source.name || d.source)].filter(Boolean).join(' · '))}</span></a>`).join('') || '<p class="empty">No datasets on this topic yet.</p>');
+  html = setInner(html, 'projectsGrid', P.slice(0, 6).map(it => card(it, 'projects', 'Project')).join('') || '<p class="empty">No projects on this topic yet.</p>');
+  const ld1 = { "@context": "https://schema.org", "@type": "CollectionPage", "name": t.h1, "url": url, "description": t.desc, "about": `${t.name} in Iraq`,
+    "publisher": { "@type": "NGO", "name": "Enlil Center for Environment and Sustainable Development", "url": `${SITE}/` },
+    "mainEntity": { "@type": "ItemList", "numberOfItems": R.length + A.length + D.length,
+      "itemListElement": [...R.map(it => ({ u: `/research/${itemSlug(it, 'report')}`, n: it.title })), ...A.map(it => ({ u: `/articles/${itemSlug(it, 'article')}`, n: it.title })), ...D.map(it => ({ u: `/data/${itemSlug(it, 'dataset')}`, n: it.title }))].slice(0, 50).map((x, i) => ({ "@type": "ListItem", "position": i + 1, "url": SITE + x.u, "name": x.n })) } };
+  const ld2 = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE}/` }, { "@type": "ListItem", "position": 2, "name": "Topics", "item": `${SITE}/topics` }, { "@type": "ListItem", "position": 3, "name": t.name, "item": url }] };
+  return html.replace('</head>', `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
+}
+
 // ── sitemap ──────────────────────────────────────────────────────────────────
 async function sitemap() {
   const [articles, research, projects, datasets, authors] = await Promise.all(['articles', 'research', 'projects', 'datasets', 'authors'].map(api));
@@ -336,7 +410,9 @@ async function sitemap() {
     { loc: `${SITE}/articles`, priority: '0.8' },
     { loc: `${SITE}/projects`, priority: '0.8' },
     { loc: `${SITE}/data`, priority: '0.8' },
-    { loc: `${SITE}/sources`, priority: '0.7' }
+    { loc: `${SITE}/sources`, priority: '0.7' },
+    { loc: `${SITE}/topics`, priority: '0.8' },
+    ...Object.keys(TOPICS).map(s => ({ loc: `${SITE}/topics/${s}`, priority: '0.8' }))
   ];
   const add = (items, section, fb) => items.filter(isPublished).forEach(item => {
     const raw = item.seo?.publishedDate || item.date || item.updatedAt || item.retrievedAt || (item.year ? `${item.year}-01-01` : null);
@@ -385,7 +461,7 @@ export default {
       return Response.redirect(`${url.origin}/${qs[1]}/${encodeURIComponent(url.searchParams.get('slug').toLowerCase())}`, 301);
     }
     if (path === '/index.html') return Response.redirect(`${url.origin}/${url.search}`, 301);
-    const legacy = path.match(/^\/(articles|research|projects|data|sources)(?:\.html|\/)$/);
+    const legacy = path.match(/^\/(articles|research|projects|data|sources|topics)(?:\.html|\/)$/);
     if (legacy) return Response.redirect(`${url.origin}/${legacy[1]}${url.search}`, 301);
     if (path.length > 1 && path.endsWith('/')) {
       return Response.redirect(`${url.origin}${path.replace(/\/+$/, '')}${url.search}`, 301);
@@ -397,6 +473,20 @@ export default {
       let html = await res.text();
       try { html = await renderHome(html); } catch (e) { /* serve the static page if the API is unavailable */ }
       return htmlResponse(html, 300);
+    }
+
+    // Topic hub pages.
+    if (path === '/topics') {
+      const res = await env.ASSETS.fetch(new Request(new URL('/topics.html', url.origin)));
+      return htmlResponse(await res.text(), 600);
+    }
+    const tm = path.match(/^\/topics\/([a-z]+)$/);
+    if (tm) {
+      if (!TOPICS[tm[1]]) return env.ASSETS.fetch(new Request(new URL('/404.html', url.origin))).then(async r => new Response(await r.text(), { status: 404, headers: { 'content-type': 'text/html;charset=UTF-8' } }));
+      const res = await env.ASSETS.fetch(new Request(new URL('/topics/topic.html', url.origin)));
+      let html = await res.text();
+      try { html = await renderTopic(html, tm[1]); } catch (e) { /* template as-is */ }
+      return htmlResponse(html, 600);
     }
 
     // Listing pages — server-rendered first page of cards + ItemList schema.
