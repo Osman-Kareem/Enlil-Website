@@ -432,6 +432,7 @@
     function published(item) { const s = String(item.status || item.publishStatus || 'published').toLowerCase(); return s !== 'draft' && s !== 'unpublished'; }
     function snippet(item, n) { return item.seo && item.seo.description || item.seoDescription || item.description || (strip(item.abstract || item.content).slice(0, n || 150) + '…'); }
     function readMins(item) { const w = strip(item.content).split(' ').length; return w > 80 ? Math.max(1, Math.round(w / 220)) + ' min read' : ''; }
+    function reads(item) { const n = Number(item.views) || 0; return n >= 10 ? `${n.toLocaleString('en-GB')} reads` : ''; }
 
     async function get(key) {
       try { const r = await fetch(`${API_BASE}/data/${key}`); if (!r.ok) return []; const j = await r.json(); return Array.isArray(j) ? j : []; }
@@ -443,7 +444,7 @@
       const date = fmtDate(item.date || (item.year ? `${item.year}-01-01` : ''));
       const meta = section === 'projects'
         ? [item.sponsor, item.year].filter(Boolean).map(esc).join(' · ')
-        : [authorLink(item), date].filter(Boolean).join(' · ');
+        : [authorLink(item), date, section === 'articles' ? reads(item) : ''].filter(Boolean).join(' · ');
       return `
         <article class="card">
           <a class="thumb" href="${url}" aria-label="${esc(item.title)}">${item.cover ? `<img src="${esc(item.cover)}" alt="" loading="lazy" decoding="async">` : ''}</a>
@@ -461,7 +462,7 @@
       document.getElementById('leadKicker').textContent = kickerOf(a, 'Latest analysis');
       document.getElementById('leadTitle').innerHTML = `<a href="${url}">${esc(a.title)}</a>`;
       document.getElementById('leadDek').textContent = snippet(a, 200);
-      document.getElementById('leadMeta').innerHTML = [authorLink(a), fmtDate(a.date), readMins(a)].filter(Boolean).join(' · ');
+      document.getElementById('leadMeta').innerHTML = [authorLink(a), fmtDate(a.date), readMins(a), reads(a)].filter(Boolean).join(' · ');
       document.getElementById('leadActions').innerHTML = `<a class="btn btn-amber" href="${url}">Read the article</a><a class="btn btn-outline-light" href="/data">Explore the Data Hub</a>`;
       // The lead keeps the site photograph: article covers carry their own typography and would fight the headline.
 

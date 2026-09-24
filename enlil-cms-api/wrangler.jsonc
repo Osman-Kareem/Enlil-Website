@@ -1,0 +1,22 @@
+{
+  // Deploy with:  cd enlil-cms-api && npx wrangler deploy
+  // Bindings mirror the Worker's dashboard settings (24 Sep 2026). ADMIN_TOKEN is a
+  // secret set in the dashboard and survives deploys; never put it here.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "enlil-cms-api",
+  "main": "worker.js",
+  "compatibility_date": "2026-03-26",
+  "workers_dev": true,
+  "keep_vars": true,
+  "kv_namespaces": [
+    { "binding": "CMS_DATA", "id": "2f986a1661f24f70a01dcc911731acdc" }
+  ],
+  "r2_buckets": [
+    { "binding": "IMAGES_BUCKET", "bucket_name": "enlil-images" },
+    { "binding": "FILES_BUCKET", "bucket_name": "enlil-public-files" }
+  ],
+  "vars": {
+    "R2_PUBLIC_DOMAIN": "https://images.enlilcenter.org",
+    "FILES_R2BUCKET_PUBLIC_DOMAIN": "https://files.enlilcenter.org"
+  }
+}

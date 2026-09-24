@@ -3321,6 +3321,7 @@ setupSourceFileInput();
 setupDatasetFileInput(); setupDatasetSourcePicker();
 
 window.addEventListener('DOMContentLoaded',()=>{
+  try{localStorage.setItem('enlil_admin','1');}catch(e){}   // article pages skip the read counter in this browser
   initEditors();
   switchTab(8);
   startSession();

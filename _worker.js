@@ -43,6 +43,8 @@ const authorName = it => (it.leadAuthor && it.leadAuthor.name) || it.author || '
 const authorLink = it => { const n = authorName(it); return n === 'Enlil Center' ? n : `<a href="/authors/${authorSlug(n)}">${esc(n)}</a>`; };
 const kickerOf = (it, fb) => (it.pillars || []).find(p => PILLARS.includes(p)) || fb;
 const snippet = (it, n) => it.seo?.description || it.seoDescription || it.description || (strip(it.abstract || it.content).slice(0, n || 160) + '…');
+// Read counter (articles only; the CMS API merges it in as `views`). Hidden under 10.
+const fmtReads = it => { const n = Number(it && it.views) || 0; return n >= 10 ? `${n.toLocaleString('en-GB')} reads` : ''; };
 function normaliseHeadings(html) {
   let h = String(html || '').replace(/<(\/?)h1\b/gi, '<$1h2');
   if (!/<h2\b/i.test(h) && /<h3\b/i.test(h)) h = h.replace(/<(\/?)h3\b/gi, '<$1h2');
@@ -107,7 +109,7 @@ function card(item, section, kickerFallback, extraBadge) {
   const date = fmtDate(item.date || (item.year ? `${item.year}-01-01` : ''));
   const meta = section === 'projects'
     ? [item.sponsor, item.year].filter(Boolean).map(esc).join(' · ')
-    : [authorLink(item), date].filter(Boolean).join(' · ');
+    : [authorLink(item), date, section === 'articles' ? fmtReads(item) : ''].filter(Boolean).join(' · ');
   return `
         <article class="card">
           <a class="thumb" href="${url}" aria-label="${attr(item.title)}">${item.cover ? `<img src="${attr(item.cover)}" alt="" loading="lazy" decoding="async">` : ''}</a>
@@ -134,7 +136,7 @@ async function renderHome(html) {
     html = setInner(html, 'leadKicker', esc(kickerOf(a, 'Latest analysis')));
     html = setInner(html, 'leadTitle', `<a href="${url}">${esc(a.title)}</a>`);
     html = setInner(html, 'leadDek', esc(snippet(a, 200)));
-    html = setInner(html, 'leadMeta', [authorLink(a), fmtDate(a.date), mins].filter(Boolean).join(' · '));
+    html = setInner(html, 'leadMeta', [authorLink(a), fmtDate(a.date), mins, fmtReads(a)].filter(Boolean).join(' · '));
     html = setInner(html, 'leadActions', `<a class="btn btn-amber" href="${url}">Read the article</a><a class="btn btn-outline-light" href="/data">Explore the Data Hub</a>`);
     const strip3 = arts.slice(1, 4);
     if (strip3.length) {
@@ -220,7 +222,7 @@ function renderArticle(html, item, slug) {
   html = setInner(html, 'heroTitle', esc(item.title));
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'articleTitle', esc(item.title));
-  html = setInner(html, 'metaLine', `${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}`);
+  html = setInner(html, 'metaLine', `${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}${fmtReads(item) ? ` <span> · </span><span class="reads">${esc(fmtReads(item))}</span>` : ''}`);
   if (item.cover) { html = unhide(html, 'coverWrapper'); html = setAttr(html, 'articleCover', 'src', item.cover); html = setAttr(html, 'articleCover', 'alt', item.title); }
   html = setInner(html, 'articleBody', normaliseHeadings(item.content || ''));
   html = setAttr(html, 'articleBody', 'data-ssr', '1');

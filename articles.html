@@ -159,6 +159,7 @@
     const published = it => { const s = String(it.status || it.publishStatus || 'published').toLowerCase(); return s !== 'draft' && s !== 'unpublished'; };
     const kickerOf = it => (it.pillars || []).find(p => PILLARS.includes(p)) || FALLBACK;
     const snippet = it => it.seo && it.seo.description || it.seoDescription || (strip(it.abstract || it.content).slice(0, 160) + '…');
+    const reads = it => { const n = Number(it.views) || 0; return n >= 10 ? `${n.toLocaleString('en-GB')} reads` : ''; };
     const hl = (t, q) => q ? esc(t).replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark>$1</mark>') : esc(t);
 
     let all = [], view = [], shown = PAGE;
@@ -169,7 +170,7 @@
       const date = fmtDate(it.date || (it.year ? `${it.year}-01-01` : ''));
       const meta = SECTION === 'projects'
         ? [it.sponsor, it.year].filter(Boolean).map(esc).join(' · ')
-        : [authorLink(it), date].filter(Boolean).join(' · ');
+        : [authorLink(it), date, SECTION === 'articles' ? reads(it) : ''].filter(Boolean).join(' · ');
       const badge = SECTION === 'research' && (it.pdfUrl || it.pdfBase64 || it.pdf) ? '<span class="badge pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>'
         : SECTION === 'projects' && it.status && it.status !== 'published' ? `<span class="badge amber">${esc(it.status)}</span>` : '';
       return `

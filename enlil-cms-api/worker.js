@@ -126,6 +126,51 @@ export default {
       return json({ url: `${env.R2_PUBLIC_DOMAIN}/${filename}` });
     }
 
+    // ── Article read counts ──────────────────────────────────────────────────
+    // KV key "views" holds { "<slug>": n }. The article page fires a beacon to
+    // POST /views/<slug>; it counts once per visitor (IP + UA hash) per slug per
+    // day and ignores crawlers. GET /views returns the map; PUT /views (admin)
+    // seeds or overwrites it. GET /data/articles merges the counts in as `views`.
+    const vm = path.match(/^\/views(?:\/([a-z0-9-]+))?$/);
+    if (vm) {
+      const readViews = async () => {
+        try { const v = JSON.parse(await env.CMS_DATA.get('views') || '{}'); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; } catch { return {}; }
+      };
+      if (request.method === 'GET' && !vm[1]) {
+        return new Response(JSON.stringify(await readViews()), { headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' } });
+      }
+      if (request.method === 'PUT' && !vm[1]) {
+        if (!isAdmin()) return json({ error: 'Unauthorized' }, 401);
+        let body;
+        try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+        if (!body || typeof body !== 'object' || Array.isArray(body)) return json({ error: 'Expected an object of slug: count' }, 400);
+        const clean = {};
+        for (const [k, v] of Object.entries(body)) if (/^[a-z0-9-]+$/.test(k) && Number.isFinite(+v)) clean[k] = Math.max(0, Math.round(+v));
+        await env.CMS_DATA.put('views', JSON.stringify(clean));
+        return json({ ok: true, count: Object.keys(clean).length });
+      }
+      if (request.method === 'POST' && vm[1]) {
+        const slug = vm[1];
+        let articles = [];
+        try { articles = JSON.parse(await env.CMS_DATA.get('articles') || '[]'); } catch { articles = []; }
+        const norm = a => String((a.seo && a.seo.slug) || a.slug || '').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+        if (!Array.isArray(articles) || !articles.some(a => norm(a) === slug)) return json({ ok: false, error: 'Unknown article' }, 404);
+        const ip = request.headers.get('CF-Connecting-IP') || '', ua = request.headers.get('User-Agent') || '';
+        if (!ua || /bot|crawl|spider|slurp|preview|facebookexternalhit|headless|lighthouse/i.test(ua)) return json({ ok: true, counted: false });
+        const day = new Date().toISOString().slice(0, 10);
+        const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${slug}|${ip}|${ua}|${day}`));
+        const hash = [...new Uint8Array(digest)].slice(0, 12).map(b => b.toString(16).padStart(2, '0')).join('');
+        const seenKey = `viewed:${hash}`;
+        if (await env.CMS_DATA.get(seenKey)) return json({ ok: true, counted: false });
+        await env.CMS_DATA.put(seenKey, '1', { expirationTtl: 86400 });
+        const views = await readViews();
+        views[slug] = (Number(views[slug]) || 0) + 1;
+        await env.CMS_DATA.put('views', JSON.stringify(views));
+        return json({ ok: true, counted: true, views: views[slug] });
+      }
+      return new Response('Method not allowed', { status: 405, headers: corsHeaders });
+    }
+
     // ── KV Data API ───────────────────────────────────────────────────────────
     const match = path.match(/^\/data\/([a-z]+)$/);
 
@@ -141,6 +186,20 @@ export default {
     if (request.method === 'GET') {
       if (ADMIN_ONLY_KEYS.includes(key) && !isAdmin()) return json({ error: 'Unauthorized' }, 401);
       const value = await env.CMS_DATA.get(key);
+      if (key === 'articles') {
+        // Attach the read counter to every article so the site (SSR and client) can show it.
+        try {
+          const arr = JSON.parse(value || '[]');
+          const views = JSON.parse(await env.CMS_DATA.get('views') || '{}');
+          if (Array.isArray(arr)) {
+            for (const a of arr) {
+              const s = String((a.seo && a.seo.slug) || a.slug || '').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+              a.views = Number(views && views[s]) || 0;
+            }
+            return new Response(JSON.stringify(arr), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+          }
+        } catch { /* fall through to the raw value */ }
+      }
       return new Response(value || '[]', {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });

@@ -230,6 +230,7 @@
       if (item.date) parts.push(`<time datetime="${esc(item.date)}">${esc(fmtDate(item.date))}</time>`);
       if (SECTION === 'projects' && item.year) parts.push(esc(String(item.year)));
       if (mins) parts.push(esc(mins));
+      if (SECTION === 'articles' && Number(item.views) >= 10) parts.push(`<span class="reads">${esc(Number(item.views).toLocaleString('en-GB'))} reads</span>`);
       document.getElementById('metaLine').innerHTML = parts.join('<span aria-hidden="true">·</span>');
 
       // hero photo
@@ -290,7 +291,21 @@
         const item = all.find(x => slugOf(x) === wanted);
         if (!item || !published(item)) { if (!document.getElementById('articleBody').dataset.ssr) { document.getElementById('heroTitle').textContent = LABEL + ' not found'; document.getElementById('notFound').hidden = false; } return; }
         render(item, all);
+        countRead(item);
       } catch (e) { console.error(e); if (!document.getElementById('articleBody').dataset.ssr) document.getElementById('notFound').hidden = false; }
+    }
+
+    // Read counter: one beacon per browser per article per day. Skipped in browsers
+    // that have opened the CMS (/admin sets enlil_admin) so our own visits don't count.
+    function countRead(item) {
+      try {
+        if (SECTION !== 'articles') return;
+        const slug = slugOf(item), key = `enlil_v:${slug}`, today = new Date().toISOString().slice(0, 10);
+        if (localStorage.getItem('enlil_admin') || localStorage.getItem(key) === today) return;
+        localStorage.setItem(key, today);
+        const url = `${API_BASE}/views/${encodeURIComponent(slug)}`;
+        if (!(navigator.sendBeacon && navigator.sendBeacon(url))) fetch(url, { method: 'POST', keepalive: true }).catch(() => {});
+      } catch (e) { /* storage blocked — count nothing rather than double-count */ }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
