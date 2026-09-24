@@ -156,10 +156,15 @@ async function renderHome(html) {
           <div class="spark"><canvas data-i="${i}"></canvas></div>
           <span class="src"><span>${esc((d.source && d.source.publisher) || 'Enlil Center')}</span></span>
         </a>`).join('') || '<p class="empty">Datasets are being added.</p>');
-  html = setInner(html, 'partnersContainer', partners.map(p => `
-        <a class="partner" href="${attr(p.url || '#')}" ${p.url ? 'target="_blank" rel="noopener"' : ''}>
-          ${p.logo ? `<img src="${attr(p.logo)}" alt="${attr(p.name || '')}" loading="lazy">` : ''}<span>${esc(p.name || '')}</span>
-        </a>`).join(''));
+  html = setInner(html, 'partnersContainer', partners.map(p => {
+    const href = p.link || p.url || '#'; const ext = !p.link && p.url;
+    return `
+        <a class="partner" href="${attr(href)}" ${ext ? 'target="_blank" rel="noopener"' : ''}>
+          <span class="logo">${p.logo ? `<img src="${attr(p.logo)}" alt="${attr(p.name || '')}" loading="lazy">` : ''}</span>
+          <span class="name">${esc(String(p.name || '').trim())}</span>
+          ${p.role ? `<span class="role">${esc(p.role)}</span>` : ''}
+          ${p.link ? '<span class="more">View project</span>' : (p.url ? '<span class="more">Website</span>' : '')}
+        </a>`; }).join(''));
   html = setInner(html, 'statPubs', String(arts.length + res.length));
   html = setInner(html, 'statData', String(data.length));
   html = setInner(html, 'statPartners', String(partners.length));

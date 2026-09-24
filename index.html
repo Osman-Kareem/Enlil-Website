@@ -112,10 +112,14 @@
 
     /* ── Partners ───────────────────────────────────────────────────────── */
     .partners { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
-    .partner { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 120px; text-align: center; }
-    .partner img { max-height: 56px; width: auto; object-fit: contain; filter: grayscale(1); opacity: .8; transition: filter .2s, opacity .2s; }
+    .partner { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 18px 18px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; min-height: 168px; text-align: center; transition: border-color .2s, transform .2s; }
+    .partner:hover { border-color: var(--green); transform: translateY(-2px); }
+    .partner .logo { height: 48px; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+    .partner img { max-height: 48px; max-width: 150px; width: auto; object-fit: contain; filter: grayscale(1); opacity: .8; transition: filter .2s, opacity .2s; }
     .partner:hover img { filter: none; opacity: 1; }
-    .partner span { font-size: .72rem; font-weight: 600; color: var(--ink-soft); }
+    .partner .name { font-size: .78rem; font-weight: 700; color: var(--ink); }
+    .partner .role { font-size: .68rem; line-height: 1.35; color: var(--ink-soft); }
+    .partner .more { font-size: .66rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--green); margin-top: auto; padding-top: 8px; }
     @media (max-width: 960px) { .partners { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 600px) { .partners { grid-template-columns: repeat(2, 1fr); } }
 
@@ -494,10 +498,15 @@
 
     function renderPartners(partners) {
       const box = document.getElementById('partnersContainer');
-      box.innerHTML = partners.map(p => `
-        <a class="partner" href="${esc(p.url || '#')}" ${p.url ? 'target="_blank" rel="noopener"' : ''}>
-          ${p.logo ? `<img src="${esc(p.logo)}" alt="${esc(p.name || '')}">` : ''}<span>${esc(p.name || '')}</span>
-        </a>`).join('') || '<p class="empty">Partners will be listed here.</p>';
+      box.innerHTML = partners.map(p => {
+        const href = p.link || p.url || '#'; const ext = !p.link && p.url;
+        return `
+        <a class="partner" href="${esc(href)}" ${ext ? 'target="_blank" rel="noopener"' : ''}>
+          <span class="logo">${p.logo ? `<img src="${esc(p.logo)}" alt="${esc(p.name || '')}">` : ''}</span>
+          <span class="name">${esc((p.name || '').trim())}</span>
+          ${p.role ? `<span class="role">${esc(p.role)}</span>` : ''}
+          ${p.link ? '<span class="more">View project</span>' : (p.url ? '<span class="more">Website</span>' : '')}
+        </a>`; }).join('') || '<p class="empty">Partners will be listed here.</p>';
     }
 
     async function init() {
