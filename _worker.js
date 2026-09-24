@@ -544,6 +544,11 @@ export default {
       return Response.redirect(`${url.origin}/${qs[1]}/${encodeURIComponent(url.searchParams.get('slug').toLowerCase())}`, 301);
     }
     if (path === '/index.html') return Response.redirect(`${url.origin}/${url.search}`, 301);
+    // Pre-Sept-2026 pages used relative nav links, so Google still holds URLs like
+    // /data/articles.html or /articles/research.html (Search Console "Not found (404)").
+    // 301 any "/<section>/<section>[.html]" leftover to the real section page.
+    const nested = path.match(/^\/(?:articles|research|projects|data|sources|topics|authors)\/(articles|research|projects|data|sources|topics|index)(?:\.html)?$/);
+    if (nested) return Response.redirect(`${url.origin}/${nested[1] === 'index' ? '' : nested[1]}${url.search}`, 301);
     const legacy = path.match(/^\/(articles|research|projects|data|sources|topics|ar|ar\/topics)(?:\.html|\/)$/);
     if (legacy) return Response.redirect(`${url.origin}/${legacy[1]}${url.search}`, 301);
     if (path.length > 1 && path.endsWith('/')) {
