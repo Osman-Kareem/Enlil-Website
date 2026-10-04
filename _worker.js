@@ -315,6 +315,9 @@ function renderDataset(html, item, slug) {
   return html;
 }
 
+const linkIcon = u => { u = String(u).toLowerCase(); return u.includes('linkedin') ? 'fa-brands fa-linkedin-in' : (u.includes('twitter') || u.includes('x.com')) ? 'fa-brands fa-x-twitter' : u.includes('facebook') ? 'fa-brands fa-facebook-f' : u.includes('instagram') ? 'fa-brands fa-instagram' : u.includes('researchgate') ? 'fa-brands fa-researchgate' : u.includes('academia') ? 'fa-solid fa-graduation-cap' : u.includes('orcid') ? 'fa-brands fa-orcid' : u.includes('scholar.google') ? 'fa-solid fa-book' : 'fa-solid fa-link'; };
+const linkLabel = l => { const t = String(l.type || l.label || '').replace(/\s*\(.*\)\s*/, '').trim(); if (t && !/^other/i.test(t)) return t; try { return new URL(l.url).hostname.replace(/^www\./, ''); } catch { return 'Website'; } };
+
 function renderAuthor(html, item, slug) {
   const url = `${SITE}/authors/${slug}`;
   const title = `Enlil Center | ${item.name}`;
@@ -324,10 +327,27 @@ function renderAuthor(html, item, slug) {
   html = setInner(html, 'breadcrumbName', esc(item.name));
   html = setInner(html, 'authorName', esc(item.name));
   if (item.role) html = setInner(html, 'authorRole', esc(item.role));
-  if (item.bio) html = setInner(html, 'authorBio', item.bio);
+  if (item.bio) html = setInner(html, 'authorBio', /<[a-z][\s\S]*>/i.test(item.bio) ? item.bio : String(item.bio).split(/\n+/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join(''));
+  if (item.photo) {
+    html = setAttr(html, 'authorPhoto', 'src', item.photo);
+    html = setAttr(html, 'authorPhoto', 'alt', item.name);
+    html = unhide(html, 'authorPhoto');
+    html = setAttr(html, 'authorInitials', 'hidden', 'hidden');
+  }
+  const links = (Array.isArray(item.links) ? item.links : []).filter(l => l && l.url);
+  if (item.linkedin && !links.some(l => /linkedin/.test(l.url))) links.push({ type: 'LinkedIn', url: item.linkedin });
+  const linkHtml = (item.email ? [`<a href="mailto:${attr(item.email)}"><i class="fa-solid fa-envelope"></i>${esc(item.email)}</a>`] : [])
+    .concat(links.map(l => `<a href="${attr(l.url)}" target="_blank" rel="noopener me"><i class="${linkIcon(l.url)}"></i>${esc(linkLabel(l))}</a>`));
+  if (linkHtml.length) html = setInner(html, 'linksContainer', linkHtml.join(''));
+  const sameAs = [...new Set([item.website, ...links.map(l => l.url)].filter(Boolean))];
   html = setInner(html, 'ldJson', ld({
-    "@context": "https://schema.org", "@type": "Person", "name": item.name, "jobTitle": item.role || undefined,
-    "description": desc, "image": item.photo || undefined, "url": url, "affiliation": { "@type": "Organization", "name": ORG, "url": SITE }
+    "@context": "https://schema.org", "@type": "ProfilePage", "url": url, "name": title,
+    "mainEntity": {
+      "@type": "Person", "name": item.name, "jobTitle": item.role || undefined, "description": desc,
+      "image": item.photo || undefined, "email": item.email ? `mailto:${item.email}` : undefined,
+      "url": item.website || url, "sameAs": sameAs.length ? sameAs : undefined,
+      "affiliation": { "@type": "Organization", "name": ORG, "url": SITE }
+    }
   }));
   return html;
 }

@@ -196,7 +196,7 @@
       if (author.linkedin && !(author.links || []).some(l => l && /linkedin/.test(l.url))) links.push(`<a href="${esc(author.linkedin)}" target="_blank" rel="noopener me"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>`);
       document.getElementById('linksContainer').innerHTML = links.join('');
       const bio = document.getElementById('authorBio');
-      bio.innerHTML = /<[a-z][\s\S]*>/i.test(author.bio || '') ? DOMPurify.sanitize(author.bio) : (author.bio || '').split(/\n{2,}/).map(p => `<p>${esc(p)}</p>`).join('') || '<p>Biography coming soon.</p>';
+      bio.innerHTML = /<[a-z][\s\S]*>/i.test(author.bio || '') ? DOMPurify.sanitize(author.bio) : (author.bio || '').split(/\n+/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('') || '<p>Biography coming soon.</p>';
 
       const arts = articles.filter(published).filter(a => byAuthor(a, name)).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
       const reps = research.filter(published).filter(r => byAuthor(r, name)).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
@@ -211,8 +211,11 @@
       ['ogDescription', 'twDescription'].forEach(id => document.getElementById(id).content = desc);
       document.getElementById('ogUrl').content = url;
       if (author.photo) ['ogImage', 'twImage'].forEach(id => document.getElementById(id).content = author.photo);
-      document.getElementById('ldJson').textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "Person", "name": name, "jobTitle": author.role || undefined, "description": desc, "image": author.photo || undefined, "url": url,
-        "sameAs": (author.links || []).map(l => l && l.url).filter(Boolean), "affiliation": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "url": "https://enlilcenter.org" } });
+      const sameAs = [...new Set([author.website, author.linkedin, ...(author.links || []).map(l => l && l.url)].filter(Boolean))];
+      document.getElementById('ldJson').textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "ProfilePage", "url": url, "name": `Enlil Center | ${name}`,
+        "mainEntity": { "@type": "Person", "name": name, "jobTitle": author.role || undefined, "description": desc, "image": author.photo || undefined,
+          "email": author.email ? `mailto:${author.email}` : undefined, "url": author.website || url, "sameAs": sameAs.length ? sameAs : undefined,
+          "affiliation": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "url": "https://enlilcenter.org" } } });
     }
     document.addEventListener('DOMContentLoaded', load);
   </script>
