@@ -94,7 +94,9 @@ function setMeta(html, { title, desc, image, canonical, extraHead }) {
 const ld = obj => JSON.stringify(obj).replace(/</g, '\\u003c');
 const publisher = { "@type": "Organization", "name": ORG, "url": SITE, "logo": { "@type": "ImageObject", "url": `${SITE}/image/logo.png` } };
 
+const FEED_LINK = '<link rel="alternate" type="application/rss+xml" title="Enlil Center: analysis, research and projects" href="/feed.xml">';
 function htmlResponse(html, maxAge = 300) {
+  if (!html.includes('application/rss+xml')) html = html.replace('</head>', () => `  ${FEED_LINK}\n</head>`);
   return new Response(html, {
     headers: {
       'content-type': 'text/html;charset=UTF-8',
@@ -527,6 +529,107 @@ async function renderTopicAr(html, slug) {
   return html.replace('</head>', () => `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
 }
 
+
+// ── Data Hub link blocks, rendered on the server so crawlers can follow them ──
+// Markup mirrors js/item-extras.js renderDatasets() and data.html renderGrid(); the
+// client re-renders the same elements after load (adding sparklines and buttons).
+function latestOf(d) {
+  const rows = (Array.isArray(d.rows) ? d.rows : []).filter(r => Array.isArray(r) && r.length > 1 && r[1] !== null && r[1] !== '' && isFinite(Number(r[1])));
+  if (!rows.length || !rows.every(r => /^\d{4}$/.test(String(r[0]).trim()))) return null;
+  const row = rows.reduce((a, b) => (+String(b[0]).trim() > +String(a[0]).trim() ? b : a));
+  const dec = Number.isInteger(d.decimals) ? d.decimals : 1;
+  return { period: String(row[0]).trim(), text: Number(row[1]).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: dec }) };
+}
+function dataLink(d) {
+  const st = latestOf(d);
+  return `<a class="data-link" href="/data/${itemSlug(d, 'dataset')}">
+        <span class="k">${esc((d.pillars || [])[0] || 'Data')}</span>
+        <span class="t">${esc(d.title)}</span>
+        ${st ? `<span class="v">${st.text} <small>${esc(d.unit || '')} · ${esc(st.period)}</small></span>` : ''}
+        <span class="s">${esc((d.source && d.source.publisher) || 'Enlil Center')} · chart &amp; CSV <i class="fa-solid fa-arrow-right"></i></span>
+      </a>`;
+}
+function renderLinkedDatasets(html, item, datasets) {
+  const bySlug = new Map(datasets.filter(isPublished).map(d => [d.slug, d]));
+  const picked = (Array.isArray(item.datasets) ? item.datasets : []).map(s => bySlug.get(s)).filter(Boolean);
+  if (!picked.length) return html;
+  html = setInner(html, 'datasetsList', picked.map(dataLink).join(''));
+  return html.replace(/(<section id="datasetsWrapper")\s+hidden/, '$1');
+}
+// Dataset page: "Used in" (reverse links to every article/report/project citing it)
+// plus same-pillar related series.
+function renderDatasetLinks(html, ds, all) {
+  const { articles = [], research = [], projects = [], datasets = [] } = all;
+  const slug = ds.slug;
+  const uses = [['articles', articles, 'Analysis'], ['research', research, 'Report'], ['projects', projects, 'Project']]
+    .flatMap(([sec, items, kind]) => items.filter(isPublished).filter(x => Array.isArray(x.datasets) && x.datasets.includes(slug)).map(x => ({ sec, x, kind })));
+  if (uses.length) {
+    html = setInner(html, 'usedIn', uses.map(({ sec, x, kind }) => `<a href="/${sec}/${itemSlug(x, sec)}">${esc(x.title)}<small>${kind}</small></a>`).join(''));
+    html = html.replace(/(<div class="aside-block" id="usedInWrap")\s+hidden/, '$1');
+  }
+  const pillars = ds.pillars || [];
+  const rel = datasets.filter(isPublished).filter(d => d.slug !== slug && (d.pillars || []).some(p => pillars.includes(p))).slice(0, 5);
+  if (rel.length) {
+    html = setInner(html, 'related', rel.map(d => { const st = latestOf(d); return `<a href="/data/${itemSlug(d, 'dataset')}">${esc(d.title)}${st ? `<small>${st.text} ${esc(d.unit || '')} · ${esc(st.period)}</small>` : ''}</a>`; }).join(''));
+    html = html.replace(/(<div class="aside-block" id="relatedWrap")\s+hidden/, '$1');
+  }
+  return html;
+}
+// Data Hub index: every published series as a crawlable card.
+async function renderDataHub(html) {
+  const datasets = (await api('datasets')).filter(isPublished);
+  if (!datasets.length) return html;
+  html = setInner(html, 'datasetGrid', datasets.map(d => {
+    const st = latestOf(d), pillars = (d.pillars || []).filter(p => PILLARS.includes(p));
+    return `<article class="ds-card">
+            <span class="kicker">${esc(pillars.join(' · ') || 'Data')}</span>
+            <h3><a href="/data/${itemSlug(d, 'dataset')}">${esc(d.title)}</a></h3>
+            ${st ? `<span class="val">${st.text}<small>${esc(d.unit || '')} · ${esc(st.period)}</small></span>` : ''}
+            <div class="foot"><span>${esc((d.source && (d.source.publisher || d.source.title)) || 'Enlil Center')}</span></div>
+          </article>`;
+  }).join(''));
+  html = setInner(html, 'gridCount', `${datasets.length} of ${datasets.length}`);
+  const list = { "@context": "https://schema.org", "@type": "DataCatalog", "name": "Enlil Center Iraq Data Hub", "url": `${SITE}/data`, "publisher": publisher,
+    "dataset": datasets.map(d => ({ "@type": "Dataset", "name": d.title, "url": `${SITE}/data/${itemSlug(d, 'dataset')}` })) };
+  return html.replace('</head>', () => `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
+}
+
+// ── RSS feed: articles, research and projects, newest first ─────────────────
+async function feed() {
+  const [articles, research, projects] = await Promise.all(['articles', 'research', 'projects'].map(api));
+  const when = x => new Date(x.seo?.publishedDate || x.date || (x.year ? `${x.year}-01-01` : 0) || 0);
+  const items = [...articles.filter(isPublished).map(x => ({ x, sec: 'articles' })), ...research.filter(isPublished).map(x => ({ x, sec: 'research' })), ...projects.filter(isPublished).map(x => ({ x, sec: 'projects' }))]
+    .filter(({ x }) => !isNaN(when(x)))
+    .sort((a, b) => when(b.x) - when(a.x)).slice(0, 50);
+  const cdata = s => `<![CDATA[${String(s || '').replace(/]]>/g, ']]]]><![CDATA[>')}]]>`;
+  const body = items.map(({ x, sec }) => {
+    const link = `${SITE}/${sec}/${itemSlug(x, sec)}`;
+    const author = authorName(x);
+    return `    <item>
+      <title>${xmlEscape(x.title || '')}</title>
+      <link>${link}</link>
+      <guid isPermaLink="true">${link}</guid>
+      <pubDate>${when(x).toUTCString()}</pubDate>
+      <category>${xmlEscape(sec === 'articles' ? 'Analysis' : sec === 'research' ? 'Research' : 'Project')}</category>
+      ${author ? `<dc:creator>${xmlEscape(author)}</dc:creator>` : ''}
+      <description>${cdata(snippet(x))}</description>${x.cover ? `\n      <enclosure url="${xmlEscape(x.cover)}" type="image/jpeg" length="0"/>` : ''}
+    </item>`;
+  }).join('\n');
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Enlil Center</title>
+    <link>${SITE}/</link>
+    <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Independent research on climate, water, energy, economy and governance in Iraq.</description>
+    <language>en</language>
+    ${items.length ? `<lastBuildDate>${when(items[0].x).toUTCString()}</lastBuildDate>` : ''}
+${body}
+  </channel>
+</rss>`;
+  return new Response(xml, { headers: { 'content-type': 'application/rss+xml;charset=UTF-8', 'cache-control': 'public, max-age=900' } });
+}
+
 // ── sitemap ──────────────────────────────────────────────────────────────────
 async function sitemap() {
   const [articles, research, projects, datasets, authors] = await Promise.all(['articles', 'research', 'projects', 'datasets', 'authors'].map(api));
@@ -562,6 +665,7 @@ export default {
     const path = url.pathname;
 
     if (path === '/sitemap.xml') return sitemap();
+    if (path === '/feed.xml' || path === '/rss.xml' || path === '/feed') return path === '/feed.xml' ? feed() : Response.redirect(`${url.origin}/feed.xml`, 301);
 
     // Cloudflare Access gates /admin* on this hostname, so by the time this runs the
     // caller is a verified Enlil admin. Lets admin.html fetch the CMS write token at
@@ -640,6 +744,14 @@ export default {
       return htmlResponse(html, 600);
     }
 
+    // Data Hub index — every series as a crawlable card (the page's own script then adds charts).
+    if (path === '/data') {
+      const res = await env.ASSETS.fetch(new Request(new URL('/data.html', url.origin)));
+      let html = await res.text();
+      try { html = await renderDataHub(html); } catch (e) { /* static fallback */ }
+      return htmlResponse(html, 300);
+    }
+
     // Listing pages — server-rendered first page of cards + ItemList schema.
     const lm = path.match(/^\/(articles|research|projects)(?:\.html)?\/?$/);
     if (lm) {
@@ -663,7 +775,17 @@ export default {
         if (item && section !== 'authors' && itemSlug(item, section) !== slug) {
           return Response.redirect(`${url.origin}/${section}/${itemSlug(item, section)}`, 301);
         }
-        if (item && (section === 'authors' || isPublished(item))) html = RENDER[section](html, item, slug);
+        if (item && (section === 'authors' || isPublished(item))) {
+          html = RENDER[section](html, item, slug);
+          try {
+            if (section === 'data') {
+              const [articles, research, projects] = await Promise.all(['articles', 'research', 'projects'].map(api));
+              html = renderDatasetLinks(html, item, { articles, research, projects, datasets: items });
+            } else if (section !== 'authors' && Array.isArray(item.datasets) && item.datasets.length) {
+              html = renderLinkedDatasets(html, item, await api('datasets'));
+            }
+          } catch (e) { /* link blocks are an enhancement; the client fills them too */ }
+        }
         else status = 404;
       } catch (e) { /* template as-is; the page's own script will try again client-side */ }
       const r = htmlResponse(html, status === 200 ? 300 : 60);
