@@ -220,7 +220,7 @@ function renderArticle(html, item, slug) {
   const desc = snippet(item);
   const image = item.cover || `${SITE}/image/og-hero.jpg`;
   const name = authorName(item);
-  html = setMeta(html, { title, desc, image, canonical: url, extraHead: `  <meta property="article:published_time" content="${attr(isoDate(item.date))}">\n  <meta property="article:author" content="${attr(name)}">\n  <meta property="article:section" content="${attr(kickerOf(item, 'Analysis'))}">\n` });
+  html = setMeta(html, { title, desc, image, canonical: url, extraHead: `  <meta property="article:published_time" content="${attr(isoDate(item.date))}">\n  <meta property="article:author" content="${attr(name)}">\n  <meta property="article:section" content="${attr(kickerOf(item, 'Analysis'))}">\n` + scholarMeta(item, 'article') });
   html = setInner(html, 'heroTitle', esc(item.title));
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'articleTitle', esc(item.title));
@@ -239,6 +239,20 @@ function renderArticle(html, item, slug) {
   return html;
 }
 
+// Google Scholar / Highwire tags so reports and analysis can be indexed as citable
+// works (https://scholar.google.com/intl/en/scholar/inclusion.html#indexing).
+function scholarMeta(item, kind, pdf) {
+  const names = [authorName(item), ...(Array.isArray(item.authors) ? item.authors.map(a => a && a.name) : [])].filter(Boolean);
+  const authors = [...new Set(names)];
+  const d = isoDate(item.date);
+  const tags = [['citation_title', item.title], ...authors.map(a => ['citation_author', a]),
+    ['citation_publication_date', d ? d.replace(/-/g, '/') : ''], ['citation_language', 'en'], ['citation_publisher', ORG],
+    kind === 'report' ? ['citation_technical_report_institution', ORG] : ['citation_journal_title', 'Enlil Center Analysis'],
+    ['citation_abstract_html_url', `${SITE}/${kind === 'report' ? 'research' : 'articles'}/${itemSlug(item, kind === 'report' ? 'report' : 'article')}`],
+    ['citation_pdf_url', pdf || ''], ...(item.pillars || []).map(p => ['citation_keywords', p])];
+  return tags.filter(([, v]) => v).map(([k, v]) => `  <meta name="${k}" content="${attr(v)}">\n`).join('');
+}
+
 function renderResearch(html, item, slug) {
   html = heroBits(html, item, 'Report');
   const url = `${SITE}/research/${slug}`;
@@ -246,7 +260,7 @@ function renderResearch(html, item, slug) {
   const desc = snippet(item);
   const image = item.cover || `${SITE}/image/og-hero.jpg`;
   const pdf = item.pdfUrl || (String(item.pdf || '').startsWith('http') ? item.pdf : '');
-  html = setMeta(html, { title, desc, image, canonical: url, extraHead: `  <meta property="article:published_time" content="${attr(isoDate(item.date))}">\n` });
+  html = setMeta(html, { title, desc, image, canonical: url, extraHead: `  <meta property="article:published_time" content="${attr(isoDate(item.date))}">\n` + scholarMeta(item, 'report', pdf) });
   html = setInner(html, 'heroTitle', esc(item.title));
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'reportTitle', esc(item.title));
