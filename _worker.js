@@ -79,17 +79,17 @@ function unhide(html, id) {
 }
 function setMeta(html, { title, desc, image, canonical, extraHead }) {
   return html
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
-    .replace(/(<meta name="description" content=")([^"]*)(")/, `$1${attr(desc)}$3`)
-    .replace(/(<meta id="ogTitle"[^>]*content=")([^"]*)(")/, `$1${attr(title)}$3`)
-    .replace(/(<meta id="ogDescription"[^>]*content=")([^"]*)(")/, `$1${attr(desc)}$3`)
-    .replace(/(<meta id="ogUrl"[^>]*content=")([^"]*)(")/, `$1${canonical}$3`)
-    .replace(/(<meta id="ogImage"[^>]*content=")([^"]*)(")/, `$1${attr(image)}$3`)
-    .replace(/(<meta id="twTitle"[^>]*content=")([^"]*)(")/, `$1${attr(title)}$3`)
-    .replace(/(<meta id="twDescription"[^>]*content=")([^"]*)(")/, `$1${attr(desc)}$3`)
-    .replace(/(<meta id="twImage"[^>]*content=")([^"]*)(")/, `$1${attr(image)}$3`)
-    .replace(/(<link id="canonicalLink"[^>]*href=")([^"]*)(")/, `$1${canonical}$3`)
-    .replace('</head>', `${extraHead || ''}</head>`);
+    .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(title)}</title>`)
+    .replace(/(<meta name="description" content=")([^"]*)(")/, (_, a, _o, c) => a + attr(desc) + c)
+    .replace(/(<meta id="ogTitle"[^>]*content=")([^"]*)(")/, (_, a, _o, c) => a + attr(title) + c)
+    .replace(/(<meta id="ogDescription"[^>]*content=")([^"]*)(")/, (_, a, _o, c) => a + attr(desc) + c)
+    .replace(/(<meta id="ogUrl"[^>]*content=")([^"]*)(")/, (_, a, _o, c) => a + canonical + c)
+    .replace(/(<meta id="ogImage"[^>]*content=")([^"]*)(")/, (_, a, _o, c) => a + attr(image) + c)
+    .replace(/(<meta id="twTitle"[^>]*content=")([^"]*)(")/, (_, a, _o, c) => a + attr(title) + c)
+    .replace(/(<meta id="twDescription"[^>]*content=")([^"]*)(")/, (_, a, _o, c) => a + attr(desc) + c)
+    .replace(/(<meta id="twImage"[^>]*content=")([^"]*)(")/, (_, a, _o, c) => a + attr(image) + c)
+    .replace(/(<link id="canonicalLink"[^>]*href=")([^"]*)(")/, (_, a, _o, c) => a + canonical + c)
+    .replace('</head>', () => `${extraHead || ''}</head>`);
 }
 const ld = obj => JSON.stringify(obj).replace(/</g, '\\u003c');
 const publisher = { "@type": "Organization", "name": ORG, "url": SITE, "logo": { "@type": "ImageObject", "url": `${SITE}/image/logo.png` } };
@@ -175,7 +175,7 @@ async function renderHome(html) {
     "@context": "https://schema.org", "@type": "ItemList",
     "itemListElement": arts.slice(0, 10).map((a, i) => ({ "@type": "ListItem", "position": i + 1, "url": `${SITE}/articles/${itemSlug(a, 'article')}`, "name": a.title }))
   };
-  return html.replace('</head>', `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
+  return html.replace('</head>', () => `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
 }
 
 // ── listing pages ────────────────────────────────────────────────────────────
@@ -190,7 +190,7 @@ async function renderListing(html, section) {
   html = setInner(html, 'count', items.length ? `${Math.min(12, items.length)} of ${items.length}` : '');
   const list = { "@context": "https://schema.org", "@type": "ItemList", "numberOfItems": items.length,
     "itemListElement": items.slice(0, 50).map((it, i) => ({ "@type": "ListItem", "position": i + 1, "url": `${SITE}/${section}/${itemSlug(it, section)}`, "name": it.title })) };
-  return html.replace('</head>', `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
+  return html.replace('</head>', () => `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
 }
 
 // ── detail pages ─────────────────────────────────────────────────────────────
@@ -288,24 +288,50 @@ function renderProject(html, item, slug) {
   return html;
 }
 
-function renderDataset(html, item, slug) {
-  const url = `${SITE}/data/${slug}`;
-  const title = `Enlil Center | ${item.title}`;
+// Search-facing title/description for a Data Hub series. Mirrored in datasets/dataset.html.
+// Year-keyed series get the span in the title and the latest value in the description, so
+// the snippet answers queries like "iraq gdp" directly; labelled series (sectors, DTM rounds)
+// keep the plain title and no temporalCoverage.
+function datasetMeta(item) {
   const src = item.source || {};
   const srcName = src.publisher || src.title || '';
-  const desc = item.description || `${item.title} — Iraq data series${srcName ? ' from ' + srcName : ''}, charted and downloadable from Enlil Center.`;
   const rows = Array.isArray(item.rows) ? item.rows.filter(r => Array.isArray(r) && r.length) : [];
-  const periods = rows.map(r => String(r[0])).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const yearly = rows.length > 0 && rows.every(r => /^\d{4}$/.test(String(r[0]).trim()));
+  const years = yearly ? rows.map(r => +String(r[0]).trim()) : [];
+  const first = yearly ? Math.min(...years) : null, last = yearly ? Math.max(...years) : null;
+  const span = yearly ? (first === last ? `${last}` : `${first}–${last}`) : '';
+  const title = `${item.title}${span ? `, ${span}` : ''}: data and chart | Enlil Center`;
+  const base = (item.description || `${item.title}: Iraq data series${srcName ? ' from ' + srcName : ''}, charted and downloadable from Enlil Center.`).trim();
+  let latest = '';
+  if (yearly && (item.columns || []).length === 2) {
+    const row = rows.find(r => +String(r[0]).trim() === last);
+    const v = Number(row && row[1]);
+    if (row && row[1] !== null && row[1] !== '' && isFinite(v)) {
+      const d = Number.isInteger(item.decimals) ? item.decimals : 1;
+      const n = v.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: d }), u = String(item.unit || '').trim();
+      const cur = u.match(/^(?:USD|US\$)\s*(.*)$/);
+      const val = cur ? `US$${n}${cur[1] ? ' ' + cur[1] : ''}` : u.startsWith('%') ? `${n}${u}` : `${n}${u ? ' ' + u : ''}`;
+      latest = ` Latest: ${val} (${last}).`;
+    }
+  }
+  const desc = `${base.replace(/\s*$/, '')}${latest}${srcName ? ` Source: ${srcName}.` : ''}`;
+  return { title, desc, srcName, coverage: yearly ? `${first}/${last}` : undefined };
+}
+
+function renderDataset(html, item, slug) {
+  const url = `${SITE}/data/${slug}`;
+  const src = item.source || {};
+  const { title, desc, srcName, coverage } = datasetMeta(item);
   html = setMeta(html, { title, desc, image: `${SITE}/image/og-hero.jpg`, canonical: url });
   html = setInner(html, 'heroTitle', esc(item.title));
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'pillarLine', esc((item.pillars || []).filter(p => PILLARS.includes(p)).join(' · ')));
   html = unhide(html, 'dataset');
-  html = setInner(html, 'description', esc(desc));
+  html = setInner(html, 'description', esc(item.description || desc));
   const ldObj = {
     "@context": "https://schema.org", "@type": "Dataset", "name": item.title, "description": desc, "url": url,
     "keywords": (item.pillars || []).concat(['Iraq']), "spatialCoverage": "Iraq",
-    "temporalCoverage": periods.length ? `${periods[0]}/${periods[periods.length - 1]}` : undefined,
+    "temporalCoverage": coverage,
     "variableMeasured": (item.columns || []).slice(1), "license": "https://creativecommons.org/licenses/by/4.0/", "isAccessibleForFree": true,
     "distribution": [{ "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": url }],
     "creator": { "@type": "Organization", "name": srcName || "Enlil Center" }, "publisher": publisher,
@@ -432,7 +458,7 @@ async function renderTopic(html, slug) {
       "itemListElement": [...R.map(it => ({ u: `/research/${itemSlug(it, 'report')}`, n: it.title })), ...A.map(it => ({ u: `/articles/${itemSlug(it, 'article')}`, n: it.title })), ...D.map(it => ({ u: `/data/${itemSlug(it, 'dataset')}`, n: it.title }))].slice(0, 50).map((x, i) => ({ "@type": "ListItem", "position": i + 1, "url": SITE + x.u, "name": x.n })) } };
   const ld2 = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE}/` }, { "@type": "ListItem", "position": 2, "name": "Topics", "item": `${SITE}/topics` }, { "@type": "ListItem", "position": 3, "name": t.name, "item": url }] };
-  return html.replace('</head>', `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
+  return html.replace('</head>', () => `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
 }
 
 
@@ -498,7 +524,7 @@ async function renderTopicAr(html, slug) {
     "publisher": { "@type": "NGO", "name": "مركز إنليل للبيئة والتنمية المستدامة", "alternateName": ORG, "url": `${SITE}/` } };
   const ld2 = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": `${SITE}/ar` }, { "@type": "ListItem", "position": 2, "name": "المواضيع", "item": `${SITE}/ar/topics` }, { "@type": "ListItem", "position": 3, "name": a.name, "item": url }] };
-  return html.replace('</head>', `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
+  return html.replace('</head>', () => `  <script type="application/ld+json">${ld(ld1)}</script>\n  <script type="application/ld+json">${ld(ld2)}</script>\n</head>`);
 }
 
 // ── sitemap ──────────────────────────────────────────────────────────────────

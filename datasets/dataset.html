@@ -279,22 +279,52 @@
       document.getElementById('relatedWrap').hidden = !rel.length;
       document.getElementById('related').innerHTML = rel.map(d => { const rs = stats(d, 0); return `<a href="/data/${safeSlug(d.slug, d.title)}">${esc(d.title)}${rs ? `<small>${fmt(rs.latest.value, rs.decimals)} ${esc(d.unit || '')} · ${esc(rs.latest.period)}</small>` : ''}</a>`; }).join('');
 
-      const desc = ds.description || `${ds.title} — Iraq data series${srcName ? ' from ' + srcName : ''}, charted and downloadable from Enlil Center.`;
-      document.title = `Enlil Center | ${ds.title}`;
+      const meta = datasetMeta(ds), desc = meta.desc;
+      document.title = meta.title;
       document.querySelector('meta[name="description"]').content = desc;
       document.getElementById('canonicalLink').href = url;
-      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = `Enlil Center | ${ds.title}`);
+      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = meta.title);
       ['ogDescription', 'twDescription'].forEach(id => document.getElementById(id).content = desc);
       document.getElementById('ogUrl').content = url;
       const eu = encodeURIComponent(url), et = encodeURIComponent(ds.title);
       document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?url=${eu}&text=${et}`;
       document.getElementById('shareLinkedIn').href = `https://www.linkedin.com/shareArticle?mini=true&url=${eu}&title=${et}`;
       const ld = { "@context": "https://schema.org", "@type": "Dataset", "name": ds.title, "description": desc, "url": url, "keywords": pillars.concat(['Iraq']), "spatialCoverage": "Iraq",
-        "temporalCoverage": st ? `${st.first.period}/${st.latest.period}` : undefined, "variableMeasured": s.sets.map(x => x.label), "license": "https://creativecommons.org/licenses/by/4.0/", "isAccessibleForFree": true,
+        "temporalCoverage": meta.coverage, "variableMeasured": s.sets.map(x => x.label), "license": "https://creativecommons.org/licenses/by/4.0/", "isAccessibleForFree": true,
         "distribution": [{ "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": url }], "creator": { "@type": "Organization", "name": srcName || "Enlil Center" },
         "publisher": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "url": "https://enlilcenter.org" }, "dateModified": ds.updatedAt || ds.retrievedAt || undefined };
       if (src.url) ld.isBasedOn = src.url;
       document.getElementById('ldJson').textContent = JSON.stringify(ld);
+    }
+
+    // Search-facing title/description for a Data Hub series. Mirrors datasetMeta() in _worker.js.
+    // Year-keyed series get the span in the title and the latest value in the description, so
+    // the snippet answers queries like "iraq gdp" directly; labelled series (sectors, DTM rounds)
+    // keep the plain title and no temporalCoverage.
+    function datasetMeta(item) {
+      const src = item.source || {};
+      const srcName = src.publisher || src.title || '';
+      const rows = Array.isArray(item.rows) ? item.rows.filter(r => Array.isArray(r) && r.length) : [];
+      const yearly = rows.length > 0 && rows.every(r => /^\d{4}$/.test(String(r[0]).trim()));
+      const years = yearly ? rows.map(r => +String(r[0]).trim()) : [];
+      const first = yearly ? Math.min(...years) : null, last = yearly ? Math.max(...years) : null;
+      const span = yearly ? (first === last ? `${last}` : `${first}–${last}`) : '';
+      const title = `${item.title}${span ? `, ${span}` : ''}: data and chart | Enlil Center`;
+      const base = (item.description || `${item.title}: Iraq data series${srcName ? ' from ' + srcName : ''}, charted and downloadable from Enlil Center.`).trim();
+      let latest = '';
+      if (yearly && (item.columns || []).length === 2) {
+        const row = rows.find(r => +String(r[0]).trim() === last);
+        const v = Number(row && row[1]);
+        if (row && row[1] !== null && row[1] !== '' && isFinite(v)) {
+          const d = Number.isInteger(item.decimals) ? item.decimals : 1;
+          const n = v.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: d }), u = String(item.unit || '').trim();
+          const cur = u.match(/^(?:USD|US\$)\s*(.*)$/);
+          const val = cur ? `US$${n}${cur[1] ? ' ' + cur[1] : ''}` : u.startsWith('%') ? `${n}${u}` : `${n}${u ? ' ' + u : ''}`;
+          latest = ` Latest: ${val} (${last}).`;
+        }
+      }
+      const desc = `${base.replace(/\s*$/, '')}${latest}${srcName ? ` Source: ${srcName}.` : ''}`;
+      return { title, desc, srcName, coverage: yearly ? `${first}/${last}` : undefined };
     }
 
     document.addEventListener('DOMContentLoaded', () => {
