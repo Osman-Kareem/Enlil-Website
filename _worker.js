@@ -604,7 +604,7 @@ async function renderDataHub(html) {
   }).join(''));
   html = setInner(html, 'gridCount', `${datasets.length} of ${datasets.length}`);
   const list = { "@context": "https://schema.org", "@type": "DataCatalog", "name": "Enlil Center Iraq Data Hub", "url": `${SITE}/data`, "publisher": publisher,
-    "identifier": "https://doi.org/10.5281/zenodo.23240940", "sameAs": ["https://doi.org/10.5281/zenodo.23240940", "https://github.com/enlilcenter/iraq-data-hub"], "license": "https://creativecommons.org/licenses/by/4.0/",
+    "identifier": "https://doi.org/10.5281/zenodo.23240940", "sameAs": ["https://doi.org/10.5281/zenodo.23240940", "https://github.com/enlilcenter/iraq-data-hub", "https://www.kaggle.com/datasets/enlilcenter/iraq-data-hub"], "license": "https://creativecommons.org/licenses/by/4.0/",
     "dataset": datasets.map(d => ({ "@type": "Dataset", "name": d.title, "url": `${SITE}/data/${itemSlug(d, 'dataset')}` })) };
   return html.replace('</head>', () => `  <script type="application/ld+json">${ld(list)}</script>\n</head>`);
 }
