@@ -36,8 +36,43 @@ const FILE_TYPES = {
 };
 const MAX_FILE_BYTES = 25 * 1024 * 1024;
 
+// ── IndexNow ──────────────────────────────────────────────────────────────────
+// On every content PUT, tell Bing/Yandex/Seznam/Naver which public URLs changed so they
+// recrawl within minutes. The key is public by design; the site serves it at /<key>.txt.
+const INDEXNOW_KEY = '10aaa08e9702ed040793a4964fa4d7d3';
+const PUBLIC_SECTION = { articles: 'articles', research: 'research', projects: 'projects', datasets: 'data' };
+// Mirrors itemSlug()/isPublished() in the site's _worker.js.
+const pubSlug = it => {
+  const s = (it.seo && it.seo.slug) || it.slug;
+  if (s && String(s).trim()) return String(s).trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+  return String(it.title || it.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+};
+const isPub = it => { const s = String(it.status || it.publishStatus || 'published').toLowerCase(); return s !== 'draft' && s !== 'unpublished'; };
+function changedUrls(key, oldArr, newArr) {
+  const section = PUBLIC_SECTION[key];
+  if (!section) return [];
+  const before = new Map((Array.isArray(oldArr) ? oldArr : []).filter(isPub).map(it => [pubSlug(it), JSON.stringify(it)]));
+  const after = new Map(newArr.filter(isPub).map(it => [pubSlug(it), JSON.stringify(it)]));
+  const urls = [];
+  for (const [slug, body] of after) if (slug && before.get(slug) !== body) urls.push(`https://enlilcenter.org/${section}/${slug}`);
+  // Removed or unpublished entries: ping so engines see the 404 sooner.
+  for (const slug of before.keys()) if (slug && !after.has(slug)) urls.push(`https://enlilcenter.org/${section}/${slug}`);
+  if (urls.length) urls.push(`https://enlilcenter.org/${section}`, 'https://enlilcenter.org/', 'https://enlilcenter.org/feed.xml');
+  return urls.slice(0, 1000);
+}
+async function pingIndexNow(urls) {
+  if (!urls.length) return;
+  try {
+    await fetch('https://api.indexnow.org/indexnow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({ host: 'enlilcenter.org', key: INDEXNOW_KEY, keyLocation: `https://enlilcenter.org/${INDEXNOW_KEY}.txt`, urlList: urls })
+    });
+  } catch { /* best effort — never block a CMS save */ }
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url  = new URL(request.url);
     const path = url.pathname;
 
@@ -213,7 +248,10 @@ export default {
         return new Response('Invalid JSON', { status: 400, headers: corsHeaders });
       }
       if (!Array.isArray(parsed)) return json({ error: 'Expected a JSON array' }, 400);
+      let previous = null;
+      if (PUBLIC_SECTION[key]) { try { previous = JSON.parse(await env.CMS_DATA.get(key) || '[]'); } catch { previous = []; } }
       await env.CMS_DATA.put(key, body);
+      if (previous && ctx) ctx.waitUntil(pingIndexNow(changedUrls(key, previous, parsed)));
       return json({ ok: true, count: parsed.length });
     }
 
