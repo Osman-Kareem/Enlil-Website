@@ -211,7 +211,7 @@
       const lead = (item.leadAuthor && item.leadAuthor.name) || item.author || '';
       const coauthors = Array.isArray(item.authors) ? item.authors.filter(a => a && a.name) : [];
 
-      document.title = `Enlil Center | ${title}`;
+      document.title = `${title} | Enlil Center`;
       document.getElementById('heroTitle').textContent = title;
       document.getElementById('breadcrumbTitle').textContent = title;
       document.getElementById('kicker').textContent = pillars[0] || FALLBACK;
@@ -272,7 +272,7 @@
       const year = item.date ? new Date(item.date).getFullYear() : (item.year || new Date().getFullYear());
       document.getElementById('citeLine').textContent = `${lead || 'Enlil Center'} (${year}). ${title}. Enlil Center for Environment and Sustainable Development. ${url}`;
       document.getElementById('canonicalLink').href = url;
-      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = `Enlil Center | ${title}`);
+      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = `${title} | Enlil Center`);
       ['ogDescription', 'twDescription'].forEach(id => document.getElementById(id).content = desc);
       document.getElementById('ogUrl').content = url;
       if (item.cover) ['ogImage', 'twImage'].forEach(id => document.getElementById(id).content = item.cover);

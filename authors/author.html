@@ -184,7 +184,7 @@
       const author = authors.find(a => a && (nameSlug(a.slug || '') === wanted || nameSlug(a.name) === wanted));
       if (!author) { document.getElementById('heroName').textContent = 'Author not found'; document.getElementById('notFound').hidden = false; document.getElementById('bioLayout').hidden = true; return; }
       const name = author.name || 'Author', slug = nameSlug(name), url = `https://enlilcenter.org/authors/${slug}`;
-      document.title = `Enlil Center | ${name}`;
+      document.title = `${name} | Enlil Center`;
       document.getElementById('heroName').textContent = name;
       document.getElementById('breadcrumbName').textContent = name;
       document.getElementById('authorRole').textContent = author.role || '';
@@ -207,12 +207,12 @@
       const desc = strip(author.bio).slice(0, 160) || `${name}${author.role ? ', ' + author.role : ''} at Enlil Center.`;
       document.querySelector('meta[name="description"]').content = desc;
       document.getElementById('canonicalLink').href = url;
-      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = `Enlil Center | ${name}`);
+      ['ogTitle', 'twTitle'].forEach(id => document.getElementById(id).content = `${name} | Enlil Center`);
       ['ogDescription', 'twDescription'].forEach(id => document.getElementById(id).content = desc);
       document.getElementById('ogUrl').content = url;
       if (author.photo) ['ogImage', 'twImage'].forEach(id => document.getElementById(id).content = author.photo);
       const sameAs = [...new Set([author.website, author.linkedin, ...(author.links || []).map(l => l && l.url)].filter(Boolean))];
-      document.getElementById('ldJson').textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "ProfilePage", "url": url, "name": `Enlil Center | ${name}`,
+      document.getElementById('ldJson').textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "ProfilePage", "url": url, "name": `${name} | Enlil Center`,
         "mainEntity": { "@type": "Person", "name": name, "jobTitle": author.role || undefined, "description": desc, "image": author.photo || undefined,
           "email": author.email ? `mailto:${author.email}` : undefined, "url": author.website || url, "sameAs": sameAs.length ? sameAs : undefined,
           "affiliation": { "@type": "Organization", "name": "Enlil Center for Environment and Sustainable Development", "url": "https://enlilcenter.org" } } });

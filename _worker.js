@@ -214,7 +214,7 @@ function heroBits(html, item, fallbackKicker) {
 function renderArticle(html, item, slug) {
   html = heroBits(html, item, 'Analysis');
   const url = `${SITE}/articles/${slug}`;
-  const title = `Enlil Center | ${item.title}`;
+  const title = `${item.title} | Enlil Center`;
   const desc = snippet(item);
   const image = item.cover || `${SITE}/image/og-hero.jpg`;
   const name = authorName(item);
@@ -240,7 +240,7 @@ function renderArticle(html, item, slug) {
 function renderResearch(html, item, slug) {
   html = heroBits(html, item, 'Report');
   const url = `${SITE}/research/${slug}`;
-  const title = `Enlil Center | ${item.title}`;
+  const title = `${item.title} | Enlil Center`;
   const desc = snippet(item);
   const image = item.cover || `${SITE}/image/og-hero.jpg`;
   const pdf = item.pdfUrl || (String(item.pdf || '').startsWith('http') ? item.pdf : '');
@@ -268,7 +268,7 @@ function renderResearch(html, item, slug) {
 function renderProject(html, item, slug) {
   html = heroBits(html, item, 'Project');
   const url = `${SITE}/projects/${slug}`;
-  const title = `Enlil Center | ${item.title}`;
+  const title = `${item.title} | Enlil Center`;
   const desc = snippet(item);
   const image = item.cover || `${SITE}/image/og-hero.jpg`;
   html = setMeta(html, { title, desc, image, canonical: url });
@@ -346,7 +346,7 @@ const linkLabel = l => { const t = String(l.type || l.label || '').replace(/\s*\
 
 function renderAuthor(html, item, slug) {
   const url = `${SITE}/authors/${slug}`;
-  const title = `Enlil Center | ${item.name}`;
+  const title = `${item.name} | Enlil Center`;
   const desc = strip(item.bio).slice(0, 160) || `${item.name}${item.role ? ', ' + item.role : ''} at Enlil Center.`;
   html = setMeta(html, { title, desc, image: item.photo || `${SITE}/image/og-hero.jpg`, canonical: url });
   html = setInner(html, 'heroName', esc(item.name));
