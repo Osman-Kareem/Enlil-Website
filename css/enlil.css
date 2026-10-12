@@ -57,7 +57,7 @@ button { font: inherit; cursor: pointer; }
 .site-header .brand img { height: 36px; width: auto; }
 .site-header .brand .name { font-family: var(--font-head); font-weight: 900; font-size: 1.15rem; letter-spacing: .02em; line-height: 1; }
 .site-header .brand .tag { display: block; font-family: var(--font-body); font-weight: 500; font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; color: #B7CBBE; margin-top: 4px; }
-.site-nav { display: flex; align-items: center; gap: 28px; }
+.site-nav { display: flex; align-items: center; gap: 22px; }
 .site-nav a { font-family: var(--font-head); font-weight: 600; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: #CFE0D6; padding: 6px 0; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
 .site-nav a:hover { color: #fff; }
 .site-nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--amber); }
@@ -69,7 +69,7 @@ button { font: inherit; cursor: pointer; }
 .mobile-nav a { display: block; padding: 14px 24px; color: #E4EAE5; font-family: var(--font-head); font-weight: 600; font-size: .95rem; border-bottom: 1px solid rgba(255,255,255,.06); }
 .mobile-nav a[aria-current="page"] { color: #fff; box-shadow: inset 3px 0 0 var(--amber); }
 /* 8 nav items (Newsletter added Oct 2026): labels never wrap; tighten, then collapse to the menu button */
-.site-nav a, .site-header .cta, .site-header .brand .name { white-space: nowrap; }
+.site-nav a, .site-header .cta, .site-header .brand .name, .site-header .brand .tag { white-space: nowrap; }
 @media (max-width: 1360px) { .site-nav { gap: 20px; } .site-header .brand .tag { display: none; } }
 @media (max-width: 1240px) {
   .site-nav, .site-header .cta { display: none; }
