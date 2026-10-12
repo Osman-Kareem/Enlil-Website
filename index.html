@@ -146,6 +146,20 @@
     .legal p { color: var(--ink-soft); font-size: .95rem; max-width: 70ch; }
     .legal p + p { margin-top: 10px; }
     .empty { color: var(--ink-mute); font-size: .9rem; }
+  
+    .nl-band { position: relative; color: #fff; background: var(--green-deep) url('/image/newsletter-hero.jpg') center 45%/cover no-repeat; padding: 72px 0; }
+    .nl-band::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,56,31,.96) 0%, rgba(8,56,31,.88) 55%, rgba(8,56,31,.55) 100%); }
+    .nl-band .wrap { position: relative; }
+    .nl-band-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: center; }
+    .nl-band .kicker { color: var(--amber-light); }
+    .nl-band h2 { color: #fff; font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin-top: 8px; }
+    .nl-band p { color: #D7E7DD; font-size: 1.05rem; line-height: 1.6; margin-top: 12px; max-width: 56ch; }
+    .nl-band-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+    .nl-band-btn { background: var(--amber); color: var(--amber-ink); font-family: var(--font-head); font-weight: 800; font-size: .9rem; letter-spacing: .06em; text-transform: uppercase; padding: 16px 26px; border-radius: 2px; }
+    .nl-band-btn:hover { background: var(--amber-deep); color: #fff; }
+    .nl-band-sample { color: #E4EDE7; text-decoration: underline; text-underline-offset: 3px; font-size: .95rem; }
+    @media (max-width: 860px) { .nl-band-grid { grid-template-columns: 1fr; gap: 22px; } .nl-band { padding: 56px 0; } }
+
   </style>
   <style>.lang{font-size:.82rem;font-weight:700;color:#fff;opacity:.85;margin:0 14px;align-self:center;font-family:"IBM Plex Sans Arabic","Public Sans",sans-serif}.lang:hover{opacity:1;text-decoration:underline}</style>
 </head>
@@ -166,6 +180,7 @@
         <a href="/projects">Projects</a>
         <a href="/data">Data</a>
         <a href="/sources">Sources</a>
+        <a href="/newsletter">Newsletter</a>
       </nav>
       <a class="lang" href="/ar" lang="ar" hreflang="ar">عربي</a>
       <a class="cta" href="/#contact">Work with us</a>
@@ -179,6 +194,7 @@
       <a href="/projects">Projects</a>
       <a href="/data">Data</a>
       <a href="/sources">Sources</a>
+      <a href="/newsletter">Newsletter</a>
       <a href="/#contact" onclick="toggleMobileMenu()">Work with us</a>
     </nav>
   </header>
@@ -261,6 +277,21 @@
         <a class="more-link" href="/research">All research <i class="fa-solid fa-arrow-right"></i></a>
       </div>
       <div class="card-grid" id="researchContainer"><p class="empty">Loading…</p></div>
+    </div>
+  </section>
+
+  <!-- Newsletter band -->
+  <section class="nl-band" aria-labelledby="nlBandTitle">
+    <div class="wrap nl-band-grid">
+      <div>
+        <span class="kicker">Free weekly newsletter</span>
+        <h2 id="nlBandTitle">Iraq Policy Monitor</h2>
+        <p>Iraq's energy, water and climate policy, read from the official record. The week's cabinet decisions, ministry statements and data, every item sourced, with one line on why it matters.</p>
+      </div>
+      <div class="nl-band-cta">
+        <a class="nl-band-btn" href="/newsletter">Subscribe free <i class="fa-solid fa-arrow-right"></i></a>
+        <a class="nl-band-sample" href="/ipm/issue-0">Read a sample issue</a>
+      </div>
     </div>
   </section>
 
@@ -398,7 +429,7 @@
         </div>
         <div>
           <h4>Publications</h4>
-          <ul><li><a href="/research">Research &amp; reports</a></li><li><a href="/articles">Articles &amp; commentary</a></li><li><a href="/projects">Projects</a></li></ul>
+          <ul><li><a href="/research">Research &amp; reports</a></li><li><a href="/articles">Articles &amp; commentary</a></li><li><a href="/projects">Projects</a></li><li><a href="/newsletter">Iraq Policy Monitor newsletter</a></li></ul>
         </div>
         <div>
           <h4>Data</h4>

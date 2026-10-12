@@ -30,6 +30,12 @@
   <script src="/js/enlil-data.js" defer></script>
   <script src="/js/enlil-site.js" defer></script>
   <script src="/js/item-extras.js" defer></script>
+  <style>
+    .nl-inline { margin: 40px 0 8px; padding: 22px 24px; background: var(--green-tint); border-left: 4px solid var(--green); display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .nl-inline p { margin: 6px 0 0; color: var(--ink); line-height: 1.5; max-width: 52ch; }
+    .nl-inline-btn { background: var(--green); color: #fff; font-family: var(--font-head); font-weight: 800; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; padding: 13px 20px; border-radius: 2px; white-space: nowrap; }
+    .nl-inline-btn:hover { background: var(--green-deep); }
+  </style>
 </head>
 <body>
 
@@ -48,6 +54,7 @@
         <a href="/projects">Projects</a>
         <a href="/data">Data</a>
         <a href="/sources">Sources</a>
+        <a href="/newsletter">Newsletter</a>
       </nav>
       <a class="cta" href="/#contact">Work with us</a>
       <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
@@ -60,6 +67,7 @@
       <a href="/projects">Projects</a>
       <a href="/data">Data</a>
       <a href="/sources">Sources</a>
+      <a href="/newsletter">Newsletter</a>
       <a href="/#contact" onclick="toggleMobileMenu()">Work with us</a>
     </nav>
   </header>
@@ -85,6 +93,11 @@
         </div>
 
         <div id="articleBody" class="prose"><!-- rendered from the CMS --></div>
+
+        <aside class="nl-inline" aria-label="Newsletter">
+          <div><span class="kicker green">Iraq Policy Monitor</span><p><b>Get Iraq's energy, water and climate policy every week, free.</b> The official record, every item sourced.</p></div>
+          <a class="nl-inline-btn" href="/newsletter">Subscribe <i class="fa-solid fa-arrow-right"></i></a>
+        </aside>
 
         <div class="extras">
           <section id="videoWrapper" hidden><h2>Video</h2><div class="video" id="videoEmbed"></div></section>
@@ -141,7 +154,7 @@
         </div>
         <div>
           <h4>Publications</h4>
-          <ul><li><a href="/research">Research &amp; reports</a></li><li><a href="/articles">Articles &amp; commentary</a></li><li><a href="/projects">Projects</a></li></ul>
+          <ul><li><a href="/research">Research &amp; reports</a></li><li><a href="/articles">Articles &amp; commentary</a></li><li><a href="/projects">Projects</a></li><li><a href="/newsletter">Iraq Policy Monitor newsletter</a></li></ul>
         </div>
         <div>
           <h4>Data</h4>

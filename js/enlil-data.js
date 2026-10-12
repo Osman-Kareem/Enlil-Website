@@ -10,7 +10,8 @@
 //
 // Requires Chart.js (UMD) to be loaded before chart() is called.
 (function () {
-  const PALETTE = ['#047857', '#D97F0B', '#1D4ED8', '#7C3AED', '#BE123C', '#0891B2'];
+  // Brand palette only (Oct 2026): greens, ambers and neutrals; no off-brand blue/purple/red.
+  const PALETTE = ['#047857', '#D97F0B', '#08381F', '#7FB59A', '#B4670A', '#6B6A61'];
   const PILLARS = ['Climate', 'Water', 'Energy', 'Economy', 'Governance'];
 
   function esc(s) {
@@ -50,8 +51,11 @@
     const cols = Array.isArray(ds.columns) ? ds.columns : [];
     const rows = (Array.isArray(ds.rows) ? ds.rows : [])
       .filter(r => Array.isArray(r) && r.length && r[0] !== '' && r[0] != null)
-      .slice()
-      .sort((a, b) => String(a[0]).localeCompare(String(b[0]), undefined, { numeric: true }));
+      .slice();
+    // Sort only true periods (years or ISO dates). Labelled rows (companies, "Jan 2026", DTM rounds)
+    // keep the order the publisher entered them in; alphabetical order scrambled months and categories.
+    const isPeriod = v => /^\d{4}(-\d{2}(-\d{2})?)?$/.test(String(v).trim());
+    if (rows.length && rows.every(r => isPeriod(r[0]))) rows.sort((a, b) => String(a[0]).localeCompare(String(b[0]), undefined, { numeric: true }));
     const labels = rows.map(r => String(r[0]));
     const names = cols.slice(1);
     const sets = names.map((name, i) => ({ label: name || `Series ${i + 1}`, data: rows.map(r => num(r[i + 1])) }));
@@ -95,7 +99,7 @@
         return {
           label: set.label, data: set.data, borderColor: c,
           backgroundColor: isBar ? c + 'CC' : (type === 'area' ? c + '22' : c),
-          fill: type === 'area', tension: 0.25, spanGaps: true,
+          fill: type === 'area', tension: 0.25, cubicInterpolationMode: 'monotone', spanGaps: true,
           pointRadius: mini ? 0 : (s.labels.length > 40 ? 0 : 3), pointHoverRadius: mini ? 0 : 5,
           borderWidth: mini ? 2 : 2.5, borderRadius: isBar ? 3 : 0
         };
