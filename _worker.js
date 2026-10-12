@@ -675,11 +675,17 @@ async function sitemap() {
   });
 }
 
+// Stable "latest issue" link for bios and email footers. Bump this each week when a
+// new Iraq Policy Monitor issue page goes up; 302 (not 301) so browsers don't cache it.
+const IPM_LATEST = '/ipm/issue-0';
+
 // ── router ───────────────────────────────────────────────────────────────────
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    if (path === '/ipm/latest' || path === '/ipm/latest/' || path === '/ipm' || path === '/ipm/') return Response.redirect(`${url.origin}${IPM_LATEST}${url.search}`, 302);
 
     if (path === '/sitemap.xml') return sitemap();
     if (path === '/feed.xml' || path === '/rss.xml' || path === '/feed') return path === '/feed.xml' ? feed() : Response.redirect(`${url.origin}/feed.xml`, 301);
