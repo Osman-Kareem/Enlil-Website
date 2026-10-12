@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iraq Policy Monitor | Free weekly newsletter | Enlil Center</title>
+  <meta name="description" content="Iraq Policy Monitor: a free weekly newsletter from Enlil Center on Iraq's energy, water and climate policy, read from the official record. Every item sourced.">
+  <link rel="canonical" href="https://enlilcenter.org/newsletter">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Enlil Center for Environment and Sustainable Development">
+  <meta property="og:title" content="Iraq Policy Monitor | Free weekly newsletter">
+  <meta property="og:description" content="Iraq's energy, water and climate policy, from the official record. Every item sourced. Free, weekly, from Enlil Center.">
+  <meta property="og:url" content="https://enlilcenter.org/newsletter">
+  <meta property="og:image" content="https://enlilcenter.org/image/newsletter-hero.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Iraq Policy Monitor | Free weekly newsletter">
+  <meta name="twitter:description" content="Iraq's energy, water and climate policy, from the official record. Every item sourced.">
+  <meta name="twitter:image" content="https://enlilcenter.org/image/newsletter-hero.jpg">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "WebPage", "name": "Iraq Policy Monitor",
+    "description": "A free weekly newsletter on Iraq's energy, water and climate policy, from the official record.",
+    "url": "https://enlilcenter.org/newsletter", "publisher": { "@type": "NGO", "name": "Enlil Center for Environment and Sustainable Development" } }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/vendor/fa/css/all.min.css">
+  <link rel="stylesheet" href="/css/enlil.css">
+  <script src="/js/enlil-site.js" defer></script>
+  <style>
+    .nl-hero { position: relative; color: #fff; background: var(--green-deep) url('/image/newsletter-hero.jpg') center 45%/cover no-repeat; }
+    .nl-hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,56,31,.35) 0%, rgba(8,56,31,.75) 55%, rgba(8,56,31,.96) 100%); }
+    .nl-hero .wrap { position: relative; padding-top: 120px; padding-bottom: 56px; }
+    .nl-hero h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); color: #fff; margin: 10px 0 14px; letter-spacing: -.01em; }
+    .nl-hero .dek { font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: #E4EDE7; max-width: 46ch; line-height: 1.5; }
+    .nl-hero .kicker { color: var(--amber-light); }
+    .nl-hero .crumbs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .78rem; font-weight: 600; color: #B7CBBE; margin-bottom: 18px; }
+    .nl-hero .crumbs a:hover { color: #fff; }
+    .nl-hero .crumbs i { font-size: .6rem; opacity: .6; }
+    .nl-hero .credit { position: absolute; right: 24px; bottom: 10px; font-size: .7rem; color: rgba(255,255,255,.6); }
+    .nl-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: start; }
+    @media (max-width: 900px) { .nl-grid { grid-template-columns: 1fr; gap: 36px; } .nl-hero .wrap { padding-top: 88px; } .nl-card { order: -1; position: static; } }
+    .nl-points { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 18px; }
+    .nl-points li { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; }
+    .nl-points i { width: 40px; height: 40px; display: grid; place-items: center; background: var(--green-tint); color: var(--green); border-radius: 2px; }
+    .nl-points b { display: block; font-family: var(--font-head); font-size: 1.02rem; margin-bottom: 2px; }
+    .nl-points span { color: var(--ink-soft); line-height: 1.55; }
+    .nl-sample { margin-top: 30px; padding: 18px 20px; border: 1px solid var(--line); border-left: 4px solid var(--amber); background: #fff; }
+    .nl-sample a { color: var(--green); font-weight: 700; }
+    .nl-card { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--green); padding: 30px 30px 26px; box-shadow: 0 10px 30px rgba(8,56,31,.06); position: sticky; top: 96px; }
+    .nl-card h2 { font-size: 1.45rem; margin-bottom: 4px; }
+    .nl-card .sub { color: var(--ink-soft); font-size: .95rem; margin-bottom: 18px; }
+    .nl-field { display: grid; gap: 6px; margin-bottom: 14px; }
+    .nl-field label { font-family: var(--font-head); font-weight: 700; font-size: .78rem; letter-spacing: .04em; color: var(--ink); }
+    .nl-field label .opt { font-weight: 500; color: var(--ink-mute); letter-spacing: 0; }
+    .nl-field input, .nl-field select { font: inherit; font-size: 1rem; padding: 12px 14px; border: 1px solid #C9D2CB; border-radius: 2px; background: #fff; color: var(--ink); width: 100%; box-sizing: border-box; }
+    .nl-field input:focus, .nl-field select:focus { outline: 3px solid var(--amber); outline-offset: 1px; border-color: var(--green); }
+    .nl-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .nl-two { grid-template-columns: 1fr; gap: 0; } .nl-card { padding: 24px 20px; position: static; } }
+    .nl-why { font-size: .8rem; color: var(--ink-mute); margin: -4px 0 16px; line-height: 1.45; }
+    .nl-btn { width: 100%; background: var(--amber); color: var(--amber-ink); border: 0; font-family: var(--font-head); font-weight: 800; font-size: .9rem; letter-spacing: .06em; text-transform: uppercase; padding: 15px 18px; border-radius: 2px; cursor: pointer; }
+    .nl-btn:hover { background: var(--amber-deep); color: #fff; }
+    .nl-btn[disabled] { opacity: .6; cursor: wait; }
+    .nl-fine { font-size: .76rem; color: var(--ink-mute); margin-top: 12px; line-height: 1.5; }
+    .nl-msg { display: none; padding: 14px 16px; margin-bottom: 16px; font-size: .95rem; line-height: 1.5; border-left: 4px solid var(--green); background: var(--green-tint); }
+    .nl-msg.err { border-left-color: #B42318; background: #FDECEA; }
+    .nl-msg.show { display: block; }
+    .nl-confirmed { display: none; background: var(--green); color: #fff; padding: 14px 0; }
+    .nl-confirmed.show { display: block; }
+  </style>
+</head>
+<body>
+  <!-- enlil:header -->
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="/">
+        <img src="/image/logo-white.png" alt="Enlil Center" width="36" height="36">
+        <span><span class="name">ENLIL CENTER</span><span class="tag">Environment &amp; Sustainable Development · Iraq</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/#about">About</a>
+        <a href="/research">Research</a>
+        <a href="/articles">Articles</a>
+        <a href="/topics">Topics</a>
+        <a href="/projects">Projects</a>
+        <a href="/data">Data</a>
+        <a href="/sources">Sources</a>
+      </nav>
+      <a class="lang" href="/ar" lang="ar" hreflang="ar">عربي</a>
+      <a class="cta" href="/#contact">Work with us</a>
+      <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
+    </div>
+    <nav id="mobileMenu" class="mobile-nav" aria-label="Mobile navigation">
+      <a href="/#about" onclick="toggleMobileMenu()">About</a>
+      <a href="/research">Research</a>
+      <a href="/articles">Articles</a>
+      <a href="/topics">Topics</a>
+      <a href="/projects">Projects</a>
+      <a href="/data">Data</a>
+      <a href="/sources">Sources</a>
+      <a href="/#contact" onclick="toggleMobileMenu()">Work with us</a>
+    </nav>
+  </header>
+  <!-- /enlil:header -->
+  <div class="nl-confirmed" id="confirmedBanner" role="status"><div class="wrap"><i class="fa-solid fa-circle-check"></i>&nbsp; You are subscribed. The next Iraq Policy Monitor will arrive in your inbox.</div></div>
+  <section class="nl-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><i class="fa-solid fa-chevron-right"></i><span>Newsletter</span></nav>
+      <span class="kicker">Free weekly newsletter</span>
+      <h1>Iraq Policy Monitor</h1>
+      <p class="dek">Iraq's energy, water and climate policy, read from the official record. Every item sourced, every week, free.</p>
+    </div>
+    <span class="credit">Photo: Mohammed Sardar / Wikimedia Commons, CC BY-SA 4.0</span>
+  </section>
+  <main class="section">
+    <div class="wrap nl-grid">
+      <div>
+        <span class="kicker green">What you get</span>
+        <h2 style="font-size:1.7rem;margin-top:6px">The week's decisions and data, in five minutes</h2>
+        <p style="color:var(--ink-soft);line-height:1.65;margin-top:12px;max-width:60ch">Most of the decisions that shape Iraq's energy, water and climate policy are announced in Arabic, on ministry pages and official channels. Each week Enlil Center reads them for you and explains what changed.</p>
+        <ul class="nl-points">
+          <li><i class="fa-solid fa-bolt"></i><div><b>This week in 60 seconds</b><span>Five lines at the top of every issue, so you have the week before you scroll.</span></div></li>
+          <li><i class="fa-solid fa-landmark"></i><div><b>From the official record</b><span>Cabinet decisions, ministry statements and official data, with a link to the source on every item.</span></div></li>
+          <li><i class="fa-solid fa-lightbulb"></i><div><b>Why it matters</b><span>One line of analysis per item from Enlil's researchers, on energy, water, climate and the economic policy around them.</span></div></li>
+          <li><i class="fa-solid fa-chart-line"></i><div><b>New on the Data Hub</b><span>Fresh official series from the Enlil Iraq Data Hub, free to download.</span></div></li>
+        </ul>
+        <div class="nl-sample"><b>Read a sample:</b> <a href="/ipm/issue-0">Issue 0, 12 October 2026 &rarr;</a><br><span style="font-size:.9rem;color:var(--ink-soft)">The dinar at 1,500, a 2029 flaring deadline, a bigger winter harvest and Iraq's new climate plan.</span></div>
+      </div>
+      <aside class="nl-card" aria-labelledby="signupTitle">
+        <h2 id="signupTitle">Subscribe free</h2>
+        <p class="sub">One email a week. Unsubscribe any time.</p>
+        <div class="nl-msg" id="nlMsg" role="status" aria-live="polite"></div>
+        <form id="nlForm" action="https://app.kit.com/forms/10035351/subscriptions" method="post" novalidate>
+          <div class="nl-field"><label for="nlEmail">Email address</label><input id="nlEmail" name="email_address" type="email" autocomplete="email" required placeholder="you@organisation.org"></div>
+          <div class="nl-two">
+            <div class="nl-field"><label for="nlName">First name <span class="opt">(optional)</span></label><input id="nlName" name="fields[first_name]" type="text" autocomplete="given-name"></div>
+            <div class="nl-field"><label for="nlRole">Role <span class="opt">(optional)</span></label><input id="nlRole" name="fields[role]" type="text" autocomplete="organization-title" placeholder="e.g. Energy adviser"></div>
+          </div>
+          <div class="nl-field"><label for="nlOrg">Organisation <span class="opt">(optional)</span></label><input id="nlOrg" name="fields[organisation]" type="text" autocomplete="organization"></div>
+          <div class="nl-field"><label for="nlType">Organisation type <span class="opt">(optional)</span></label>
+            <select id="nlType" name="fields[organisation_type]">
+              <option value="">Select…</option>
+              <option>Government or ministry</option>
+              <option>Embassy or diplomatic mission</option>
+              <option>UN agency or international organisation</option>
+              <option>Development bank or donor</option>
+              <option>NGO or civil society</option>
+              <option>Energy or oil and gas company</option>
+              <option>Other private sector</option>
+              <option>Consultancy</option>
+              <option>Research, think tank or academia</option>
+              <option>Media</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <p class="nl-why">Optional details help us shape the briefing for the people who read it.</p>
+          <button class="nl-btn" type="submit" id="nlBtn">Subscribe</button>
+          <p class="nl-fine">We will send a confirmation email first. Your details are used only to send and improve the Iraq Policy Monitor and are never sold or shared.</p>
+        </form>
+      </aside>
+    </div>
+  </main>
+  <!-- enlil:footer -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="top">
+        <div>
+          <a class="brand" href="/"><img src="/image/logo-white.png" alt=""><b>ENLIL CENTER</b></a>
+          <p class="about">Independent, non-profit research on Iraq's climate, water, energy, economy and governance. Based in Baghdad.</p>
+          <div class="social">
+            <a href="https://x.com/enlilcenter" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/company/enlilcenter/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/enlilcenter/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://web.facebook.com/enlilcenteriq/" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4>Publications</h4>
+          <ul><li><a href="/research">Research &amp; reports</a></li><li><a href="/articles">Articles &amp; commentary</a></li><li><a href="/projects">Projects</a></li></ul>
+        </div>
+        <div>
+          <h4>Data</h4>
+          <ul><li><a href="/data">Iraq Data Hub</a></li><li><a href="/sources">Sources library</a></li><li><a href="/sitemap.xml">Sitemap</a></li></ul>
+        </div>
+        <div>
+          <h4>Enlil Center</h4>
+          <ul><li><a href="/#about">About</a></li><li><a href="/#partners">Partners</a></li><li><a href="/#contact">Contact</a></li><li><a href="mailto:info@enlilcenter.org">info@enlilcenter.org</a></li></ul>
+        </div>
+      </div>
+      <div class="bottom">
+        <span>&copy; 2026 Enlil Center for Environment and Sustainable Development. Baghdad, Iraq.</span>
+        <div class="links"><a href="/#privacy">Privacy</a><a href="/#terms">Terms</a><a href="/#cookies">Cookies</a></div>
+      </div>
+    </div>
+  </footer>
+  <!-- /enlil:footer -->
+  <script>
+    (function () {
+      if (new URLSearchParams(location.search).get('confirmed')) document.getElementById('confirmedBanner').classList.add('show');
+      var form = document.getElementById('nlForm'), msg = document.getElementById('nlMsg'), btn = document.getElementById('nlBtn');
+      function show(text, err) { msg.textContent = text; msg.className = 'nl-msg show' + (err ? ' err' : ''); }
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var email = document.getElementById('nlEmail').value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { show('Please enter a valid email address.', true); document.getElementById('nlEmail').focus(); return; }
+        btn.disabled = true; btn.textContent = 'Subscribing…';
+        fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok && (!res.j.status || res.j.status === 'success' || res.j.status === 'quarantined')) {
+              form.reset(); form.style.display = 'none';
+              show('Almost done. Please check your inbox (and the spam folder) for an email from the Iraq Policy Monitor and click the confirmation button.');
+            } else { throw new Error('fail'); }
+          })
+          .catch(function () { btn.disabled = false; btn.textContent = 'Subscribe'; show('Something went wrong. Please try again, or email info@enlilcenter.org and we will add you.', true); });
+      });
+    })();
+  </script>
+</body>
+</html>
