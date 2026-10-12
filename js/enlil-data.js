@@ -78,7 +78,8 @@
       min: Math.min(...values), max: Math.max(...values),
       changeAbs: prev ? latest.value - prev.value : null,
       changePct: prev && prev.value ? ((latest.value - prev.value) / Math.abs(prev.value)) * 100 : null,
-      span: `${first.period}–${latest.period}`, count: pts.length
+      span: `${first.period}–${latest.period}`, count: pts.length,
+      categorical: !pts.every(p => /^\d{4}(-\d{2}(-\d{2})?)?$/.test(String(p.period).trim()) || /^[A-Z][a-z]{2} \d{4}$/.test(String(p.period).trim()))
     };
   }
 
