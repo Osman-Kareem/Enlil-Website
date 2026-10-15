@@ -48,11 +48,10 @@
     main { position: relative; max-width: 560px; margin: -96px auto 0; padding: 0 16px 40px; }
     .id { text-align: center; }
     .mark {
-      width: 84px; height: 84px; margin: 0 auto 14px; border-radius: 50%;
-      background: var(--green); border: 3px solid #fff; display: grid; place-items: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      width: 88px; height: 88px; margin: 0 auto 14px; border-radius: 50%; overflow: hidden;
+      border: 3px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,.25); background: #4DB33F;
     }
-    .mark img { width: 46px; height: 46px; }
+    .mark img { display: block; width: 100%; height: 100%; }
     h1 { font-family: var(--font-head); font-weight: 800; font-size: 1.32rem; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.005em; }
     .tag { color: var(--mist); font-size: .95rem; margin: 0 0 4px; }
     .tag b { color: var(--amber-light); font-weight: 600; }
@@ -111,7 +110,7 @@
   <div class="hero" role="img" aria-label="Reed house and buffalo in Iraq's southern marshes"></div>
   <main>
     <div class="id">
-      <div class="mark"><img src="/image/logo-white.png" alt="" width="46" height="46"></div>
+      <div class="mark"><img src="/image/links-avatar.png" alt="Enlil Center logo" width="88" height="88"></div>
       <h1>Enlil Center for Environment and Sustainable Development</h1>
       <p class="tag">Independent think tank · <b>Baghdad</b></p>
       <p class="tag">Research and open data on Iraq: climate, water, energy, economy, governance</p>
