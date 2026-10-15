@@ -225,6 +225,11 @@ function renderArticle(html, item, slug) {
   html = setInner(html, 'breadcrumbTitle', esc(item.title));
   html = setInner(html, 'articleTitle', esc(item.title));
   html = setInner(html, 'metaLine', `${authorLink(item)}${item.date ? ` <span> · </span><time datetime="${attr(item.date)}">${esc(fmtDate(item.date))}</time>` : ''}${fmtReads(item) ? ` <span> · </span><span class="reads">${esc(fmtReads(item))}</span>` : ''}`);
+  const rep = Array.isArray(item.republished) ? item.republished.filter(r => r && r.url && r.name && /^https:\/\//.test(r.url)) : [];
+  if (rep.length) {
+    html = unhide(html, 'republished');
+    html = setInner(html, 'republished', `<i class="fa-solid fa-globe" aria-hidden="true"></i><span>Also published on</span> ` + rep.map(r => `<a href="${attr(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a>${r.date ? ` <span>· ${esc(fmtDate(r.date))}</span>` : ''}<i class="fa-solid fa-arrow-up-right-from-square ext" aria-hidden="true"></i>`).join('<span aria-hidden="true">·</span>'));
+  }
   if (item.cover) { html = unhide(html, 'coverWrapper'); html = setAttr(html, 'articleCover', 'src', item.cover); html = setAttr(html, 'articleCover', 'alt', item.title); }
   html = setInner(html, 'articleBody', normaliseHeadings(item.content || ''));
   html = setAttr(html, 'articleBody', 'data-ssr', '1');
@@ -234,7 +239,8 @@ function renderArticle(html, item, slug) {
     "author": { "@type": "Person", "name": name, "url": name === 'Enlil Center' ? SITE : `${SITE}/authors/${authorSlug(name)}` },
     "image": image, "mainEntityOfPage": { "@type": "WebPage", "@id": url }, "articleSection": kickerOf(item, 'Analysis'),
     "keywords": (item.pillars || []).concat(item.seo?.keywords ? String(item.seo.keywords).split(',').map(s => s.trim()) : []).filter(Boolean),
-    "wordCount": strip(item.content).split(' ').length, "inLanguage": "en", "publisher": publisher
+    "wordCount": strip(item.content).split(' ').length, "inLanguage": "en", "publisher": publisher,
+    ...(rep.length ? { "sameAs": rep.map(r => r.url) } : {})
   }));
   return html;
 }

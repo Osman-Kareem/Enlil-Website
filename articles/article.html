@@ -35,6 +35,11 @@
     .nl-inline p { margin: 6px 0 0; color: var(--ink); line-height: 1.5; max-width: 52ch; }
     .nl-inline-btn { background: var(--green); color: #fff; font-family: var(--font-head); font-weight: 800; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; padding: 13px 20px; border-radius: 2px; white-space: nowrap; }
     .nl-inline-btn:hover { background: var(--green-deep); }
+    .republished { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 16px 0 0; padding-top: 14px; border-top: 1px solid rgba(215,231,221,.22); font-size: .86rem; color: #D7E7DD; line-height: 1.45; }
+    .republished i { color: var(--amber-light); }
+    .republished a { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: rgba(245,176,79,.7); text-underline-offset: 3px; }
+    .republished a:hover { text-decoration-color: #fff; }
+    .republished .ext { font-size: .7rem; margin-left: 2px; color: #B7CBBE; }
   </style>
 </head>
 <body>
@@ -81,6 +86,7 @@
         <h1 id="heroTitle">Article</h1>
         <p class="dek" id="dek" hidden></p>
         <div class="byline" id="metaLine"></div>
+        <p class="republished" id="republished" hidden></p>
       </div>
     </header>
 
@@ -245,6 +251,14 @@
       if (mins) parts.push(esc(mins));
       if (SECTION === 'articles' && Number(item.views) >= 10) parts.push(`<span class="reads">${esc(Number(item.views).toLocaleString('en-GB'))} reads</span>`);
       document.getElementById('metaLine').innerHTML = parts.join('<span aria-hidden="true">·</span>');
+
+      // republished elsewhere (e.g. ReliefWeb)
+      const rep = Array.isArray(item.republished) ? item.republished.filter(r => r && r.url && r.name && /^https:\/\//.test(r.url)) : [];
+      if (rep.length) {
+        const el = document.getElementById('republished');
+        el.innerHTML = '<i class="fa-solid fa-globe" aria-hidden="true"></i><span>Also published on</span> ' + rep.map(r => `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a>${r.date ? ` <span>· ${esc(fmtDate(r.date))}</span>` : ''}<i class="fa-solid fa-arrow-up-right-from-square ext" aria-hidden="true"></i>`).join('<span aria-hidden="true">·</span>');
+        el.hidden = false;
+      }
 
       // hero photo
       if (item.cover) { const img = document.getElementById('articleCover'); img.src = item.cover; img.alt = title; document.getElementById('coverWrapper').hidden = false; }
