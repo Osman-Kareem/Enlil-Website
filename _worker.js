@@ -663,6 +663,7 @@ async function sitemap() {
     { loc: `${SITE}/sources`, priority: '0.7' },
     { loc: `${SITE}/newsletter`, priority: '0.7' },
     { loc: `${SITE}/ipm/issue-0`, priority: '0.5' },
+    { loc: `${SITE}/ipm/issue-1`, priority: '0.6' },
     { loc: `${SITE}/topics`, priority: '0.8' },
     ...Object.keys(TOPICS).map(s => ({ loc: `${SITE}/topics/${s}`, priority: '0.8' })),
     { loc: `${SITE}/ar`, priority: '0.9' },
@@ -683,7 +684,7 @@ async function sitemap() {
 
 // Stable "latest issue" link for bios and email footers. Bump this each week when a
 // new Iraq Policy Monitor issue page goes up; 302 (not 301) so browsers don't cache it.
-const IPM_LATEST = '/ipm/issue-0';
+const IPM_LATEST = '/ipm/issue-1';
 
 // ── router ───────────────────────────────────────────────────────────────────
 export default {
